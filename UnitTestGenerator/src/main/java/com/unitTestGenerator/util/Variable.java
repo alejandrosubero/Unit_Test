@@ -4,6 +4,15 @@ public class Variable {
 
     private String tipo;
     private String nombre;
+    private Boolean isMock;
+
+    public Boolean getMock() {
+        return isMock;
+    }
+
+    public void setMock(Boolean mock) {
+        isMock = mock;
+    }
 
     public String getTipo() {
         return tipo;
@@ -20,4 +29,5 @@ public class Variable {
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
+
 }

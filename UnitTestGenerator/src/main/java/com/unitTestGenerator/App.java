@@ -12,6 +12,10 @@ import java.util.Scanner;
 // https://www.meta.ai/c/44fd9b43-6c67-44ef-a208-8170eca6a0c2
 
 public class App {
+
+    public static List<Clase> clases = new ArrayList<>();
+    private static String rutaProyecto;
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         boolean continuar = true;
@@ -27,7 +31,7 @@ public class App {
 
             switch (opcion) {
                 case 1:
-                    analizarProyecto(scanner);
+                    analizarProyecto(scanner, true);
                     continuar = preguntarContinuar(scanner);
                     break;
                 case 2:
@@ -45,28 +49,29 @@ public class App {
         }
     }
 
-    private static void analizarProyecto(Scanner scanner) {
+    private static void analizarProyecto(Scanner scanner,  boolean isAnalisis ) {
+
         System.out.println("Ingrese la ruta del proyecto:");
-        String rutaProyecto = scanner.next();
+        rutaProyecto = scanner.next();
+        clases = AnalizadorProyecto.analizarProyecto(rutaProyecto);
 
-        List<Clase> clases = AnalizadorProyecto.analizarProyecto(rutaProyecto);
-
-        System.out.println("Clases encontradas:");
-        for (Clase clase : clases) {
-            System.out.println(clase.getNombre() + "  package: "+ clase.getPaquete());
+        if(isAnalisis) {
+            System.out.println("Clases encontradas:");
+            for (Clase clase : clases) {
+                System.out.println(clase.getNombre() + "  package: " + clase.getPaquete());
+            }
         }
+
     }
 
     private static void generarPruebasUnitarias(Scanner scanner) {
-        System.out.println("Ingrese el nombre de la clase:");
-        String nombreClase = scanner.next();
-
-        System.out.println("Ingrese la ruta del proyecto:");
-        String rutaProyecto = scanner.next();
-
-        List<Clase> clases = AnalizadorProyecto.analizarProyecto(rutaProyecto);
         List<Clase> clasesTemporal = new ArrayList<>();
 
+        if(clases.isEmpty()){
+            analizarProyecto(scanner, false);
+        }
+        System.out.println("Ingrese el nombre de la clase a probar:");
+        String nombreClase = scanner.next();
 
         clases.stream().forEach(clase -> {
             if (clase.getNombre() != null && clase.getNombre().equals(nombreClase)) {
@@ -74,19 +79,16 @@ public class App {
             }
         });
 
-        Clase claseEncontrada =clasesTemporal.get(0);
-
-//        Clase claseEncontrada = clases.stream()
-//                .filter(clase -> clase.getNombre().equals(nombreClase))
-//                .findFirst()
-//                .orElse(null);
+        Clase claseEncontrada = clasesTemporal.get(0);
 
         if (claseEncontrada != null) {
             GeneradorPruebasUnitarias.generarPruebas(claseEncontrada, rutaProyecto);
         } else {
             System.out.println("Clase no encontrada");
         }
+
     }
+
 
     private static boolean preguntarContinuar(Scanner scanner) {
         System.out.println("¿Desea volver al menú inicial? (s/n)");

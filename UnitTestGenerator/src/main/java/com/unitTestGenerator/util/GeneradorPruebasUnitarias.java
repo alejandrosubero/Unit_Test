@@ -44,6 +44,10 @@ public class GeneradorPruebasUnitarias {
                 "}\n";
     }
 
+    //TODO: SEPARARLO EN UNA CLASE - USAR EL ISMOCK PARA DEFINIR SI SE MOCK O SE GENERA DATOS PARA SER PERSITIDOS Y USADOS
+    //TODO: NO SE ESTA GENERANDO LA VARIABLE DE LA CLASE A TESTEAR.
+    //TODO: TENDRA QUE RESCIBIR UNA CLASE PARA TRABAJAR DENTRO DE LA CLASE NUEVA LA VARIABLE.
+    //TODO; ESTE METODO TAMBIEN VA ANALISAR OTRAS CLASES PARA USAR EN LA GENERACION DE LA PRUEBA.
     private static String generarPruebaVariable(Variable variable) {
         return "\n@Test\npublic void test" + variable.getNombre().substring(0, 1).toUpperCase() + variable.getNombre().substring(1) + "() {\n" +
                 "    // Implementar prueba\n" +
