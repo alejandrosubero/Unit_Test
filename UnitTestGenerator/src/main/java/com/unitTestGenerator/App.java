@@ -1,7 +1,7 @@
 package com.unitTestGenerator;
 
 import com.unitTestGenerator.util.AnalizadorProyecto;
-import com.unitTestGenerator.util.Clase;
+import com.unitTestGenerator.pojos.Clase;
 import com.unitTestGenerator.util.GeneradorPruebasUnitarias;
 
 import java.util.ArrayList;

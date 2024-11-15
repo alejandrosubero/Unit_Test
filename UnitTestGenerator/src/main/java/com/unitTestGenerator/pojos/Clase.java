@@ -1,4 +1,4 @@
-package com.unitTestGenerator.util;
+package com.unitTestGenerator.pojos;
 
 import java.util.ArrayList;
 import java.util.List;

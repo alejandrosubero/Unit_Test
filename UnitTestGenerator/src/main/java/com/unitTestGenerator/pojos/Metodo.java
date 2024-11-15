@@ -1,4 +1,4 @@
-package com.unitTestGenerator.util;
+package com.unitTestGenerator.pojos;
 
 public class Metodo {
 

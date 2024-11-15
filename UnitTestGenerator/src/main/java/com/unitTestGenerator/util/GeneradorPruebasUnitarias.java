@@ -1,9 +1,12 @@
 package com.unitTestGenerator.util;
 
+import com.unitTestGenerator.pojos.Clase;
+import com.unitTestGenerator.pojos.Metodo;
+import com.unitTestGenerator.pojos.Variable;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.List;
 
 public class GeneradorPruebasUnitarias {
 

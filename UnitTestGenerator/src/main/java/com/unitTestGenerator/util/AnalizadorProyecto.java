@@ -7,6 +7,10 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.unitTestGenerator.pojos.Clase;
+import com.unitTestGenerator.pojos.EstructuraControl;
+import com.unitTestGenerator.pojos.Metodo;
+import com.unitTestGenerator.pojos.Variable;
 import org.apache.commons.io.FileUtils;
 
 public class AnalizadorProyecto {

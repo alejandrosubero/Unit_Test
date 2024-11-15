@@ -1,4 +1,4 @@
-package com.unitTestGenerator.util;
+package com.unitTestGenerator.pojos;
 
 public class Variable {
 
@@ -13,6 +13,7 @@ public class Variable {
     public void setMock(Boolean mock) {
         isMock = mock;
     }
+
 
     public String getTipo() {
         return tipo;
