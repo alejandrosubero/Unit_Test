@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public interface IBaseModel extends IConstantModel {
+
 	default String path(List<String> paths) {
 		StringBuilder newPathBuilder = new StringBuilder();
 
@@ -42,7 +43,6 @@ public interface IBaseModel extends IConstantModel {
 			String path = var3[var5];
 			newString.append(path);
 		}
-
 		return newString.toString();
 	}
 
@@ -50,6 +50,27 @@ public interface IBaseModel extends IConstantModel {
 		List<String> stringList = new ArrayList(Arrays.asList(StringPaths));
 		return stringList;
 	}
+
+	default String stringPaths(Boolean starSeparator, Boolean endSeparator,String... paths) {
+		StringBuffer newString = new StringBuffer();
+		List<String> stringPaths = toList(paths);
+
+		if (starSeparator) {
+			newString.append(this.Separator);
+		}
+		stringPaths.stream()
+				.reduce((path1, path2) -> {
+					newString.append(path1).append(this.Separator);
+					return path2;
+				})
+				.ifPresent(last -> newString.append(last));
+
+		if (endSeparator) {
+			newString.append(this.Separator);
+		}
+		return newString.toString();
+	}
+
 
 	default String listStringStructureToColummString(List<String> parameters) {
 		StringBuilder stringColumm = new StringBuilder(BREAK_LINE);

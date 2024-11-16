@@ -1,24 +1,47 @@
 package com.unitTestGenerator.util;
 
+import com.unitTestGenerator.interfaces.IBaseModel;
 import com.unitTestGenerator.pojos.Clase;
 import com.unitTestGenerator.pojos.Metodo;
+import com.unitTestGenerator.pojos.Project;
 import com.unitTestGenerator.pojos.Variable;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class GeneradorPruebasUnitarias {
+public class GeneradorPruebasUnitarias implements IBaseModel {
 
-    public static void generarPruebas(Clase clase, String rutaProyecto) {
-        PomAnalyzer.agregarDependencias(rutaProyecto);
+    private Project project;
+
+    public GeneradorPruebasUnitarias() {
+    }
+
+    public GeneradorPruebasUnitarias(Project project) {
+        this.project = project;
+    }
+
+    public void generarPruebas(Clase clase, String pathProject) {
+
+        if(project.getMaven()) {
+            PomAnalyzer.agregarDependencias(pathProject);
+        } else if(this.project.getGradle()){
+            this.gradleAnalyzer( pathProject);
+        }
+
         String nombreClase = clase.getNombre();
         String contenidoPrueba = obtenerContenidoPrueba(clase);
-        String separador = File.separator;
-        String basePath= separador+"src"+separador+"test"+separador+"java"+separador;//"/src/test/java/"
-        String packagePath = clase.getPaquete().replace(".", separador);
-        String rutaPrueba = rutaProyecto + basePath + packagePath + separador+nombreClase + "Test.java";
+        String basePath=  this.stringPaths(true,true,"src","test","java");//"/src/test/java/"
+//        String basePath= this.stringEnsamble(Separator,"src",Separator,"test",Separator,"java",Separator);//"/src/test/java/"
+        String packagePath = clase.getPaquete().replace(".", Separator);
+        String rutaPrueba = this.stringEnsamble(pathProject,basePath, packagePath, Separator, nombreClase, "Test.java");
         crearArchivoPrueba(rutaPrueba, contenidoPrueba);
+    }
+
+    public void gradleAnalyzer(String pathProject){
+        File fileGradle = new File( this.stringEnsamble(pathProject , Separator ,"build.gradle"));
+        GradleAnalyzer analyzer = new GradleAnalyzer(fileGradle);
+        analyzer.started();
     }
 
     private static String obtenerContenidoPrueba(Clase clase) {
