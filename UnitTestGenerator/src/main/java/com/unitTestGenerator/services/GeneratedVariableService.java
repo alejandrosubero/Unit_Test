@@ -18,32 +18,35 @@ public class GeneratedVariableService implements IBaseModel {
         return instance;
     }
 
-    //TODO: NO SE ESTA GENERANDO LA VARIABLE DE LA CLASE A TESTEAR.
-    //TODO: TENDRA QUE RESCIBIR UNA CLASE PARA TRABAJAR DENTRO DE LA CLASE NUEVA LA VARIABLE.
+
+
     //TODO; ESTE METODO TAMBIEN VA ANALISAR OTRAS CLASES PARA USAR EN LA GENERACION DE LA PRUEBA.
-    private  String generarPruebaVariable(Clase clase) {
+
+    public String generateVariable(Clase clase) {
         StringBuilder content = new StringBuilder("\n");
 
         String classNameCamelCase = stringEnsamble(clase.getNombre().substring(0, 1).toLowerCase(), clase.getNombre().substring(1));
-        content.append(generateVariable(clase.getNombre(), classNameCamelCase)).append("\n");
+        content.append(generateVariable(clase.getNombre(), classNameCamelCase, true)).append("\n");
 
         for (Variable variable : clase.getVariables()) {
             if(variable.getMock()){
-                content.append(generateVariable(variable.getTipo(), variable.getNombre())).append("\n");
+                content.append(generateVariable(variable.getTipo(), variable.getNombre(), false)).append("\n");
             }
         }
-        return null;
+        return content.toString();
     }
 
-    //TODO:ANOTATION?
-    private  String generateVariable(String type, String name) {
-        String anotation = "\n@Test\n";
-        String nameVariable = stringEnsamble(  name.substring(0, 1).toLowerCase(), name.substring(1), "; \n");
-        String text = stringEnsamble( "\n pivate "+ type," ", nameVariable, "; \n");
-        return text;
+    private  String generateVariable(String type, String name, boolean isClass) {
+        StringBuilder content = new StringBuilder();
+
+      if(type != null && name != null) {
+          String nameVariable = stringEnsamble(name.substring(0, 1).toLowerCase(), name.substring(1));
+          String text = stringEnsamble("private " + type, " ", nameVariable, ";");
+          String notation = isClass ? "@InjectMocks" : "@Mock";
+          content.append("\t").append(notation).append(("\n"));
+          content.append("\t").append(text).append(("\n"));
+      }
+        return content.toString();
     }
-
-
-
 
 }

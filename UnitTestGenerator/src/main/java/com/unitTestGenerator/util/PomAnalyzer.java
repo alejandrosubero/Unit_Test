@@ -85,6 +85,7 @@ public class PomAnalyzer {
             System.out.println("Error al analizar el archivo pom.xml: " + e.getMessage());
         }
     }
+
     private static boolean existeDependencia(Document documento, String dependencia) {
         NodeList dependencies = documento.getElementsByTagName("dependency");
 
@@ -137,13 +138,6 @@ public class PomAnalyzer {
         dependencies.appendChild(nuevaDependencia);
     }
 
-
-//    private static void agregarDependencia(Document documento, String dependencia) {
-//        Element dependencies = (Element) documento.getElementsByTagName("dependencies").item(0);
-//        Element nuevaDependencia = documento.createElement("dependency");
-//        nuevaDependencia.appendChild(documento.createCDATASection(dependencia));
-//        dependencies.appendChild(nuevaDependencia);
-//    }
 
 
     private static void guardarCambios(Document documento, String rutaProyecto) {

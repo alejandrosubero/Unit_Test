@@ -82,9 +82,22 @@ public interface IBaseModel extends IConstantModel {
 				}
 			}
 		}
-
 		return stringColumm.toString();
 	}
+
+	default  String indentation(Integer indentationLevel){
+		StringBuilder indentation = new StringBuilder();
+		if(indentationLevel > 0){
+			int index = 0;
+			while(index < indentationLevel) {
+				indentation.append("\t");
+				index++;
+			}
+		}
+//		String response = indentation.toString();
+		return indentation.toString();
+	}
+
 
 	default String capitalizeOrUncapitalisedFirstLetter(String str, Character action) {
 		if (str != null && !str.isEmpty()) {

@@ -1,14 +1,15 @@
 package com.unitTestGenerator.util;
 
+import com.unitTestGenerator.builders.BuildTestFile;
 import com.unitTestGenerator.interfaces.IBaseModel;
 import com.unitTestGenerator.pojos.Clase;
 import com.unitTestGenerator.pojos.Metodo;
 import com.unitTestGenerator.pojos.Project;
 import com.unitTestGenerator.pojos.Variable;
+import com.unitTestGenerator.services.GeneratedVariableService;
 
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+
 
 public class GeneradorPruebasUnitarias implements IBaseModel {
 
@@ -35,7 +36,9 @@ public class GeneradorPruebasUnitarias implements IBaseModel {
 //        String basePath= this.stringEnsamble(Separator,"src",Separator,"test",Separator,"java",Separator);//"/src/test/java/"
         String packagePath = clase.getPaquete().replace(".", Separator);
         String rutaPrueba = this.stringEnsamble(pathProject,basePath, packagePath, Separator, nombreClase, "Test.java");
-        crearArchivoPrueba(rutaPrueba, contenidoPrueba);
+
+        BuildTestFile.getInstance().crearArchivoPrueba(rutaPrueba, contenidoPrueba);
+
     }
 
     public void gradleAnalyzer(String pathProject){
@@ -44,19 +47,44 @@ public class GeneradorPruebasUnitarias implements IBaseModel {
         analyzer.started();
     }
 
-    private static String obtenerContenidoPrueba(Clase clase) {
+    private  String obtenerContenidoPrueba(Clase clase) {
         StringBuilder contenido = new StringBuilder();
+        GeneratedVariableService variableService = GeneratedVariableService.getInstance();
+
         contenido.append("package ").append(clase.getPaquete()).append(";").append("\n");
         contenido.append("import org.junit.Test;\n");
         contenido.append("import org.junit.Assert;\n");
-        contenido.append("public class " + clase.getNombre() + "Test {\n");
+        contenido.append("import org.assertj.core.api.Assertions;\n");
+        contenido.append("import org.junit.jupiter.api.Test;\n");
+        contenido.append("import org.junit.jupiter.api.extension.ExtendWith;\n");
+        contenido.append("import org.mockito.InjectMocks;\n");
+        contenido.append("import org.mockito.Mock;\n");
+        contenido.append("import org.mockito.Mockito;\n");
+        contenido.append("import org.mockito.junit.jupiter.MockitoExtension;\n").append("\n");
+
+        contenido.append( this.stringEnsamble("import ", clase.getPaquete(), ".",clase.getNombre())).append("\n");
+
+        for(Variable variable : clase.getVariables()){
+
+           this.project.getClaseList().stream().forEach(projectClass -> {
+                if (projectClass.getNombre() != null && projectClass.getNombre().equals(variable.getTipo())) {
+                    contenido.append(
+                            this.stringEnsamble(
+                                    "import ", projectClass.getPaquete(), ".",projectClass.getNombre())
+                    ).append("\n");
+                }
+            });
+
+        }
+
+        contenido.append("\n").append("public class " + clase.getNombre() + "Test {\n");
+
+        // Generar pruebas para variables
+
+        contenido.append(variableService.generateVariable(clase));
 
         for (Metodo metodo : clase.getMetodos()) {
             contenido.append(obtenerContenidoMetodo(metodo));
-        }
-            // Generar pruebas para variables
-        for (Variable variable : clase.getVariables()) {
-            contenido.append(generarPruebaVariable(variable));
         }
         contenido.append("}\n");
 
@@ -70,40 +98,6 @@ public class GeneradorPruebasUnitarias implements IBaseModel {
                 "}\n";
     }
 
-    //TODO: SEPARARLO EN UNA CLASE - USAR EL ISMOCK PARA DEFINIR SI SE MOCK O SE GENERA DATOS PARA SER PERSITIDOS Y USADOS
-    //TODO: NO SE ESTA GENERANDO LA VARIABLE DE LA CLASE A TESTEAR.
-    //TODO: TENDRA QUE RESCIBIR UNA CLASE PARA TRABAJAR DENTRO DE LA CLASE NUEVA LA VARIABLE.
-    //TODO; ESTE METODO TAMBIEN VA ANALISAR OTRAS CLASES PARA USAR EN LA GENERACION DE LA PRUEBA.
-    private static String generarPruebaVariable(Variable variable) {
-        return "\n@Test\npublic void test" + variable.getNombre().substring(0, 1).toUpperCase() + variable.getNombre().substring(1) + "() {\n" +
-                "    // Implementar prueba\n" +
-                "    Assert.assertNotNull(" + variable.getNombre() + ");\n" +
-                "}\n";
-    }
 
-    private static void crearArchivoPrueba(String ruta, String contenido) {
-        File archivo = new File(ruta);
-        fileExist(archivo);
-        fileWriter( archivo,contenido,ruta);
-    }
-
-    private static void fileWriter(File archivo, String contenido, String ruta){
-        try (FileWriter escritor = new FileWriter(archivo)) {
-            escritor.write(contenido);
-            System.out.println("Prueba generada con éxito en " + ruta);
-        } catch (IOException e) {
-            System.out.println("Error al crear archivo de prueba: " + e.getMessage());
-        }
-    }
-    private static void fileExist(File archivo){
-        if (!archivo.getParentFile().exists()) {
-            // Crear la carpeta si no existe
-            if (archivo.getParentFile().mkdirs()) {
-                System.out.println("Carpeta creada con éxito: " + archivo.getParentFile());
-            } else {
-                System.out.println("Error al crear carpeta: " + archivo.getParentFile());
-            }
-        }
-    }
 
 }

@@ -3,12 +3,16 @@ package com.unitTestGenerator.util;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import com.unitTestGenerator.builders.BuildTestFile;
 import com.unitTestGenerator.interfaces.IBaseModel;
 import org.apache.commons.io.FileUtils;
 import org.w3c.dom.Document;
@@ -25,17 +29,29 @@ public class GradleAnalyzer implements IBaseModel {
     }
 
     public void started(){
-        this.agregarDependencia("org.junit.jupiter", "junit-jupiter-api", "5.8.2");
-        this.agregarDependencia("junit", "junit", "4.13.2");
-        this.agregarDependencia(   "org.mockito", "mockito-junit-jupiter", "4.11.0");
-        this.analizarEstructura();
+
+        try {
+            String contenido = FileUtils.readFileToString(archivoGradle, "UTF-8");
+            List<String> contenidoList = FileUtils.readLines(archivoGradle, "UTF-8");
+
+            List<String> dependencesList1 =  this.addDependences("org.junit.jupiter", "junit-jupiter-api", "5.8.2",  contenidoList,  contenido);
+            List<String> dependencesList2  =  this.addDependences("junit", "junit", "4.13.2", dependencesList1,  contenido);
+            List<String> dependencesList3  =  this.addDependences(   "org.mockito", "mockito-junit-jupiter", "4.11.0", dependencesList2,  contenido);
+            this.analizarEstructura();
+            String newContenido =  this.listStringStructureToColummString(dependencesList3);
+
+            BuildTestFile.getInstance().writefiles( archivoGradle,  newContenido);
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
+
 
     private boolean dependenciaExiste(String contenido , String grupo, String artefacto, String version) {
         try {
             String dependencia = String.format("implementation '%s:%s:%s'", grupo, artefacto, version);
             Boolean isPresent = contenido.contains(dependencia);
-
             return isPresent;
         } catch (Exception e) {
             System.out.println("Error al leer contenido: " + e.getMessage());
@@ -43,49 +59,31 @@ public class GradleAnalyzer implements IBaseModel {
         }
     }
 
-    ..fail
-    // Método para agregar dependencias
-    //dependencies { }
-    public void agregarDependencia(String grupo, String artefacto, String version) {
+    public  List<String> addDependences(String grupo, String artefacto, String version,  List<String> contenidoList,  String contenido) {
         try {
-            String contenido = FileUtils.readFileToString(archivoGradle, "UTF-8");
+            if(contenido != null && !contenido.equals("") && contenidoList != null &&
+                    !contenidoList.isEmpty() && !dependenciaExiste( contenido , grupo, artefacto, version)){
 
-            if(dependenciaExiste( contenido , grupo, artefacto, version)){
-                String dependencia = String.format("implementation '%s:%s:%s'", grupo, artefacto, version);
-                contenido += stringEnsamble("\ndependencies {\n",
-                        dependencia,"\n",
-                        "}");
-                FileWriter escritor = new FileWriter(archivoGradle);
-                escritor.write(contenido);
-                escritor.close();
-                System.out.println("Dependencia agregada con éxito");
+                String newDependencie = String.format("implementation '%s:%s:%s'", grupo, artefacto, version);
+
+                Optional<Integer> indice = contenidoList.stream()
+                        .map(String::toLowerCase)
+                        .map(line -> line.contains("dependencies {") ? line : null)
+                        .filter(Objects::nonNull)
+                        .findFirst()
+                        .map(contenidoList::indexOf);
+
+                String newDependencieQ = stringEnsamble(indentation(1), newDependencie);
+                indice.ifPresent(i -> contenidoList.add(i + 1, newDependencieQ));
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.out.println("Error al agregar dependencia: " + e.getMessage());
         }
+        return contenidoList;
     }
 
-    // Método para eliminar dependencias
-    public void eliminarDependencia(String grupo, String artefacto) {
-        try {
-            String contenido = FileUtils.readFileToString(archivoGradle, "UTF-8");
-            contenido = contenido.replaceAll("implementation '$grupo:$artefacto:[^']+'", "");
-            FileWriter escritor = new FileWriter(archivoGradle);
-            escritor.write(contenido);
-            escritor.close();
-            System.out.println("Dependencia eliminada con éxito");
-        } catch (IOException e) {
-            System.out.println("Error al eliminar dependencia: " + e.getMessage());
-        }
-    }
 
-    // Método para actualizar dependencias
-    public void actualizarDependencia(String grupo, String artefacto, String versión) {
-        eliminarDependencia(grupo, artefacto);
-        agregarDependencia(grupo, artefacto, versión);
-    }
 
-    // Método para analizar estructura del archivo build.gradle
     public void analizarEstructura() {
         try {
             Document documento = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(archivoGradle);
@@ -104,4 +102,19 @@ public class GradleAnalyzer implements IBaseModel {
             System.out.println("Error al analizar estructura: " + e.getMessage());
         }
     }
+
+
+    public void eliminarDependencia(String grupo, String artefacto) {
+        try {
+            String contenido = FileUtils.readFileToString(archivoGradle, "UTF-8");
+            contenido = contenido.replaceAll("implementation '$grupo:$artefacto:[^']+'", "");
+            FileWriter escritor = new FileWriter(archivoGradle);
+            escritor.write(contenido);
+            escritor.close();
+            System.out.println("Dependencia eliminada con éxito");
+        } catch (IOException e) {
+            System.out.println("Error al eliminar dependencia: " + e.getMessage());
+        }
+    }
+
 }

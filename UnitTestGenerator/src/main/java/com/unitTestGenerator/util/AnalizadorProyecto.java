@@ -51,7 +51,6 @@ private static final String[] IGNORAR = {"target", "node_modules", ".git"};
         try {
             String contenido = FileUtils.readFileToString(archivo, "UTF-8");
 
-
             // Analizar paquetes
             Pattern patronPaquete = Pattern.compile("package (.*?);");
             Matcher matcherPaquete = patronPaquete.matcher(contenido);
@@ -62,10 +61,18 @@ private static final String[] IGNORAR = {"target", "node_modules", ".git"};
 
             // Analizar contenido para extraer información de la clase
             Pattern patronClase = Pattern.compile("public class (\\w+)");
+
             Matcher matcherClase = patronClase.matcher(contenido);
 
             if (matcherClase.find()) {
                 clase.setNombre(matcherClase.group(1));
+            }
+
+            Pattern  patronInterface = Pattern.compile("public interface (\\w+)");
+            Matcher matcherInterface = patronInterface.matcher(contenido);
+
+            if (matcherInterface.find()) {
+                clase.setNombre(matcherInterface.group(1));
             }
 
             // Analizar métodos

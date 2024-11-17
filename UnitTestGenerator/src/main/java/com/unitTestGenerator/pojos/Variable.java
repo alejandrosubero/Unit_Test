@@ -6,6 +6,10 @@ public class Variable {
     private String nombre;
     private Boolean isMock;
 
+    public Variable() {
+        this.isMock = true;
+    }
+
     public Boolean getMock() {
         return isMock;
     }
