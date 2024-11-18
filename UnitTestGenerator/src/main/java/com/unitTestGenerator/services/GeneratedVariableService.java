@@ -29,7 +29,7 @@ public class GeneratedVariableService implements IBaseModel {
         content.append(generateVariable(clase.getNombre(), classNameCamelCase, true)).append("\n");
 
         for (Variable variable : clase.getVariables()) {
-            if(variable.getMock()){
+            if(clase.getUseMock()){
                 content.append(generateVariable(variable.getTipo(), variable.getNombre(), false)).append("\n");
             }
         }

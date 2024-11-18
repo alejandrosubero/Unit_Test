@@ -10,11 +10,21 @@ public class Clase {
     private List<Metodo> metodos;
     private List<Variable> variables;
     private List<EstructuraControl> estructuras;
+    private Boolean useMock;
 
     public Clase() {
         this.metodos = new ArrayList<>();
         this.variables = new ArrayList<>();
         this.estructuras = new ArrayList<>();
+        this.useMock = false;
+    }
+
+    public Boolean getUseMock() {
+        return useMock;
+    }
+
+    public void setUseMock(Boolean useMock) {
+        this.useMock = useMock;
     }
 
     public String getPaquete() {

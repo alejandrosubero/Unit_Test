@@ -17,7 +17,6 @@ public class AppProjectStarted {
     private Project project;
 
 
-
     private  AppProjectStarted() {
     }
 
@@ -83,6 +82,7 @@ public class AppProjectStarted {
 
     private  void generarPruebasUnitarias(Scanner scanner) {
         List<Clase> clasesTemporal = new ArrayList<>();
+        Clase claseEncontrada = null;
 
         if(clases.isEmpty()){
             analizarProyecto(scanner, false);
@@ -90,6 +90,7 @@ public class AppProjectStarted {
 
         System.out.println("Enter the class name to test to generate the unit tests:");
         String nombreClase = scanner.next();
+        Boolean useMock = this.questionAboutUseMock(scanner);
 
         clases.stream().forEach(clase -> {
             if (clase.getNombre() != null && clase.getNombre().equals(nombreClase)) {
@@ -97,16 +98,28 @@ public class AppProjectStarted {
             }
         });
 
-        GeneradorPruebasUnitarias generate = new GeneradorPruebasUnitarias(this.project);
-        Clase claseEncontrada = clasesTemporal.get(0);
-        if (claseEncontrada != null) {
-            generate.generarPruebas(claseEncontrada, this.pathProject);
-        } else {
+        try {
+            GeneradorPruebasUnitarias generate = new GeneradorPruebasUnitarias(project);
+            claseEncontrada = clasesTemporal.get(0);
+            claseEncontrada.setUseMock(useMock);
+            generate.generarPruebas(claseEncontrada, pathProject);
+        } catch (IndexOutOfBoundsException e) {
             System.out.println("Class not found");
         }
-
     }
 
+
+    private boolean questionAboutUseMock(Scanner scanner) {
+        String respuesta ="n";
+        System.out.println("Do you want to use Mock in test Class?.(y/n)");
+        respuesta = scanner.next().toLowerCase();
+
+        while (!respuesta.equals("y") && !respuesta.equals("n")) {
+            System.out.println("Invalid response. Please enter 'y' for yes or 'n' for no.");
+            respuesta = scanner.next().toLowerCase();
+        }
+        return respuesta.equals("y");
+    }
 
     private  boolean preguntarContinuar(Scanner scanner) {
         System.out.println("Return to main menu? (y/n)");
