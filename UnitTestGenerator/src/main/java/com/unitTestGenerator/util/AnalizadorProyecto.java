@@ -7,10 +7,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.unitTestGenerator.pojos.Clase;
-import com.unitTestGenerator.pojos.EstructuraControl;
-import com.unitTestGenerator.pojos.Metodo;
-import com.unitTestGenerator.pojos.Variable;
+import com.unitTestGenerator.pojos.*;
 import org.apache.commons.io.FileUtils;
 
 public class AnalizadorProyecto {
@@ -75,17 +72,40 @@ private static final String[] IGNORAR = {"target", "node_modules", ".git"};
                 clase.setNombre(matcherInterface.group(1));
             }
 
+//            // Analizar métodos
+//            Pattern patronMetodo = Pattern.compile("public (\\w+) (\\w+)\\((.*?)\\)");
+//            Matcher matcherMetodo = patronMetodo.matcher(contenido);
+//
+//            while (matcherMetodo.find()) {
+//                Metodo metodo = new Metodo();
+//                metodo.setNombre(matcherMetodo.group(2));
+//                metodo.setTipoRetorno(matcherMetodo.group(1));
+//                clase.agregarMetodo(metodo);
+//            }
+
+
             // Analizar métodos
-            Pattern patronMetodo = Pattern.compile("public (\\w+) (\\w+)\\((.*?)\\)");
+            Pattern patronMetodo = Pattern.compile("public (\\w+) (\\w+)\\((.*?)\\)", Pattern.DOTALL);
             Matcher matcherMetodo = patronMetodo.matcher(contenido);
 
             while (matcherMetodo.find()) {
                 Metodo metodo = new Metodo();
                 metodo.setNombre(matcherMetodo.group(2));
                 metodo.setTipoRetorno(matcherMetodo.group(1));
+
+                // Analizar parámetros
+                String[] parametros = matcherMetodo.group(3).split(",");
+                for (String parametro : parametros) {
+                    if (!parametro.trim().isEmpty()) {
+                        String[] partes = parametro.trim().split("\\s+");
+                        ParametroMetodo parametroMetodo = new ParametroMetodo(partes[1], partes[0]);
+                        metodo.agregarParametro(parametroMetodo);
+                    }
+                }
                 clase.agregarMetodo(metodo);
             }
 
+            
             // Analizar variables
             Pattern patronVariable = Pattern.compile("private (\\w+) (\\w+);");
             Matcher matcherVariable = patronVariable.matcher(contenido);
