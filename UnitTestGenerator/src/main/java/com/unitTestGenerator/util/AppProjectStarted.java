@@ -90,6 +90,12 @@ public class AppProjectStarted {
 
         System.out.println("Enter the class name to test to generate the unit tests:");
         String nombreClase = scanner.next();
+
+        String method =  questionOfMethodToTest( scanner);
+        if(method.equals("CANCEL")){
+            preguntarContinuar(scanner);
+        }
+
         Boolean useMock = this.questionAboutUseMock(scanner);
 
         clases.stream().forEach(clase -> {
@@ -102,6 +108,7 @@ public class AppProjectStarted {
             GeneradorPruebasUnitarias generate = new GeneradorPruebasUnitarias(project);
             claseEncontrada = clasesTemporal.get(0);
             claseEncontrada.setUseMock(useMock);
+            claseEncontrada.setTestMethod(method);
             generate.generarPruebas(claseEncontrada, pathProject);
         } catch (IndexOutOfBoundsException e) {
             System.out.println("Class not found");
@@ -156,5 +163,45 @@ public class AppProjectStarted {
     public  String getRutaProyecto() {
         return pathProject;
     }
+
+    private Integer getNumber(Scanner scanner){
+        System.out.println("What method do you want to test?");
+        System.out.println("Choose an option:");
+        System.out.println("1. All");
+        System.out.println("2. Nama of Specific method");
+
+        int opcion = scanner.nextInt();
+        return opcion;
+    }
+
+    public String questionOfMethodToTest(Scanner scanner){
+
+        String respuesta ="";
+        Integer opcion = this.getNumber( scanner);
+
+        if(opcion == 1){
+            respuesta = "all";
+        }
+        if(opcion == 2 ){
+            System.out.println("Enter the name of the method to be tested");
+            respuesta = scanner.next().toLowerCase();
+        }
+
+        if( opcion != 1 && opcion != 2){
+            System.out.println("Invalid response. Please enter '1' for yes or '2' .");
+            if( opcion != 1 && opcion != 2){
+                System.out.println("You have entered an invalid option again. Do you want to continue or cancel?");
+                System.out.println("1. All");
+                System.out.println("2. Nama of Specific method");
+                int opcionInvalid = scanner.nextInt();
+                respuesta = opcionInvalid == 1? "all":"CANCEL";
+            }
+        }
+        return respuesta;
+    }
+
+
+
+
 
 }
