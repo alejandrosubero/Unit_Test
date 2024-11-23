@@ -10,12 +10,10 @@ import java.util.Scanner;
 
 public class AppProjectStarted {
 
-
     private String pathProject;
     private static AppProjectStarted instance;
     public  List<Clase> clases = new ArrayList<>();
     private Project project;
-
 
     private  AppProjectStarted() {
     }
