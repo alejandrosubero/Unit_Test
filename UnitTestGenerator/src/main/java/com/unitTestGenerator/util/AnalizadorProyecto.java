@@ -8,6 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.unitTestGenerator.pojos.*;
+import com.unitTestGenerator.services.MethodService;
 import org.apache.commons.io.FileUtils;
 
 public class AnalizadorProyecto {
@@ -102,6 +103,14 @@ private static final String[] IGNORAR = {"target", "node_modules", ".git"};
                         metodo.agregarParametro(parametroMetodo);
                     }
                 }
+
+                // Analizar y Obtener contenido del metodo
+                Pattern patronContenidoMetodo = Pattern.compile("public (\\w+) (\\w+)\\((.*?)\\)\\s*\\{(.*?)\\}", Pattern.DOTALL);
+                Matcher matcherContenidoMetodo = patronContenidoMetodo.matcher(contenido);
+                if (matcherContenidoMetodo.find()) {
+                    String contenidoMetodo = matcherContenidoMetodo.group(4).trim();
+                    metodo.setContenido(contenidoMetodo);
+                }
                 clase.agregarMetodo(metodo);
             }
 
@@ -117,6 +126,7 @@ private static final String[] IGNORAR = {"target", "node_modules", ".git"};
                 clase.agregarVariable(variable);
             }
 
+
             // Análisis de estructuras de control
             Pattern patronEstructuras = Pattern.compile("if|else|for|while|try|catch");
             Matcher matcherEstructuras = patronEstructuras.matcher(contenido);
@@ -124,14 +134,29 @@ private static final String[] IGNORAR = {"target", "node_modules", ".git"};
             while (matcherEstructuras.find()) {
                 EstructuraControl estructura = new EstructuraControl();
                 estructura.setTipo(matcherEstructuras.group());
-
                 clase.agregarEstructura(estructura);
             }
 
         } catch (Exception e) {
             System.out.println("Error al analizar archivo: " + archivo.getName());
         }
-
-        return clase;
+        return postClassMethodAnalysis(clase);
     }
+
+
+    private static Clase postClassMethodAnalysis(Clase classIn){
+        if(classIn.getVariables() != null && !classIn.getVariables().isEmpty() && classIn.getMetodos() != null && !classIn.getMetodos().isEmpty()){
+            classIn.getVariables().stream().forEach(variable -> {
+                classIn.getMetodos().stream().forEach(method ->{
+                    method.addInstanceMethodCallAll(
+                            MethodService.getInstance().findOperationPerformed(
+                                    method.getContenido(),
+                                    variable.getNombre())
+                    );
+                });
+            });
+        }
+        return classIn;
+    }
+
 }
