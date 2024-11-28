@@ -55,9 +55,6 @@ public class InstanceMethodCall {
     }
 
 
-
-
-
     public static Builder builder() {
         return new Builder();
     }
@@ -91,7 +88,11 @@ public class InstanceMethodCall {
 
         @Override
         public Builder parametros(List<ParametroMetodo> parametros) {
-            this.parametros = parametros;
+            if(parametros != null){
+                this.parametros = parametros;
+            }else {
+                parametros = new ArrayList<>();
+            }
             return this;
         }
 

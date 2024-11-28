@@ -2,13 +2,11 @@ package com.unitTestGenerator.util;
 
 import com.unitTestGenerator.builders.BuildTestFile;
 import com.unitTestGenerator.interfaces.IBaseModel;
-import com.unitTestGenerator.pojos.Clase;
-import com.unitTestGenerator.pojos.Metodo;
-import com.unitTestGenerator.pojos.Project;
-import com.unitTestGenerator.pojos.Variable;
+import com.unitTestGenerator.pojos.*;
 import com.unitTestGenerator.services.GeneratedVariableService;
 
 import java.io.File;
+import java.util.List;
 import java.util.Locale;
 
 
@@ -97,7 +95,6 @@ public class GeneradorPruebasUnitarias implements IBaseModel {
         contex.append("import org.mockito.Mock;\n");
         contex.append("import org.mockito.Mockito;\n");
         contex.append("import org.mockito.junit.jupiter.MockitoExtension;\n").append("\n");
-
         contex.append( this.stringEnsamble("import ", clase.getPaquete(), ".",clase.getNombre())).append("\n");
 
         for(Variable variable : clase.getVariables()){
@@ -110,7 +107,6 @@ public class GeneradorPruebasUnitarias implements IBaseModel {
                 }
             });
         }
-
         return contex.toString();
     }
 
@@ -119,11 +115,11 @@ public class GeneradorPruebasUnitarias implements IBaseModel {
         StringBuilder contex = new StringBuilder();
 
         if (clase.getTestMethod().toLowerCase().equals("all")){
-            clase.getMetodos().forEach(metodo -> contex.append(obtenerContenidoMetodo(metodo)));
+            clase.getMetodos().forEach(metodo -> contex.append(obtenerContenidoMetodo(metodo, clase)));
         }else{
             for (Metodo metodo : clase.getMetodos()) {
                 if (clase.getTestMethod().toLowerCase().equals(metodo.getNombre().toLowerCase())){
-                    contex.append(obtenerContenidoMetodo(metodo));
+                    contex.append(obtenerContenidoMetodo(metodo, clase));
                 }
             }
         }
@@ -131,11 +127,110 @@ public class GeneradorPruebasUnitarias implements IBaseModel {
         return contex.toString();
     }
 
-    private static String obtenerContenidoMetodo(Metodo metodo) {
-        return "\n@Test\npublic void test" + metodo.getNombre().substring(0, 1).toUpperCase() + metodo.getNombre().substring(1) + "() {\n" +
-                "    // Implementar prueba\n" +
-                "    Assert.assertTrue(true);\n" +
-                "}\n";
+    private  String obtenerContenidoMetodo(Metodo metodo, Clase clase) {
+
+        String methodName = String.format("%s%s", metodo.getNombre().substring(0, 1).toUpperCase(), metodo.getNombre().substring(1));
+        String content = generarContenidoMetodoPrueba(metodo, clase);
+        String methodoTest = String.format("\n@Test\npublic void test%s() {\n  %s \n }\n", methodName,content);
+        return methodoTest;
+    }
+
+    private String generarContenidoMetodoPrueba(Metodo metodo, Clase clase) {
+        StringBuilder contenido = new StringBuilder();
+
+        // Verificar si se utiliza mock
+        if (clase.getUseMock()) {
+            // Generar contenido para mock
+            contenido.append(generarContenidoMock(metodo));
+        } else {
+            // Generar contenido sin mock
+            contenido.append(generarContenidoSinMock(metodo));
+        }
+
+        return contenido.toString();
+    }
+
+    private String generarContenidoMock(Metodo metodo) {
+        StringBuilder contenido = new StringBuilder();
+
+        // Obtener las instancias de métodos
+        List<InstanceMethodCall> instanceMethodCalls = metodo.getInstanceMethodCalls();
+
+        // Recorrer las instancias de métodos
+        for (InstanceMethodCall instanceMethodCall : instanceMethodCalls) {
+            // Obtener el nombre del método
+            String methodName = instanceMethodCall.getMethod();
+
+            // Obtener el nombre de la variable de instancia
+            String variableInstanceName = instanceMethodCall.getVariableInstace();
+
+            // Obtener los parámetros del método
+            List<ParametroMetodo> parametros = instanceMethodCall.getParametros();
+
+            // Generar la llamada al método mock
+            contenido.append(generarLlamadaMetodoMock(methodName, variableInstanceName, parametros));
+        }
+        return contenido.toString();
+    }
+
+    private String generarLlamadaMetodoMock(String methodName, String variableInstanceName, List<ParametroMetodo> parametros) {
+        StringBuilder contenido = new StringBuilder();
+
+        // Agregar la llamada al método mock
+        contenido.append("Mockito.when(").append(variableInstanceName).append(".").append(methodName).append("(");
+
+        // Agregar los parámetros
+        for (int i = 0; i < parametros.size(); i++) {
+            ParametroMetodo parametro = parametros.get(i);
+            contenido.append(parametro.getNombre());
+
+            if (i < parametros.size() - 1) {
+                contenido.append(", ");
+            }
+        }
+
+        contenido.append(")).thenReturn(");
+
+        // Agregar el valor de retorno
+        contenido.append(");");
+
+        return contenido.toString();
+    }
+
+    private String generarContenidoSinMock(Metodo metodo) {
+        StringBuilder contenido = new StringBuilder();
+
+        // Obtener el nombre del método
+        String methodName = metodo.getNombre();
+
+        // Obtener los parámetros del método
+        List<ParametroMetodo> parametros = metodo.getParametros();
+
+        // Generar la llamada al método
+        contenido.append(generarLlamadaMetodo(methodName, parametros));
+
+        return contenido.toString();
+    }
+
+    private String generarLlamadaMetodo(String methodName, List<ParametroMetodo> parametros) {
+        StringBuilder contenido = new StringBuilder();
+
+        // Agregar la llamada al método
+        contenido.append(methodName).append("(");
+
+        // Agregar los parámetros
+        for (int i = 0; i < parametros.size(); i++) {
+            ParametroMetodo parametro = parametros.get(i);
+            contenido.append(parametro.getNombre());
+
+            if (i < parametros.size() - 1) {
+                contenido.append(", ");
+            }
+        }
+
+        contenido.append(");");
+
+        return contenido.toString();
     }
 
 

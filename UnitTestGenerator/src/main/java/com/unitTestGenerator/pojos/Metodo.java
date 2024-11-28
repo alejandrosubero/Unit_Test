@@ -7,9 +7,10 @@ public class Metodo {
 
     private String nombre;
     private String tipoRetorno;
-    private List<ParametroMetodo> parametros;
+    private List<ParametroMetodo> parametros= new ArrayList<>();
     private String contenido;
-    private List<InstanceMethodCall> instanceMethodCalls;
+    private List<InstanceMethodCall> instanceMethodCalls = new ArrayList<>();
+
 
     public String getContenido() {
         return contenido;
@@ -20,7 +21,6 @@ public class Metodo {
     }
 
     public Metodo() {
-        this.parametros = new ArrayList<>();
     }
 
     public void agregarParametro(ParametroMetodo parametro) {
@@ -56,14 +56,21 @@ public class Metodo {
     }
 
     public void setInstanceMethodCalls(List<InstanceMethodCall> instanceMethodCalls) {
-        this.instanceMethodCalls = instanceMethodCalls;
+        if(instanceMethodCalls != null && !instanceMethodCalls.isEmpty()) {
+            this.instanceMethodCalls = instanceMethodCalls;
+        }
     }
 
     public void addInstanceMethodCall(InstanceMethodCall instanceMethodCall){
-        this.instanceMethodCalls.add(instanceMethodCall);
+        if(instanceMethodCalls != null) {
+            this.instanceMethodCalls.add(instanceMethodCall);
+        }
     }
 
     public void addInstanceMethodCallAll(List<InstanceMethodCall> insCalls){
-        this.instanceMethodCalls.addAll(insCalls);
+        if(insCalls != null && !insCalls.isEmpty()){
+            this.instanceMethodCalls.addAll(insCalls);
+        }
+
     }
 }

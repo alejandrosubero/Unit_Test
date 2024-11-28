@@ -23,12 +23,12 @@ public class MethodService {
     }
 
 
-    //    encontrar las operaciones que se efectúan  InstanceMethodCall
-    public  List<InstanceMethodCall> findOperationPerformed(String contentMethod, String variable) {
+    public  List<InstanceMethodCall> findOperationPerformedInMethod(String contentMethod, String variable) {
 
         List<InstanceMethodCall> operationsInstanceMethodCall = null;
 
-        if(contentMethod != null && !contentMethod.equals("") && variable != null && !variable.equals("") &&
+        if(contentMethod != null && !contentMethod.equals("") &&
+                variable != null && !variable.equals("") &&
                 contentMethod.contains(variable)) {
 
             List<ParametroMetodo> parameters = new ArrayList<>();
@@ -38,6 +38,7 @@ public class MethodService {
             Matcher matcherOperaciones = patronOperaciones.matcher(contentMethod);
 
             while (matcherOperaciones.find()) {
+//                System.out.println("Se encontró una operación: " + matcherOperaciones.group());
                 String nombreMetodo = matcherOperaciones.group(1);
                 String parametros = matcherOperaciones.group(2);
 
@@ -51,7 +52,13 @@ public class MethodService {
 
                 for (String param : parametrosList) {
                     param = param.trim();
-                    Pattern patterVariable = Pattern.compile("(\\w+)\\s+" + param + "\\s*=");
+//                    Pattern patterVariable = Pattern.compile("(\\w+)\\s+" + param + "\\s*=");
+
+                    String regex = "(\\w+)\\s+" + Pattern.quote(param) + "\\s*=";
+//                    System.out.println("Regex final: " + regex);
+                    Pattern patterVariable = Pattern.compile(regex);
+
+
                     Matcher matcherVariable = patterVariable.matcher(contentMethod);
                     if (matcherVariable.find()) {
                         String typeVariable = matcherVariable.group(1);
@@ -59,10 +66,10 @@ public class MethodService {
                     }
                 }
 
-                operationsInstanceMethodCall.add(
-                        InstanceMethodCall.builder() .variableInstace(variable).method(nombreMetodo)
-                                .parametros(parameters).operation(operation) .build()
-                );
+                InstanceMethodCall call =  InstanceMethodCall.builder() .variableInstace(variable).method(nombreMetodo)
+                        .parametros(parameters).operation(operation) .build();
+
+                operationsInstanceMethodCall.add(call);
             }
         }
         return operationsInstanceMethodCall;

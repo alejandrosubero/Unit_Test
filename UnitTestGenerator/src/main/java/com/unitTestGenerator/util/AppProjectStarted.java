@@ -1,6 +1,7 @@
 package com.unitTestGenerator.util;
 
 import com.unitTestGenerator.pojos.Clase;
+import com.unitTestGenerator.pojos.Metodo;
 import com.unitTestGenerator.pojos.Project;
 
 import java.io.File;
@@ -65,9 +66,26 @@ public class AppProjectStarted {
         this.pathProject = scanner.next();
 
         if(this.pathProject != null){
-            clases = AnalizadorProyecto.analizarProyecto(pathProject);
+            clases = AnalizadorProyecto.getInstance().analizarProyecto(pathProject);
             project = new Project(clases, pathProject);
             this.projectAnalyzerType();
+
+            if(isAnalisis) {
+                System.out.println("Classes found:...");
+                for (Clase clase : clases) {
+                    if(clase.getMetodos() != null && !clase.getMetodos().isEmpty()){
+                        System.out.println(clase.getNombre() + "  package: " + clase.getPaquete());
+                        for(Metodo metod : clase.getMetodos()){
+                            if(metod.getInstanceMethodCalls() != null && !metod.getInstanceMethodCalls().isEmpty() ){
+                                metod.getInstanceMethodCalls().forEach(instanceMethodCall -> {
+                                    System.out.println(  "CALL: -> Method: "+ metod.getNombre() + "| Call: "+instanceMethodCall.getOperation()+" |.");
+                                });
+                            }
+                        }
+                    }
+
+                }
+            }
 
             if(isAnalisis) {
                 System.out.println("Classes found:");

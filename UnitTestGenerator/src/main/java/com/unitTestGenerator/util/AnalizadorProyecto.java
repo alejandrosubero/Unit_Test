@@ -13,9 +13,21 @@ import org.apache.commons.io.FileUtils;
 
 public class AnalizadorProyecto {
 
-private static final String[] IGNORAR = {"target", "node_modules", ".git"};
+    private  final String[] IGNORAR = {"target", "node_modules", ".git"};
+    private static AnalizadorProyecto instance;
 
-    public static List<Clase> analizarProyecto(String rutaProyecto) {
+    private AnalizadorProyecto() {
+    }
+
+    public static AnalizadorProyecto getInstance() {
+        if (instance == null) {
+            instance = new AnalizadorProyecto();
+        }
+        return instance;
+    }
+
+
+    public  List<Clase> analizarProyecto(String rutaProyecto) {
         List<Clase> clases = new ArrayList<>();
 
         File carpetaProyecto = new File(rutaProyecto);
@@ -26,7 +38,7 @@ private static final String[] IGNORAR = {"target", "node_modules", ".git"};
     }
 
 
-    private static void analizarProyectoRecursivo(File carpeta, List<Clase> clases) {
+    private  void analizarProyectoRecursivo(File carpeta, List<Clase> clases) {
         if (carpeta.isDirectory()) {
             String nombreCarpeta = carpeta.getName();
 
@@ -43,7 +55,7 @@ private static final String[] IGNORAR = {"target", "node_modules", ".git"};
     }
 
 
-    private static Clase analizarClase(File archivo) {
+    private  Clase analizarClase(File archivo) {
         Clase clase = new Clase();
 
         try {
@@ -54,7 +66,7 @@ private static final String[] IGNORAR = {"target", "node_modules", ".git"};
             Matcher matcherPaquete = patronPaquete.matcher(contenido);
 
             while (matcherPaquete.find()) {
-               clase.setPaquete(matcherPaquete.group(1));
+                clase.setPaquete(matcherPaquete.group(1));
             }
 
             // Analizar contenido para extraer información de la clase
@@ -66,7 +78,7 @@ private static final String[] IGNORAR = {"target", "node_modules", ".git"};
                 clase.setNombre(matcherClase.group(1));
             }
 
-            Pattern  patronInterface = Pattern.compile("public interface (\\w+)");
+            Pattern patronInterface = Pattern.compile("public interface (\\w+)");
             Matcher matcherInterface = patronInterface.matcher(contenido);
 
             if (matcherInterface.find()) {
@@ -114,7 +126,7 @@ private static final String[] IGNORAR = {"target", "node_modules", ".git"};
                 clase.agregarMetodo(metodo);
             }
 
-            
+
             // Analizar variables
             Pattern patronVariable = Pattern.compile("private (\\w+) (\\w+);");
             Matcher matcherVariable = patronVariable.matcher(contenido);
@@ -144,17 +156,61 @@ private static final String[] IGNORAR = {"target", "node_modules", ".git"};
     }
 
 
-    private static Clase postClassMethodAnalysis(Clase classIn){
-        if(classIn.getVariables() != null && !classIn.getVariables().isEmpty() && classIn.getMetodos() != null && !classIn.getMetodos().isEmpty()){
-            classIn.getVariables().stream().forEach(variable -> {
-                classIn.getMetodos().stream().forEach(method ->{
-                    method.addInstanceMethodCallAll(
-                            MethodService.getInstance().findOperationPerformed(
-                                    method.getContenido(),
-                                    variable.getNombre())
-                    );
+    private  Clase postClassMethodAnalysis(Clase classIn) {
+        if (classIn.getVariables() != null && !classIn.getVariables().isEmpty() && classIn.getMetodos() != null && !classIn.getMetodos().isEmpty()) {
+            try {
+                classIn.getVariables().stream().forEach(variable -> {
+                    classIn.getMetodos().stream().forEach(method -> {
+                        if (method != null && variable != null && variable.getNombre() != null && method.getContenido() != null) {
+                            method.addInstanceMethodCallAll(
+                                    MethodService.getInstance().findOperationPerformedInMethod(
+                                            method.getContenido(),
+                                            variable.getNombre())
+                            );
+                        }
+                    });
                 });
-            });
+            } catch (Exception e) {
+                System.err.println("Error... : " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+            return classIn;
+        }
+
+
+    private Clase postClassMethodAnalysis2(Clase classIn) {
+        if (classIn != null) {
+            if (classIn.getVariables() != null && !classIn.getVariables().isEmpty() && classIn.getMetodos() != null && !classIn.getMetodos().isEmpty()) {
+
+                for (Variable variable : classIn.getVariables()) {
+
+                    if (variable != null && variable.getNombre() != null) {
+
+                        for (Metodo method : classIn.getMetodos()) {
+                            if (method != null && method.getContenido() != null) {
+
+                                try {
+                                    String contenido = method.getContenido();
+                                    String nombreVariable = variable.getNombre();
+
+                                    List<InstanceMethodCall> calls =
+                                            MethodService.getInstance()
+                                                    .findOperationPerformedInMethod(contenido, nombreVariable);
+
+                                    calls.forEach(call -> {
+                                        method.addInstanceMethodCall(call);
+                                    });
+
+                                } catch (Exception e) {
+                                    System.err.println("Ocurrió un error inesperado: " + e.getMessage());
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
         return classIn;
     }
