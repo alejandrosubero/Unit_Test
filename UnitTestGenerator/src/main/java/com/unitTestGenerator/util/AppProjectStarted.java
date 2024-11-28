@@ -185,8 +185,20 @@ public class AppProjectStarted {
         System.out.println("Choose an option:");
         System.out.println("1. All");
         System.out.println("2. Nama of Specific method");
+        int opcion = 0;
 
-        int opcion = scanner.nextInt();
+        try {
+            opcion = scanner.nextInt();
+        } catch (Exception e) {
+            scanner.nextLine();
+            System.out.println("No valid data... ");
+            System.out.println("Choose an option:");
+            System.out.println("Only numbers 1 or 2");
+            System.out.println("1. All");
+            System.out.println("2. Nama of Specific method");
+            opcion = scanner.nextInt();
+        }
+
         return opcion;
     }
 
