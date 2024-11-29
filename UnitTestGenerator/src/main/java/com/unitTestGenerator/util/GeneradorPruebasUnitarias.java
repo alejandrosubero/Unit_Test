@@ -66,7 +66,7 @@ public class GeneradorPruebasUnitarias implements IBaseModel {
 
     private void projectTypeDependencesAnalizer(String pathProject){
         if(project.getMaven()) {
-            PomAnalyzer.agregarDependencias(pathProject);
+            PomAnalyzer.getInstance().agregarDependencias(pathProject);
         } else if(this.project.getGradle()){
             this.gradleAnalyzer( pathProject);
         }

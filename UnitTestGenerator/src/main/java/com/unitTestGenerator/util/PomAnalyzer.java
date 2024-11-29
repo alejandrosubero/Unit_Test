@@ -21,8 +21,20 @@ import java.io.StringReader;
 
 public class PomAnalyzer {
 
+    private static PomAnalyzer instance;
 
-    private static final String JUNIT_DEPENDENCY =
+    private PomAnalyzer(){
+
+    }
+
+    public static PomAnalyzer getInstance() {
+        if(instance == null){
+            instance = new PomAnalyzer();
+        }
+        return instance;
+    }
+
+    private  final String JUNIT_DEPENDENCY =
             "<dependency>\n" +
                     "    <groupId>org.junit.jupiter</groupId>\n" +
                     "    <artifactId>junit-jupiter-api</artifactId>\n" +
@@ -30,7 +42,7 @@ public class PomAnalyzer {
                     "    <scope>test</scope>\n" +
                     "</dependency>";
 
-    private static final String MOCK_DEPENDENCY =
+    private  final String MOCK_DEPENDENCY =
             "<dependency>\n" +
                     "    <groupId>org.mockito</groupId>\n" +
                     "    <artifactId>mockito-junit-jupiter</artifactId>\n" +
@@ -38,7 +50,7 @@ public class PomAnalyzer {
                     "    <scope>test</scope>\n" +
                     "</dependency>";
 
-    public static void agregarDependencias(String rutaProyecto) {
+    public  void agregarDependencias(String rutaProyecto) {
 
         boolean existeDependency = false;
         try {
@@ -79,14 +91,14 @@ public class PomAnalyzer {
             }
 
             if (existeDependency) {
-                guardarCambios(documento, rutaProyecto);
+                saveChanges(documento, rutaProyecto);
             }
         } catch (ParserConfigurationException | SAXException | IOException e) {
             System.out.println("Error al analizar el archivo pom.xml: " + e.getMessage());
         }
     }
 
-    private static boolean existeDependencia(Document documento, String dependencia) {
+    private  boolean existeDependencia(Document documento, String dependencia) {
         NodeList dependencies = documento.getElementsByTagName("dependency");
 
         for (int i = 0; i < dependencies.getLength(); i++) {
@@ -115,7 +127,7 @@ public class PomAnalyzer {
         return false;
     }
 
-    private static void agregarDependencia(Document documento, String groupId, String artifactId, String version, String scope) {
+    private  void agregarDependencia(Document documento, String groupId, String artifactId, String version, String scope) {
         Element dependencies = (Element) documento.getElementsByTagName("dependencies").item(0);
         Element nuevaDependencia = documento.createElement("dependency");
 
@@ -140,7 +152,7 @@ public class PomAnalyzer {
 
 
 
-    private static void guardarCambios(Document documento, String rutaProyecto) {
+    private  void saveChanges(Document documento, String rutaProyecto) {
         try {
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer();
