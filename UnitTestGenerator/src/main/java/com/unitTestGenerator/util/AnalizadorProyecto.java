@@ -115,6 +115,7 @@ public class AnalizadorProyecto {
             Pattern patronMetodo = Pattern.compile("public (\\w+) (\\w+)\\((.*?)\\)", Pattern.DOTALL);
             Matcher matcherMetodo = patronMetodo.matcher(contenido);
 
+
             while (matcherMetodo.find()) {
                 Metodo metodo = new Metodo();
                 metodo.setNombre(matcherMetodo.group(2));
@@ -130,13 +131,24 @@ public class AnalizadorProyecto {
                     }
                 }
 
+//                // Analizar y Obtener contenido del metodo
+////                Pattern patronContenidoMetodo = Pattern.compile("public (\\w+) (\\w+)\\((.*?)\\)\\s*\\{(.*?)\\}", Pattern.DOTALL);
+//                Pattern patronContenidoMetodo = Pattern.compile("public (\\w+) (\\w+)\\((.*?)\\)\\s*\\{([^}]*)\\}", Pattern.DOTALL | Pattern.MULTILINE);
+//                Matcher matcherContenidoMetodo = patronContenidoMetodo.matcher(contenido);
+//                if (matcherContenidoMetodo.find()) {
+//                    String contenidoMetodo = matcherContenidoMetodo.group(4).trim();
+//                    metodo.setContenido(contenidoMetodo);
+//                }
+
                 // Analizar y Obtener contenido del metodo
-                Pattern patronContenidoMetodo = Pattern.compile("public (\\w+) (\\w+)\\((.*?)\\)\\s*\\{(.*?)\\}", Pattern.DOTALL);
-                Matcher matcherContenidoMetodo = patronContenidoMetodo.matcher(contenido);
+                String patronContenidoMetodo = "public " + metodo.getTipoRetorno() + " " + metodo.getNombre() + "\\((.*?)\\)\\s*\\{([^}]*)\\}";
+                Pattern pattern = Pattern.compile(patronContenidoMetodo, Pattern.DOTALL | Pattern.MULTILINE);
+                Matcher matcherContenidoMetodo = pattern.matcher(contenido);
                 if (matcherContenidoMetodo.find()) {
-                    String contenidoMetodo = matcherContenidoMetodo.group(4).trim();
+                    String contenidoMetodo = matcherContenidoMetodo.group(2).trim();
                     metodo.setContenido(contenidoMetodo);
                 }
+
                 clase.addMetodo(metodo);
             }
 

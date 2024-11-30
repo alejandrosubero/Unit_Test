@@ -141,4 +141,27 @@ public interface MockitoWhen extends ReturnType {
         return contenido.toString();
     }
 
+
+    default String getMokitoSetUpBeforeEach(boolean isAutoCloseable){
+        StringBuilder mokitoSetUpBeforeEach = new StringBuilder("\n");
+        if(isAutoCloseable) {
+            mokitoSetUpBeforeEach.append("private AutoCloseable closeable;").append("\n").append("\n");
+            mokitoSetUpBeforeEach.append("@BeforeEach").append("\n");
+            mokitoSetUpBeforeEach.append("void setUp() {").append("\n");
+            mokitoSetUpBeforeEach.append("closeable = MockitoAnnotations.openMocks(this);").append("\n").append("}").append("\n").append("\n");
+            mokitoSetUpBeforeEach.append("@AfterEach").append("\n");
+            mokitoSetUpBeforeEach.append("void tearDown() throws Exception {").append("\n");
+            mokitoSetUpBeforeEach.append("  closeable.close();").append("\n").append("}").append("\n").append("\n");
+        }else {
+            mokitoSetUpBeforeEach.append("@BeforeEach").append("\n");
+            mokitoSetUpBeforeEach.append("void setUp() {").append("\n");
+            mokitoSetUpBeforeEach.append("MockitoAnnotations.openMocks(this);")
+                    .append("\n").append("}").append("\n").append("\n");
+        }
+        return mokitoSetUpBeforeEach.toString();
+    }
+
+
+
 }
+

@@ -5,6 +5,7 @@ import com.unitTestGenerator.interfaces.IBaseModel;
 import com.unitTestGenerator.pojos.*;
 import com.unitTestGenerator.services.GenerateMethodService;
 import com.unitTestGenerator.services.GeneratedVariableService;
+import com.unitTestGenerator.services.MethodParameterObject;
 
 import java.io.File;
 import java.util.List;
@@ -36,9 +37,9 @@ public class GeneradorPruebasUnitarias implements IBaseModel {
         GeneratedVariableService variableService = GeneratedVariableService.getInstance();
 
         contenido.append(this.generateImport(clase)).append("\n");
+        //
         contenido.append(this.classSingne(clase));
         contenido.append(variableService.generateVariable(clase));
-
         contenido.append(GenerateMethodService.getInstance().generateMethods(clase,project) );
         contenido.append("}\n");
         return contenido.toString();
@@ -91,14 +92,17 @@ public class GeneradorPruebasUnitarias implements IBaseModel {
         contex.append("package ").append(clase.getPaquete()).append(";").append("\n");
         contex.append("import org.junit.Test;\n");
         contex.append("import org.junit.Assert;\n");
+        contex.append("import org.junit.jupiter.api.BeforeEach;\n");
         contex.append("import org.assertj.core.api.Assertions;\n");
-        contex.append("import org.junit.jupiter.api.Test;\n");
+        contex.append("//import org.junit.jupiter.api.Test;\n");
         contex.append("import org.junit.jupiter.api.extension.ExtendWith;\n");
         contex.append("import org.mockito.InjectMocks;\n");
         contex.append("import org.mockito.Mock;\n");
         contex.append("import org.mockito.Mockito;\n");
+        contex.append("import org.mockito.MockitoAnnotations;\n");
         contex.append("import org.mockito.junit.jupiter.MockitoExtension;\n").append("\n");
-        contex.append( this.stringEnsamble("import ", clase.getPaquete(), ".",clase.getNombre())).append("\n");
+        contex.append( this.stringEnsamble("import ", clase.getPaquete(), ".",clase.getNombre())).append(";").append("\n");
+        contex.append(MethodParameterObject.getInstance().getImportMethodParameterObject(clase,project));
 
         for(Variable variable : clase.getVariables()){
             this.project.getClaseList().stream().forEach(projectClass -> {

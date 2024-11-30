@@ -37,17 +37,20 @@ public class Project {
     }
 
     public Clase getClass(String className){
-       Optional<Clase> foundClass = this.claseList.stream().filter(clase -> clase.getNombre().equals(className)).findFirst();
-        return foundClass.get();
-//        Clase foundClass = null;
-//        for(Clase cla : this.claseList){
-//            if(cla.getNombre().equals(className)){
-//                foundClass = cla;
-//            }
-//        }
-//        return foundClass;
+        return getClass(className, this);
     }
 
+    private Clase getClass(String className, Project project){
+        Clase foundClass = null;
+        if(project.getClaseList() != null && !project.getClaseList().isEmpty() && className !=null && !className.equals("")){
+            for(Clase cla : project.getClaseList()){
+                if(cla.getNombre()!=null && cla.getNombre().equals(className)){
+                    foundClass = cla;
+                }
+            }
+        }
+        return foundClass;
+    }
 
     public Boolean getMaven() {
         return isMaven;
