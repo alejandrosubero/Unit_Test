@@ -107,9 +107,12 @@ public class GenerateMethodService implements IBaseModel, MockitoWhen {
                     String variableInstanceName = instanceMethodCall.getVariableInstace();
                     List<ParametroMetodo> parametros = instanceMethodCall.getParametros();
 
-                // Generar la llamada al método mock
-                contenido.append(generarLlamadaMetodoMock(methodName, variableInstanceName, parametros,  metodo,  this.project));
-
+                // Generar la llamada al metodos internos del metodo en operacion mock
+                    if(parametros == null || parametros.isEmpty()){
+                        contenido.append(this.generateCallMethodMock(instanceMethodCall.getOperation(), metodo, this.project));
+                    }else{
+                        contenido.append(generarLlamadaMetodoMock(methodName, variableInstanceName, parametros,  metodo,  this.project));
+                    }
             }
         }
         return contenido.toString();

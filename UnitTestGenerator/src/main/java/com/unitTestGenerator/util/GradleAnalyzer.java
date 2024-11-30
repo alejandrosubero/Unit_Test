@@ -37,6 +37,7 @@ public class GradleAnalyzer implements IBaseModel {
             List<String> dependencesList1 =  this.addDependences("org.junit.jupiter", "junit-jupiter-api", "5.8.2",  contenidoList,  contenido);
             List<String> dependencesList2  =  this.addDependences("junit", "junit", "4.13.2", dependencesList1,  contenido);
             List<String> dependencesList3  =  this.addDependences(   "org.mockito", "mockito-junit-jupiter", "4.11.0", dependencesList2,  contenido);
+            List<String> dependencesList4  =  this.addDependences(   "org.mockito", "mockito-core", "4.0.0", dependencesList3,  contenido);
             this.analizarEstructura();
             String newContenido =  this.listStringStructureToColummString(dependencesList3);
 

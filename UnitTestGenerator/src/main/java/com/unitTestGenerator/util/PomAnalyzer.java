@@ -50,6 +50,21 @@ public class PomAnalyzer {
                     "    <scope>test</scope>\n" +
                     "</dependency>";
 
+    private  final String MOCK_DEPENDENCY_core =" <dependency>\n" +
+            "            <groupId>org.mockito</groupId>\n" +
+            "            <artifactId>mockito-core</artifactId>\n" +
+            "            <version>4.0.0</version>\n" +
+            "            <scope>test</scope>\n" +
+            "        </dependency>";
+
+    private  final String JUNIT_DEPENDENCY_no_api = " <dependency>\n" +
+            "            <groupId>org.junit.jupiter</groupId>\n" +
+            "            <artifactId>junit-jupiter</artifactId>\n" +
+            "            <version>5.8.2</version>\n" +
+            "            <scope>test</scope>\n" +
+            "        </dependency>"  ;
+
+
     public  void agregarDependencias(String rutaProyecto) {
 
         boolean existeDependency = false;
@@ -89,6 +104,27 @@ public class PomAnalyzer {
                         "4.11.0",
                         "test");
             }
+
+
+            if (!existeDependencia(documento, MOCK_DEPENDENCY_core)) {
+                existeDependency = true;
+                agregarDependencia(documento,
+                        "org.mockito",
+                        "mockito-core",
+                        "4.0.0",
+                        "test");
+            }
+
+
+            if (!existeDependencia(documento, JUNIT_DEPENDENCY_no_api)) {
+                existeDependency = true;
+                agregarDependencia(documento,
+                        "org.junit.jupiter",
+                        "junit-jupiter",
+                        "5.8.2",
+                        "test");
+            }
+
 
             if (existeDependency) {
                 saveChanges(documento, rutaProyecto);
