@@ -37,15 +37,15 @@ public class Project {
     }
 
     public Clase getClass(String className){
-//       Optional<Clase> foundClass = this.claseList.stream().filter(clase -> clase.getNombre().equals(className)).findFirst();
-//        return foundClass.get();
-        Clase response = null;
-        for(Clase cla : this.claseList){
-            if(cla.getNombre().equals(className)){
-                response = cla;
-            }
-        }
-        return response;
+       Optional<Clase> foundClass = this.claseList.stream().filter(clase -> clase.getNombre().equals(className)).findFirst();
+        return foundClass.get();
+//        Clase foundClass = null;
+//        for(Clase cla : this.claseList){
+//            if(cla.getNombre().equals(className)){
+//                foundClass = cla;
+//            }
+//        }
+//        return foundClass;
     }
 
 
