@@ -85,16 +85,30 @@ public class AnalizadorProyecto {
                 clase.setNombre(matcherInterface.group(1));
             }
 
-//            // Analizar métodos
-//            Pattern patronMetodo = Pattern.compile("public (\\w+) (\\w+)\\((.*?)\\)");
-//            Matcher matcherMetodo = patronMetodo.matcher(contenido);
-//
-//            while (matcherMetodo.find()) {
-//                Metodo metodo = new Metodo();
-//                metodo.setNombre(matcherMetodo.group(2));
-//                metodo.setTipoRetorno(matcherMetodo.group(1));
-//                clase.agregarMetodo(metodo);
-//            }
+
+            // Analizar constructores
+            Pattern patronConstructor = Pattern.compile("public (\\w+)\\((.*?)\\)", Pattern.DOTALL);
+            Matcher matcherConstructor = patronConstructor.matcher(contenido);
+
+            while (matcherConstructor.find()) {
+                Constructor constructor = new Constructor();
+
+                // Analizar parámetros
+                String[] parametros = matcherConstructor.group(2).split(",");
+                List<ParametroMetodo> parametroMetodos = new ArrayList<>();
+                for (String parametro : parametros) {
+                    if (!parametro.trim().isEmpty()) {
+                        String[] partes = parametro.trim().split("\\s+");
+                        ParametroMetodo parametroMetodo = new ParametroMetodo(partes[1], partes[0]);
+                        parametroMetodos.add(parametroMetodo);
+                    }
+                }
+
+                constructor.setParametros(parametroMetodos);
+                constructor.setIsNoneParam(parametroMetodos.isEmpty());
+                clase.addConstructor(constructor);
+            }
+
 
 
             // Analizar métodos
@@ -123,7 +137,7 @@ public class AnalizadorProyecto {
                     String contenidoMetodo = matcherContenidoMetodo.group(4).trim();
                     metodo.setContenido(contenidoMetodo);
                 }
-                clase.agregarMetodo(metodo);
+                clase.addMetodo(metodo);
             }
 
 
@@ -135,7 +149,7 @@ public class AnalizadorProyecto {
                 Variable variable = new Variable();
                 variable.setTipo(matcherVariable.group(1));
                 variable.setNombre(matcherVariable.group(2));
-                clase.agregarVariable(variable);
+                clase.addVariable(variable);
             }
 
 
@@ -146,7 +160,7 @@ public class AnalizadorProyecto {
             while (matcherEstructuras.find()) {
                 EstructuraControl estructura = new EstructuraControl();
                 estructura.setTipo(matcherEstructuras.group());
-                clase.agregarEstructura(estructura);
+                clase.addEstructura(estructura);
             }
 
         } catch (Exception e) {

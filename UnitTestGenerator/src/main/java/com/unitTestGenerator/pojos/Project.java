@@ -2,6 +2,7 @@ package com.unitTestGenerator.pojos;
 
 import java.io.File;
 import java.util.List;
+import java.util.Optional;
 
 public class Project {
 
@@ -35,7 +36,17 @@ public class Project {
         this.claseList = claseList;
     }
 
-
+    public Clase getClass(String className){
+//       Optional<Clase> foundClass = this.claseList.stream().filter(clase -> clase.getNombre().equals(className)).findFirst();
+//        return foundClass.get();
+        Clase response = null;
+        for(Clase cla : this.claseList){
+            if(cla.getNombre().equals(className)){
+                response = cla;
+            }
+        }
+        return response;
+    }
 
 
     public Boolean getMaven() {

@@ -14,12 +14,29 @@ public class Clase {
     private String testMethod;
 
 
+    private List<Constructor> constructores;
+
     public Clase() {
         this.metodos = new ArrayList<>();
         this.variables = new ArrayList<>();
         this.estructuras = new ArrayList<>();
         this.useMock = false;
+        this.constructores = new ArrayList<>();
     }
+
+
+    public List<Constructor> getConstructores() {
+        return constructores;
+    }
+
+    public void setConstructores(List<Constructor> constructores) {
+        this.constructores = constructores;
+    }
+
+    public void addConstructor(Constructor constructor) {
+        this.constructores.add(constructor);
+    }
+
 
     public Boolean getUseMock() {
         return useMock;
@@ -57,7 +74,7 @@ public class Clase {
         return metodos;
     }
 
-    public void agregarMetodo(Metodo metodo) {
+    public void addMetodo(Metodo metodo) {
         this.metodos.add(metodo);
     }
 
@@ -65,14 +82,15 @@ public class Clase {
         return variables;
     }
 
-    public void agregarVariable(Variable variable) {
+    public void addVariable(Variable variable) {
         this.variables.add(variable);
     }
+
     public List<EstructuraControl> getEstructuras() {
         return estructuras;
     }
 
-    public void agregarEstructura(EstructuraControl estructura) {
+    public void addEstructura(EstructuraControl estructura) {
         this.estructuras.add(estructura);
     }
 }
