@@ -37,7 +37,6 @@ public class GeneradorPruebasUnitarias implements IBaseModel {
         GeneratedVariableService variableService = GeneratedVariableService.getInstance();
 
         contenido.append(this.generateImport(clase)).append("\n");
-        //
         contenido.append(this.classSingne(clase));
         contenido.append(variableService.generateVariable(clase));
         contenido.append(GenerateMethodService.getInstance().generateMethods(clase,project) );

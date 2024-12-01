@@ -14,7 +14,7 @@ public interface ReturnType {
             case "float":
                 return "0.0f";
             case "boolean":
-                return "false";
+                return "true";
             case "String":
                 return "\"\"";
             case "Integer":
@@ -26,7 +26,7 @@ public interface ReturnType {
             case "Float":
                 return "0.0F";
             case "Boolean":
-                return "false";
+                return "true";
             default:
                 return "null";
         }
@@ -54,9 +54,9 @@ public interface ReturnType {
 
     default String getAssertType(String tipoRetorno, String valorDeRetorno) {
 
-        if(valorDeRetorno == null){
-            valorDeRetorno = getValorPorDefecto(tipoRetorno);
-        }
+//        if(valorDeRetorno == null){
+//            valorDeRetorno = getValorPorDefecto(tipoRetorno);
+//        }
 
         switch (tipoRetorno) {
             case "int":

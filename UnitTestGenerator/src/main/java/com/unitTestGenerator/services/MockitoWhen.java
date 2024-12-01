@@ -10,7 +10,11 @@ public interface MockitoWhen extends ReturnType {
         StringBuilder contenido = new StringBuilder();
         contenido.append("Mockito.when(").append(testMethod).append(")").append(".thenReturn(");
         // Agregar el valor de retorno
-        contenido.append(generarValorDeRetorno(metodo, project)).append(");");
+        String valueReturn = generarValorDeRetorno(metodo, project);
+        contenido.append(valueReturn).append(");");
+        // Agregar el assert adecuado según el tipo de retorno
+        contenido.append("\n").append(getAssertType(metodo.getTipoRetorno(), valueReturn));
+
         return contenido.toString();
     }
 
