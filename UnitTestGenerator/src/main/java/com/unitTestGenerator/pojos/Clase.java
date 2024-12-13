@@ -12,8 +12,6 @@ public class Clase {
     private List<EstructuraControl> estructuras;
     private Boolean useMock;
     private String testMethod;
-
-
     private List<Constructor> constructores;
 
     public Clase() {
