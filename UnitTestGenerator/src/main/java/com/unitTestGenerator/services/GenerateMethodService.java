@@ -130,7 +130,7 @@ public class GenerateMethodService implements IBaseModel, MockitoWhen {
         String parametrosMethodTest =  this.addStringParametes(method.getParametros());
         String testMethod = String.format("%s.%s(%s)" ,classNameCamelCase,method.getNombre(), parametrosMethodTest);
 //        String toMock = methodParameterObject( metodo,  project);
-        content.append(this.generateCallMethodMock(testMethod, method, this.project, null));
+//        content.append(this.generateCallMethodMock(testMethod, method, this.project, null));
 
         if(method.getInstanceMethodCalls() !=null && !method.getInstanceMethodCalls().isEmpty() ){
             // Recorrer las instancias de métodos
