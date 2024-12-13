@@ -4,6 +4,7 @@ import com.unitTestGenerator.interfaces.IBaseModel;
 import com.unitTestGenerator.pojos.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,6 +12,7 @@ public class GenerateMethodService implements IBaseModel, MockitoWhen {
 
     private Project project;
     private static GenerateMethodService instance;
+    private static final List<String> COMMON_METHODS = Arrays.asList("save", "findAllById", "findById", "delete", "deleteAll", "deleteById");
 
     private GenerateMethodService(){}
 
@@ -124,6 +126,7 @@ public class GenerateMethodService implements IBaseModel, MockitoWhen {
     }
 
 
+
     private String generateContentMock(Metodo method, Clase clase) {
         StringBuilder content = new StringBuilder();
         String classNameCamelCase = stringEnsamble(clase.getNombre().substring(0, 1).toLowerCase(), clase.getNombre().substring(1));
@@ -152,15 +155,18 @@ public class GenerateMethodService implements IBaseModel, MockitoWhen {
                         if(methodIsVoid(methodNameParts, classNameInstanceMethodCall,  this.project)){
                             content.append(this.generateCallMethodMockDoNothing(methodNameParts, classNameInstanceMethodCall,parametersParts));
                         }else {
-                            Clase clasS = project.getClass(classNameInstanceMethodCall);
 
-                            if (methodNameParts.equals("save") ||
-                                    methodNameParts.equals("findAllById") ||
-                                    methodNameParts.equals("findById") ||
-                                    methodNameParts.equals("delete") ||
-                                    methodNameParts.equals("deleteAll") ||
-                                    methodNameParts.equals("deleteById")
-                            ) {
+//                            String contentCommons = COMMON_METHODS.contains(methodNameParts)
+//                                    ? this.generateCallMethodMock(instanceMethodCall.getOperation(), method, this.project, parametersParts)
+//                                    :this.generateCallMethodMock(
+//                                            instanceMethodCall.getOperation(),
+//                                            project.getClass(classNameInstanceMethodCall).getMetodos().stream().filter(metodo ->
+//                                                        method.getNombre().toLowerCase().equals(methodNameParts.toLowerCase())).findFirst().get(),
+//                                             this.project, null);
+//                            content.append(contentCommons);
+
+                            Clase clasS = project.getClass(classNameInstanceMethodCall);
+                            if (COMMON_METHODS.contains(methodNameParts) ) {
                                 content.append(this.generateCallMethodMock(instanceMethodCall.getOperation(), method, this.project, parametersParts));
                             }else {
                                 Metodo methodInClass = clasS.getMetodos().stream().filter(metodo -> method.getNombre().toLowerCase().equals(methodNameParts.toLowerCase())).findFirst().get();
