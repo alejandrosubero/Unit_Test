@@ -13,6 +13,7 @@ public class Clase {
     private Boolean useMock;
     private String testMethod;
     private List<Constructor> constructores;
+    private String typeClass;
 
     public Clase() {
         this.metodos = new ArrayList<>();
@@ -22,6 +23,13 @@ public class Clase {
         this.constructores = new ArrayList<>();
     }
 
+    public String getTypeClass() {
+        return typeClass;
+    }
+
+    public void setTypeClass(String typeClass) {
+        this.typeClass = typeClass;
+    }
 
     public List<Constructor> getConstructores() {
         return constructores;
@@ -74,6 +82,10 @@ public class Clase {
 
     public void addMetodo(Metodo metodo) {
         this.metodos.add(metodo);
+    }
+
+    public void addMetodos(List<Metodo> metodos) {
+        this.metodos.addAll(metodos);
     }
 
     public List<Variable> getVariables() {

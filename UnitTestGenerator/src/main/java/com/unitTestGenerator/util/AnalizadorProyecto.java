@@ -70,20 +70,32 @@ public class AnalizadorProyecto {
             }
 
             // Analizar contenido para extraer información de la clase
-            Pattern patronClase = Pattern.compile("public class (\\w+)");
+//            Pattern patronClase = Pattern.compile("public class (\\w+)");
+//            Matcher matcherClase = patronClase.matcher(contenido);
+//            if (matcherClase.find()) {
+//                clase.setNombre(matcherClase.group(1));
+//            }
+//            Pattern patronInterface = Pattern.compile("public interface (\\w+)");
+//            Matcher matcherInterface = patronInterface.matcher(contenido);
+//            if (matcherInterface.find()) {
+//                clase.setNombre(matcherInterface.group(1));
+//            }
 
+            Pattern patronClase = Pattern.compile("public class (\\w+)");
             Matcher matcherClase = patronClase.matcher(contenido);
 
             if (matcherClase.find()) {
                 clase.setNombre(matcherClase.group(1));
+                clase.setTypeClass("class");
+            } else {
+                Pattern patronInterface = Pattern.compile("public interface (\\w+)");
+                Matcher matcherInterface = patronInterface.matcher(contenido);
+                if (matcherInterface.find()) {
+                    clase.setNombre(matcherInterface.group(1));
+                    clase.setTypeClass("interface");
+                }
             }
 
-            Pattern patronInterface = Pattern.compile("public interface (\\w+)");
-            Matcher matcherInterface = patronInterface.matcher(contenido);
-
-            if (matcherInterface.find()) {
-                clase.setNombre(matcherInterface.group(1));
-            }
 
 
             // Analizar constructores
@@ -109,47 +121,63 @@ public class AnalizadorProyecto {
                 clase.addConstructor(constructor);
             }
 
-
-
             // Analizar métodos
-            Pattern patronMetodo = Pattern.compile("public (\\w+) (\\w+)\\((.*?)\\)", Pattern.DOTALL);
-            Matcher matcherMetodo = patronMetodo.matcher(contenido);
+            if (clase != null) {
 
+                List<Metodo> metodoList = new ArrayList<>();
 
-            while (matcherMetodo.find()) {
-                Metodo metodo = new Metodo();
-                metodo.setNombre(matcherMetodo.group(2));
-                metodo.setTipoRetorno(matcherMetodo.group(1));
+                if ("class".equals(clase.getTypeClass())) {
+                    Pattern patronMetodo = Pattern.compile("public (\\w+) (\\w+)\\((.*?)\\)", Pattern.DOTALL);
+                    Matcher matcherMetodo = patronMetodo.matcher(contenido);
 
-                // Analizar parámetros
-                String[] parametros = matcherMetodo.group(3).split(",");
-                for (String parametro : parametros) {
-                    if (!parametro.trim().isEmpty()) {
-                        String[] partes = parametro.trim().split("\\s+");
-                        ParametroMetodo parametroMetodo = new ParametroMetodo(partes[1], partes[0]);
-                        metodo.agregarParametro(parametroMetodo);
+                    while (matcherMetodo.find()) {
+                        Metodo metodo = new Metodo();
+                        metodo.setNombre(matcherMetodo.group(2));
+                        metodo.setTipoRetorno(matcherMetodo.group(1));
+
+                        // Analizar parámetros
+                        String[] parametros = matcherMetodo.group(3).split(",");
+                        for (String parametro : parametros) {
+                            if (!parametro.trim().isEmpty()) {
+                                String[] partes = parametro.trim().split("\\s+");
+                                ParametroMetodo parametroMetodo = new ParametroMetodo(partes[1], partes[0]);
+                                metodo.agregarParametro(parametroMetodo);
+                            }
+                        }
+
+                        // Analizar y Obtener contenido del metodo
+                        String patronContenidoMetodo = "public " + metodo.getTipoRetorno() + " " + metodo.getNombre() + "\\((.*?)\\)\\s*\\{([^}]*)\\}";
+                        Pattern pattern = Pattern.compile(patronContenidoMetodo, Pattern.DOTALL | Pattern.MULTILINE);
+                        Matcher matcherContenidoMetodo = pattern.matcher(contenido);
+                        if (matcherContenidoMetodo.find()) {
+                            String contenidoMetodo = matcherContenidoMetodo.group(2).trim();
+                            metodo.setContenido(contenidoMetodo);
+                        }
+                        metodoList.add(metodo);
                     }
                 }
 
-//                // Analizar y Obtener contenido del metodo
-////                Pattern patronContenidoMetodo = Pattern.compile("public (\\w+) (\\w+)\\((.*?)\\)\\s*\\{(.*?)\\}", Pattern.DOTALL);
-//                Pattern patronContenidoMetodo = Pattern.compile("public (\\w+) (\\w+)\\((.*?)\\)\\s*\\{([^}]*)\\}", Pattern.DOTALL | Pattern.MULTILINE);
-//                Matcher matcherContenidoMetodo = patronContenidoMetodo.matcher(contenido);
-//                if (matcherContenidoMetodo.find()) {
-//                    String contenidoMetodo = matcherContenidoMetodo.group(4).trim();
-//                    metodo.setContenido(contenidoMetodo);
-//                }
-
-                // Analizar y Obtener contenido del metodo
-                String patronContenidoMetodo = "public " + metodo.getTipoRetorno() + " " + metodo.getNombre() + "\\((.*?)\\)\\s*\\{([^}]*)\\}";
-                Pattern pattern = Pattern.compile(patronContenidoMetodo, Pattern.DOTALL | Pattern.MULTILINE);
-                Matcher matcherContenidoMetodo = pattern.matcher(contenido);
-                if (matcherContenidoMetodo.find()) {
-                    String contenidoMetodo = matcherContenidoMetodo.group(2).trim();
-                    metodo.setContenido(contenidoMetodo);
+                if ("interface".equals(clase.getTypeClass())) {
+                    Pattern patronMetodoInterface = Pattern.compile("\\s*public\\s+(\\w+(?:<.*?>)?)\\s+(\\w+)\\s*\\((.*?)\\)\\s*;", Pattern.DOTALL);
+                    Matcher matcherMetodoInterface = patronMetodoInterface.matcher(contenido);
+                    while (matcherMetodoInterface.find()) {
+                        Metodo metodo = new Metodo();
+                        metodo.setNombre(matcherMetodoInterface.group(2));
+                        metodo.setTipoRetorno(matcherMetodoInterface.group(1));
+                        // Analizar parámetros
+                        String[] parametros = matcherMetodoInterface.group(3).split(",");
+                        for (String parametro : parametros) {
+                            if (!parametro.trim().isEmpty()) {
+                                String[] partes = parametro.trim().split("\\s+");
+                                ParametroMetodo parametroMetodo = new ParametroMetodo(partes[1], partes[0]);
+                                metodo.agregarParametro(parametroMetodo);
+                            }
+                        }
+                        metodoList.add(metodo);
+                    }
                 }
 
-                clase.addMetodo(metodo);
+                clase.addMetodos(metodoList);
             }
 
 
@@ -205,40 +233,40 @@ public class AnalizadorProyecto {
         }
 
 
-    private Clase postClassMethodAnalysis2(Clase classIn) {
-        if (classIn != null) {
-            if (classIn.getVariables() != null && !classIn.getVariables().isEmpty() && classIn.getMetodos() != null && !classIn.getMetodos().isEmpty()) {
-
-                for (Variable variable : classIn.getVariables()) {
-
-                    if (variable != null && variable.getNombre() != null) {
-
-                        for (Metodo method : classIn.getMetodos()) {
-                            if (method != null && method.getContenido() != null) {
-
-                                try {
-                                    String contenido = method.getContenido();
-                                    String nombreVariable = variable.getNombre();
-
-                                    List<InstanceMethodCall> calls =
-                                            MethodService.getInstance()
-                                                    .findOperationPerformedInMethod(contenido, nombreVariable);
-
-                                    calls.forEach(call -> {
-                                        method.addInstanceMethodCall(call);
-                                    });
-
-                                } catch (Exception e) {
-                                    System.err.println("Ocurrió un error inesperado: " + e.getMessage());
-                                    e.printStackTrace();
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return classIn;
-    }
+//    private Clase postClassMethodAnalysis2(Clase classIn) {
+//        if (classIn != null) {
+//            if (classIn.getVariables() != null && !classIn.getVariables().isEmpty() && classIn.getMetodos() != null && !classIn.getMetodos().isEmpty()) {
+//
+//                for (Variable variable : classIn.getVariables()) {
+//
+//                    if (variable != null && variable.getNombre() != null) {
+//
+//                        for (Metodo method : classIn.getMetodos()) {
+//                            if (method != null && method.getContenido() != null) {
+//
+//                                try {
+//                                    String contenido = method.getContenido();
+//                                    String nombreVariable = variable.getNombre();
+//
+//                                    List<InstanceMethodCall> calls =
+//                                            MethodService.getInstance()
+//                                                    .findOperationPerformedInMethod(contenido, nombreVariable);
+//
+//                                    calls.forEach(call -> {
+//                                        method.addInstanceMethodCall(call);
+//                                    });
+//
+//                                } catch (Exception e) {
+//                                    System.err.println("Ocurrió un error inesperado: " + e.getMessage());
+//                                    e.printStackTrace();
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//        return classIn;
+//    }
 
 }

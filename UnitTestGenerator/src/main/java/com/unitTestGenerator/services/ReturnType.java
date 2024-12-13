@@ -54,10 +54,6 @@ public interface ReturnType {
 
     default String getAssertType(String tipoRetorno, String valorDeRetorno) {
 
-//        if(valorDeRetorno == null){
-//            valorDeRetorno = getValorPorDefecto(tipoRetorno);
-//        }
-
         switch (tipoRetorno) {
             case "int":
             case "long":
@@ -67,23 +63,29 @@ public interface ReturnType {
             case "Long":
             case "Double":
             case "Float":
-                return "Assert.assertEquals(" + valorDeRetorno + ", resultado);";
+            case "String":
+                return "Assertions.assertThat(" + valorDeRetorno + ").isEqualTo(resultado);";
             case "boolean":
                 if (valorDeRetorno.equals("true")) {
-                    return "Assert.assertTrue(resultado);";
+                    return "Assertions.assertThat(resultado).isTrue();";
                 } else {
-                    return "Assert.assertFalse(resultado);";
+                    return "Assertions.assertThat(resultado).isFalse();";
                 }
-            case "String":
-                return "Assert.assertEquals(\"" + valorDeRetorno + "\", resultado);";
             default:
                 if (valorDeRetorno == null) {
-                    return "Assert.assertNull(resultado);";
+                    return "Assertions.assertThat(resultado).isNull();";
                 } else {
-                    return "Assert.assertNotNull(resultado);";
+                    return "Assertions.assertThat(resultado).isNotNull();";
                 }
         }
     }
 
 
 }
+/*
+	Assertions.assertThat(resultado).isFalse();
+	Assertions.assertThat(resultado).isEqualTo(resultado);
+	Assertions.assertThat(resultado).isNotEqualTo(resultado);
+	Assertions.assertThat(resultado).isNotNull();
+	Assertions.assertThat(resultado).isNull();
+* */

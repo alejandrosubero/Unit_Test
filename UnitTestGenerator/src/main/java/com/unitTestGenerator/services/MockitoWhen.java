@@ -6,36 +6,22 @@ import java.util.List;
 
 public interface MockitoWhen extends ReturnType {
 
-    default String generateCallMethodMock(String testMethod, Metodo metodo, Project project) {
+    default String generateCallMethodMock(String testMethod, Metodo metodo, Project project, String retrunValue) {
         StringBuilder contenido = new StringBuilder();
         contenido.append("Mockito.when(").append(testMethod).append(")").append(".thenReturn(");
-        // Agregar el valor de retorno
-        String valueReturn = generateRetrunValue(metodo, project);
+        String valueReturn = retrunValue != null ? retrunValue: generateRetrunValue(metodo, project);
         contenido.append(valueReturn).append(");");
-//        // Agregar el assert adecuado según el tipo de retorno
-//        contenido.append("\n").append(getAssertType(metodo.getTipoRetorno(), valueReturn));
-
-// doNothing().when(empleadorepository).save(employee);
         return contenido.toString();
     }
 
-    default String generateCallMethodMockDoNothing( Metodo metodo, String classNameCamelCase, String parametrosMethodTest) {
-        StringBuilder contenido = new StringBuilder();
-
-        String testMethod = String.format(".%s(%s)" ,metodo.getNombre(), parametrosMethodTest);
-
-        contenido.append("Mockito.doNothing().when(").append(classNameCamelCase).append(")").append(testMethod);
-
-// Mockito.doNothing().when(empleadorepository).save(employee);
-        return contenido.toString();
+    default String generateCallMethodMockDoNothing( String methodNameParts, String classNameCamelCase, String parametrosMethodTest) {
+        return new StringBuilder("Mockito.doNothing().when(").append(classNameCamelCase).append(")").append(String.format(".%s(%s);" ,methodNameParts, parametrosMethodTest)).toString();
     }
 
     default String generateCallAssertType(Metodo metodo, Project project) {
         StringBuilder contex = new StringBuilder();
         String valueReturn = generateRetrunValue(metodo, project);
-        // Agregar el assert adecuado según el tipo de retorno
         contex.append("\n").append(getAssertType(metodo.getTipoRetorno(), valueReturn));
-
         return contex.toString();
     }
 

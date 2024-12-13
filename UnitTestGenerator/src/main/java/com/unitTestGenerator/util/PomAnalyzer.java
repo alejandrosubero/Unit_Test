@@ -36,33 +36,28 @@ public class PomAnalyzer {
 
     private  final String JUNIT_DEPENDENCY =
             "<dependency>\n" +
-                    "    <groupId>org.junit.jupiter</groupId>\n" +
-                    "    <artifactId>junit-jupiter-api</artifactId>\n" +
-                    "    <version>5.8.2</version>\n" +
-                    "    <scope>test</scope>\n" +
-                    "</dependency>";
+                    "            <groupId>org.junit.jupiter</groupId>\n" +
+                    "            <artifactId>junit-jupiter</artifactId>\n" +
+                    "            <version>5.8.2</version>\n" +
+                    "            <scope>test</scope>\n" +
+                    "        </dependency>";
 
     private  final String MOCK_DEPENDENCY =
             "<dependency>\n" +
-                    "    <groupId>org.mockito</groupId>\n" +
-                    "    <artifactId>mockito-junit-jupiter</artifactId>\n" +
-                    "    <version>4.11.0</version>\n" +
-                    "    <scope>test</scope>\n" +
-                    "</dependency>";
+                    "            <groupId>org.mockito</groupId>\n" +
+                    "            <artifactId>mockito-junit-jupiter</artifactId>\n" +
+                    "            <version>3.12.4</version>\n" +
+                    "            <scope>test</scope>\n" +
+                    "        </dependency>";
 
-    private  final String MOCK_DEPENDENCY_core =" <dependency>\n" +
+    private  final String MOCK_DEPENDENCY_core ="<dependency>\n" +
             "            <groupId>org.mockito</groupId>\n" +
             "            <artifactId>mockito-core</artifactId>\n" +
-            "            <version>4.0.0</version>\n" +
+            "            <version>3.12.4</version>\n" +
             "            <scope>test</scope>\n" +
             "        </dependency>";
 
-    private  final String JUNIT_DEPENDENCY_no_api = " <dependency>\n" +
-            "            <groupId>org.junit.jupiter</groupId>\n" +
-            "            <artifactId>junit-jupiter</artifactId>\n" +
-            "            <version>5.8.2</version>\n" +
-            "            <scope>test</scope>\n" +
-            "        </dependency>"  ;
+
 
 
     public  void agregarDependencias(String rutaProyecto) {
@@ -81,18 +76,14 @@ public class PomAnalyzer {
                 raiz.appendChild(dependenciesElement);
             }
 
+
+
             if (!existeDependencia(documento, JUNIT_DEPENDENCY)) {
                 existeDependency = true;
                 agregarDependencia(documento,
                         "org.junit.jupiter",
-                        "junit-jupiter-api",
+                        "junit-jupiter",
                         "5.8.2",
-                        "test");
-
-                agregarDependencia(documento,
-                        "junit",
-                        "junit",
-                        "4.13.2",
                         "test");
             }
 
@@ -101,7 +92,7 @@ public class PomAnalyzer {
                 agregarDependencia(documento,
                         "org.mockito",
                         "mockito-junit-jupiter",
-                        "4.11.0",
+                        "3.12.4",
                         "test");
             }
 
@@ -111,19 +102,10 @@ public class PomAnalyzer {
                 agregarDependencia(documento,
                         "org.mockito",
                         "mockito-core",
-                        "4.0.0",
+                        "3.12.4",
                         "test");
             }
 
-
-            if (!existeDependencia(documento, JUNIT_DEPENDENCY_no_api)) {
-                existeDependency = true;
-                agregarDependencia(documento,
-                        "org.junit.jupiter",
-                        "junit-jupiter",
-                        "5.8.2",
-                        "test");
-            }
 
 
             if (existeDependency) {

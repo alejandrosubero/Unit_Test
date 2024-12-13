@@ -43,9 +43,9 @@ public class Project {
     private Clase getClass(String className, Project project){
         Clase foundClass = null;
         if(project.getClaseList() != null && !project.getClaseList().isEmpty() && className !=null && !className.equals("")){
-            for(Clase cla : project.getClaseList()){
-                if(cla.getNombre()!=null && cla.getNombre().equals(className)){
-                    foundClass = cla;
+            for(Clase clasS : project.getClaseList()){
+                if(clasS.getNombre() !=null && clasS.getNombre().toLowerCase().equals(className.toLowerCase())){
+                    foundClass = clasS;
                 }
             }
         }
