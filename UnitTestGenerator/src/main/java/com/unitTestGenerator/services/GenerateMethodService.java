@@ -97,16 +97,22 @@ public class GenerateMethodService implements IBaseModel, MockitoWhen {
             return false;
         }
         if (methodName != null && !methodName.isEmpty() && className != null && !className.isEmpty() && project != null) {
-           return this.isMethodVoid(project.getClass(className).getMetodos(), methodName);
+            boolean result = this.isMethodVoid(project.getClass(className).getMetodos(), methodName);
+           return result;
         }
         return false;
     }
 
 
     private boolean isMethodVoid(List<Metodo> methods, String methodName) {
-        return methods.stream()
-                .filter(method -> method.getNombre().toLowerCase().equals(methodName.toLowerCase()))
-                .anyMatch(method -> "void".equals(method.getTipoRetorno()));
+
+        if(methods != null && !methods.isEmpty() && methodName != null && !methods.isEmpty()){
+            return methods.stream()
+                    .filter(method -> method.getNombre().toLowerCase().equals(methodName.toLowerCase()))
+                    .anyMatch(method -> "void".equals(method.getTipoRetorno()));
+        }
+
+
     }
 
 
@@ -127,10 +133,15 @@ public class GenerateMethodService implements IBaseModel, MockitoWhen {
                 ..fallloooooooooooo
                 // Generar la llamada al metodos internos del metodo en operacion mock
                     if(parametros == null || parametros.isEmpty()){
-                        if(methodIsVoid(methodName, clase.getNombre(),  this.project)){
-                            String[] parts = instanceMethodCall.getOperation().split("\\.");
-                            String classNameInstanceMethodCall = parts[0];
-                            String parametersMethodInstanceMethodCall = parts[1];
+                        String[] parts = instanceMethodCall.getOperation().split("\\.");
+                        String classNameInstanceMethodCall = parts[0];
+                        String parametersMethodInstanceMethodCall = parts[1];
+
+                        int indexPositionFirstParentesis = parametersMethodInstanceMethodCall.indexOf('(');
+                        String methodNameParts = parametersMethodInstanceMethodCall.substring(0, indexPositionFirstParentesis);
+                        String parametersParts = parametersMethodInstanceMethodCall.substring(indexPositionFirstParentesis + 1, parametersMethodInstanceMethodCall.length() - 1);
+
+                        if(methodIsVoid(methodNameParts, classNameInstanceMethodCall,  this.project)){
                             generateCallMethodMockDoNothing(metodo, classNameInstanceMethodCall,parametersMethodInstanceMethodCall);
                         }else {
                             contenido.append(this.generateCallMethodMock(instanceMethodCall.getOperation(), metodo, this.project));
