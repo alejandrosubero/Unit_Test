@@ -4,10 +4,8 @@ import com.unitTestGenerator.pojos.Clase;
 import com.unitTestGenerator.pojos.Metodo;
 import com.unitTestGenerator.pojos.Project;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class MethodParameterObject implements IGenerateVariable, MockitoWhen {
 
@@ -30,6 +28,13 @@ public class MethodParameterObject implements IGenerateVariable, MockitoWhen {
             response = this.getMockOject(method);
         }else {
             List<Clase> clasesParameters = getParameterClassList( method, project);
+            StringBuffer parametes = new StringBuffer();
+            if(clasesParameters != null && !clasesParameters.isEmpty()){
+                clasesParameters.forEach(clase ->
+                        parametes.append(this.generateVariable(clase.getNombre(), clase.getNombre().toLowerCase(),true, false))
+                );
+              response = parametes.toString();
+            }
         }
         return response;
     }
@@ -88,3 +93,17 @@ public class MethodParameterObject implements IGenerateVariable, MockitoWhen {
 
 
 }
+
+
+//                response = clasesParameters.stream()
+//                        .map(clase -> clase.getNombre() + " " + clase.getNombre().toLowerCase())
+//                        .collect(Collectors.joining(";"));
+
+//                Iterator<Clase> iterator = clasesParameters.iterator();
+//                while (iterator.hasNext()) {
+//                    Clase clase = iterator.next();
+//                    parametes.append(clase.getNombre()).append(" ").append(clase.getNombre().toLowerCase());
+//                    if(iterator.hasNext()){
+//                        parametes.append(";");
+//                    }
+//                }

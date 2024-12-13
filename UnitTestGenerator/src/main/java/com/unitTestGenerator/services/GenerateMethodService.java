@@ -5,6 +5,7 @@ import com.unitTestGenerator.pojos.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class GenerateMethodService implements IBaseModel, MockitoWhen {
 
@@ -33,7 +34,6 @@ public class GenerateMethodService implements IBaseModel, MockitoWhen {
                 contex.append(MethodParameterObject.getInstance().methodParameterObject(metodo, project, clase.getUseMock()));
                 contex.append(obtenerContenidoMetodo(metodo, clase));
         });
-
         }else{
             for (Metodo metodo : clase.getMetodos()) {
                 if (clase.getTestMethod().toLowerCase().equals(metodo.getNombre().toLowerCase())){
@@ -91,6 +91,25 @@ public class GenerateMethodService implements IBaseModel, MockitoWhen {
         return contenido.toString();
     }
 
+    private Boolean methodIsVoid(String methodName, String className, Project project){
+
+        if (methodName == null || methodName.isEmpty() || className == null || className.isEmpty() || project == null) {
+            return false;
+        }
+        if (methodName != null && !methodName.isEmpty() && className != null && !className.isEmpty() && project != null) {
+           return this.isMethodVoid(project.getClass(className).getMetodos(), methodName);
+        }
+        return false;
+    }
+
+
+    private boolean isMethodVoid(List<Metodo> methods, String methodName) {
+        return methods.stream()
+                .filter(method -> method.getNombre().toLowerCase().equals(methodName.toLowerCase()))
+                .anyMatch(method -> "void".equals(method.getTipoRetorno()));
+    }
+
+
     private String generarContenidoMock(Metodo metodo, Clase clase) {
         StringBuilder contenido = new StringBuilder();
         String classNameCamelCase = stringEnsamble(clase.getNombre().substring(0, 1).toLowerCase(), clase.getNombre().substring(1));
@@ -100,21 +119,30 @@ public class GenerateMethodService implements IBaseModel, MockitoWhen {
         contenido.append(this.generateCallMethodMock(testMethod, metodo, this.project));
 
         if(metodo.getInstanceMethodCalls() !=null && !metodo.getInstanceMethodCalls().isEmpty() ){
-
             // Recorrer las instancias de métodos
             for (InstanceMethodCall instanceMethodCall : metodo.getInstanceMethodCalls()) {
                     String methodName = instanceMethodCall.getMethod();
                     String variableInstanceName = instanceMethodCall.getVariableInstace();
                     List<ParametroMetodo> parametros = instanceMethodCall.getParametros();
-
+                ..fallloooooooooooo
                 // Generar la llamada al metodos internos del metodo en operacion mock
                     if(parametros == null || parametros.isEmpty()){
-                        contenido.append(this.generateCallMethodMock(instanceMethodCall.getOperation(), metodo, this.project));
+                        if(methodIsVoid(methodName, clase.getNombre(),  this.project)){
+                            String[] parts = instanceMethodCall.getOperation().split("\\.");
+                            String classNameInstanceMethodCall = parts[0];
+                            String parametersMethodInstanceMethodCall = parts[1];
+                            generateCallMethodMockDoNothing(metodo, classNameInstanceMethodCall,parametersMethodInstanceMethodCall);
+                        }else {
+                            contenido.append(this.generateCallMethodMock(instanceMethodCall.getOperation(), metodo, this.project));
+                        }
+
+
                     }else{
                         contenido.append(generarLlamadaMetodoMock(methodName, variableInstanceName, parametros,  metodo,  this.project));
                     }
             }
         }
+        contenido.append(generateCallAssertType(metodo, this.project));
         return contenido.toString();
     }
 

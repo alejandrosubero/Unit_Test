@@ -10,14 +10,42 @@ public interface MockitoWhen extends ReturnType {
         StringBuilder contenido = new StringBuilder();
         contenido.append("Mockito.when(").append(testMethod).append(")").append(".thenReturn(");
         // Agregar el valor de retorno
-        String valueReturn = generarValorDeRetorno(metodo, project);
+        String valueReturn = generateRetrunValue(metodo, project);
         contenido.append(valueReturn).append(");");
-        // Agregar el assert adecuado según el tipo de retorno
-        contenido.append("\n").append(getAssertType(metodo.getTipoRetorno(), valueReturn));
+//        // Agregar el assert adecuado según el tipo de retorno
+//        contenido.append("\n").append(getAssertType(metodo.getTipoRetorno(), valueReturn));
 
+// doNothing().when(empleadorepository).save(employee);
         return contenido.toString();
     }
 
+    default String generateCallMethodMockDoNothing( Metodo metodo, String classNameCamelCase, String parametrosMethodTest) {
+        StringBuilder contenido = new StringBuilder();
+
+        String testMethod = String.format(".%s(%s)" ,metodo.getNombre(), parametrosMethodTest);
+
+        contenido.append("Mockito.doNothing().when(").append(classNameCamelCase).append(")").append(testMethod);
+
+// Mockito.doNothing().when(empleadorepository).save(employee);
+        return contenido.toString();
+    }
+
+    default String generateCallAssertType(Metodo metodo, Project project) {
+        StringBuilder contex = new StringBuilder();
+        String valueReturn = generateRetrunValue(metodo, project);
+        // Agregar el assert adecuado según el tipo de retorno
+        contex.append("\n").append(getAssertType(metodo.getTipoRetorno(), valueReturn));
+
+        return contex.toString();
+    }
+
+
+    default String generateCallVerificarMock(String methodName, String variableInstanceName, List<ParametroMetodo> parametros) {
+        StringBuilder contenido = new StringBuilder();
+        // Verificar si se utilizaron las clases simuladas en los mocks
+        contenido.append("\n").append(verificarMock(variableInstanceName, methodName, parametros));
+        return contenido.toString();
+    }
 
     default String generateCallMethodMock(String methodName, String variableInstanceName, List<ParametroMetodo> parametros, Metodo metodo, Project project) {
         StringBuilder contenido = new StringBuilder();
@@ -38,13 +66,13 @@ public interface MockitoWhen extends ReturnType {
         contenido.append(")).thenReturn(");
 
         // Agregar el valor de retorno
-        contenido.append(generarValorDeRetorno(metodo, project)).append(");");
+        contenido.append(generateRetrunValue(metodo, project)).append(");");
 
         // Agregar el assert adecuado según el tipo de retorno
         contenido.append("\n").append(getAssertType(metodo.getTipoRetorno(), null));
 
         // Verificar si se utilizaron las clases simuladas en los mocks
-        contenido.append("\n").append(verificarMock(variableInstanceName, methodName, parametros));
+//        contenido.append("\n").append(verificarMock(variableInstanceName, methodName, parametros));
 
         return contenido.toString();
     }
@@ -52,7 +80,7 @@ public interface MockitoWhen extends ReturnType {
 
 
 
-    default String generarValorDeRetorno(Metodo metodo, Project project) {
+    default String generateRetrunValue (Metodo metodo, Project project) {
         String tipoRetorno = metodo.getTipoRetorno();
         Clase claseRetorno = null;
 
@@ -134,7 +162,7 @@ public interface MockitoWhen extends ReturnType {
         contenido.append(")).thenReturn(");
 
         // Agregar el valor de retorno
-        contenido.append(generarValorDeRetorno(metodo, project)).append(");");
+        contenido.append(generateRetrunValue(metodo, project)).append(");");
 
         // Agregar el assert adecuado según el tipo de retorno
         contenido.append("\n").append(getAssertType(metodo.getTipoRetorno(), null));

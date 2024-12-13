@@ -14,7 +14,7 @@ public class BuildTestFile {
     }
 
 
-    public  void crearArchivoPrueba(String ruta, String contenido) {
+    public  void createTestFile(String ruta, String contenido) {
         File archivo = new File(ruta);
         fileExist(archivo);
         fileWriter( archivo,contenido,ruta);
