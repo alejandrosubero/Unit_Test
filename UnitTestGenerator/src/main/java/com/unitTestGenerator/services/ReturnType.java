@@ -52,7 +52,7 @@ public interface ReturnType {
         }
     }
 
-    default String getAssertType(String tipoRetorno, String valorDeRetorno) {
+    default String getAssertType(String tipoRetorno, String valorDeRetorno, String result) {
 
         switch (tipoRetorno) {
             case "int":
@@ -64,18 +64,18 @@ public interface ReturnType {
             case "Double":
             case "Float":
             case "String":
-                return "Assertions.assertThat(" + valorDeRetorno + ").isEqualTo(resultado);";
+                return "Assertions.assertThat(" + valorDeRetorno + ").isEqualTo("+result+");";
             case "boolean":
                 if (valorDeRetorno.equals("true")) {
-                    return "Assertions.assertThat(resultado).isTrue();";
+                    return "Assertions.assertThat(res).isTrue();";
                 } else {
-                    return "Assertions.assertThat(resultado).isFalse();";
+                    return "Assertions.assertThat("+result+").isFalse();";
                 }
             default:
                 if (valorDeRetorno == null) {
-                    return "Assertions.assertThat(resultado).isNull();";
+                    return "Assertions.assertThat("+result+").isNull();";
                 } else {
-                    return "Assertions.assertThat(resultado).isNotNull();";
+                    return "Assertions.assertThat("+result+").isNotNull();";
                 }
         }
     }

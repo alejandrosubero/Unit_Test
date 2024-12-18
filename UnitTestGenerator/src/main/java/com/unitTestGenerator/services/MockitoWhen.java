@@ -18,10 +18,10 @@ public interface MockitoWhen extends ReturnType {
         return new StringBuilder("Mockito.doNothing().when(").append(classNameCamelCase).append(")").append(String.format(".%s(%s);" ,methodNameParts, parametrosMethodTest)).toString();
     }
 
-    default String generateCallAssertType(Metodo metodo, Project project) {
+    default String generateCallAssertType(Metodo metodo, Project project, String result) {
         StringBuilder contex = new StringBuilder();
         String valueReturn = generateRetrunValue(metodo, project);
-        contex.append("\n").append(getAssertType(metodo.getTipoRetorno(), valueReturn));
+        contex.append("\n").append(getAssertType(metodo.getTipoRetorno(), valueReturn, result));
         return contex.toString();
     }
 
