@@ -53,9 +53,9 @@ public interface MockitoWhen extends ReturnType {
 
         // Agregar el valor de retorno
         contenido.append(generateRetrunValue(metodo, project)).append(");");
-
+        String resultValueName = String.format("%s%s;" ,metodo.getNombre() ,"Result");
         // Agregar el assert adecuado según el tipo de retorno
-        contenido.append("\n").append(getAssertType(metodo.getTipoRetorno(), null));
+        contenido.append("\n").append(getAssertType(metodo.getTipoRetorno(), null, resultValueName));
 
         // Verificar si se utilizaron las clases simuladas en los mocks
 //        contenido.append("\n").append(verificarMock(variableInstanceName, methodName, parametros));
