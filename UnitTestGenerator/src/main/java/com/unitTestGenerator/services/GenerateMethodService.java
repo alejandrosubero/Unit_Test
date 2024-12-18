@@ -179,12 +179,11 @@ public class GenerateMethodService implements IBaseModel, MockitoWhen {
             }
         }
 
-        String resultValueName = String.format("%s%s;" ,method.getNombre() ,"Result");
+        String resultValueName = String.format("%s%s" ,method.getNombre() ,"Result");
         // operacion de prueba llamada al metodo y obtener resultado.
        String operation =  String.format("%s %s = %s;" ,method.getTipoRetorno() ,resultValueName,testMethod);
-        content.append(operation);
-
-        content.append(generateCallAssertType(method, this.project, resultValueName));
+        content.append("\n").append(operation).append("\n");
+        content.append(generateCallAssertType(method, this.project, resultValueName)).append("\n");
         return content.toString();
     }
 

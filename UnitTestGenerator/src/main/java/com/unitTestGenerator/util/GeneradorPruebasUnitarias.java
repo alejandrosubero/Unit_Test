@@ -87,19 +87,19 @@ public class GeneradorPruebasUnitarias implements IBaseModel {
 
         contex.append("package ").append(clase.getPaquete()).append(";").append("\n");
 
-        contex.append("import org.junit.jupiter.api.Test;\n");
-        contex.append("import org.junit.jupiter.api.BeforeEach;\n");
-        contex.append("import org.junit.jupiter.api.extension.ExtendWith;\n");
-        contex.append("import org.mockito.InjectMocks;\n");
-        contex.append("import org.mockito.Mock;\n");
-        contex.append("import org.junit.jupiter.api.extension.ExtendWith;\n");
-        contex.append("import org.mockito.InjectMocks;\n");
-        contex.append("import org.mockito.Mock;\n");
-        contex.append("import org.mockito.Mockito;\n");
-        contex.append("import org.mockito.MockitoAnnotations;\n");
-        contex.append("import org.mockito.junit.jupiter.MockitoExtension;\n").append("\n");
-        contex.append("import static org.assertj.core.api.Assertions.assertThat;\n");
-        contex.append("import org.assertj.core.api.Assertions;\"\n");
+        contex.append("import org.junit.jupiter.api.Test;").append("\n");
+        contex.append("import org.junit.jupiter.api.BeforeEach;").append("\n");
+        contex.append("import org.junit.jupiter.api.extension.ExtendWith;").append("\n");;
+        contex.append("import org.mockito.InjectMocks;").append("\n");
+        contex.append("import org.mockito.Mock;").append("\n");
+        contex.append("import org.junit.jupiter.api.extension.ExtendWith;").append("\n");
+        contex.append("import org.mockito.InjectMocks;").append("\n");
+        contex.append("import org.mockito.Mock;").append("\n");
+        contex.append("import org.mockito.Mockito;").append("\n");
+        contex.append("import org.mockito.MockitoAnnotations;").append("\n");
+        contex.append("import org.mockito.junit.jupiter.MockitoExtension;").append("\n").append("\n");
+        contex.append("import static org.assertj.core.api.Assertions.assertThat;").append("\n");
+        contex.append("import org.assertj.core.api.Assertions;").append("\n");
 
 
         contex.append( this.stringEnsamble("import ", clase.getPaquete(), ".",clase.getNombre())).append(";").append("\n");

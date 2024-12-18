@@ -67,7 +67,7 @@ public interface ReturnType {
                 return "Assertions.assertThat(" + valorDeRetorno + ").isEqualTo("+result+");";
             case "boolean":
                 if (valorDeRetorno.equals("true")) {
-                    return "Assertions.assertThat(res).isTrue();";
+                    return "Assertions.assertThat("+result+").isTrue();";
                 } else {
                     return "Assertions.assertThat("+result+").isFalse();";
                 }
