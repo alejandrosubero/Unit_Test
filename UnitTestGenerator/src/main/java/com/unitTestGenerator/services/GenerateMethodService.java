@@ -168,6 +168,22 @@ public class GenerateMethodService implements IBaseModel, MockitoWhen {
                             Clase clasS = project.getClass(classNameInstanceMethodCall);
                             if (COMMON_METHODS.contains(methodNameParts) ) {
                                 content.append(this.generateCallMethodMock(instanceMethodCall.getOperation(), method, this.project, parametersParts));
+
+                                //****
+
+                                if(instanceMethodCall.getParametros().isEmpty()){
+                                    List<ParametroMetodo> parametersList = new ArrayList<>();
+                                    if(parametersParts.contains(",")){
+                                        List<String> ListTempral = Arrays.asList(parametersParts.split(","));
+                                        ListTempral.forEach(s -> parametersList.add(ParametroMetodo.builder().nombre(s).build()));
+                                    }else {
+                                         parametersList.add(ParametroMetodo.builder().nombre(parametersParts).build());
+                                    }
+                                    content.append("\n").append(verificarMock(instanceMethodCall.getVariableInstace(), instanceMethodCall.getMethod(),parametersList));
+                                }else {
+                                    content.append("\n").append(verificarMock(instanceMethodCall.getVariableInstace(), instanceMethodCall.getMethod(),instanceMethodCall.getParametros()));
+                                }
+
                             }else {
                                 Metodo methodInClass = clasS.getMetodos().stream().filter(metodo -> method.getNombre().toLowerCase().equals(methodNameParts.toLowerCase())).findFirst().get();
                                 content.append(this.generateCallMethodMock(instanceMethodCall.getOperation(), methodInClass, this.project, null));

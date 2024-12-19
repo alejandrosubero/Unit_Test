@@ -1,8 +1,11 @@
 package com.unitTestGenerator.builders;
 
+import org.apache.commons.io.FileUtils;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import org.apache.commons.io.FileUtils;
 
 public class BuildTestFile {
 
@@ -28,8 +31,44 @@ public class BuildTestFile {
             System.out.println("Error al crear archivo de prueba: " + e.getMessage());
         }
     }
+
+    //TODO: LA FINALIDAD ES VERIFICAR SI ESXISTE YA EL ARCHIVO CREADO Y PODER REESCRIBIR DEJENDO LO ANTERIOR O CREAR UNO NUEVO APARTE O REESCRIBIR TODO COMPLETAMENTE.
+
+    private String fileExistS(File archivo){
+        String contenido ="";
+        if (!archivo.getParentFile().exists()) {
+            if (archivo.getParentFile().mkdirs()) {
+                System.out.println("Carpeta creada con éxito: " + archivo.getParentFile());
+            } else {
+                System.out.println("Error al crear carpeta: " + archivo.getParentFile());
+            }
+        }else{
+            try {
+                contenido = FileUtils.readFileToString(archivo, "UTF-8");
+                return contenido;
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return null;
+    }
+
+
+    private String getContentActual(String content){
+//TODO: HACER INGENIERIA INVERSA CON ANALIZAR PARA CREAR UNA CLASE DE ESTO Y TRATAR DE USAR LO QUE SE NECESITE E IDENTIFICAR QUE ES LO QUE VAS A HACER
+        return null;
+    }
+
+
     private  void fileExist(File archivo){
         if (!archivo.getParentFile().exists()) {
+
+            try {
+                String contenido = FileUtils.readFileToString(archivo, "UTF-8");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
             // Crear la carpeta si no existe
             if (archivo.getParentFile().mkdirs()) {
                 System.out.println("Carpeta creada con éxito: " + archivo.getParentFile());
