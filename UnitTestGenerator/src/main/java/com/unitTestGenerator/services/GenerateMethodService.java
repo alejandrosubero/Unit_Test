@@ -2,11 +2,14 @@ package com.unitTestGenerator.services;
 
 import com.unitTestGenerator.interfaces.IBaseModel;
 import com.unitTestGenerator.pojos.*;
+import org.apache.commons.lang3.StringUtils;
 
+import java.util.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class GenerateMethodService implements IBaseModel, MockitoWhen {
 
@@ -51,7 +54,7 @@ public class GenerateMethodService implements IBaseModel, MockitoWhen {
     private  String obtenerContenidoMetodo(Metodo metodo, Clase clase) {
         String methodName = String.format("%s%s", metodo.getNombre().substring(0, 1).toUpperCase(), metodo.getNombre().substring(1));
         String content = generarContenidoMetodoPrueba(metodo, clase);
-        String methodoTest = String.format("\n@Test\npublic void test%s() {\n  %s \n }\n", methodName,content);
+        String methodoTest = String.format("\n \t@Test\n \tpublic void test%s() {\n  \t%s \n }\n", methodName,content);
         return methodoTest;
     }
 
@@ -61,23 +64,16 @@ public class GenerateMethodService implements IBaseModel, MockitoWhen {
         contenido.append(conten);
         return contenido.toString();
     }
-
+//===============================================================================================================================================================================
     private String generarContenidoSinMock(Metodo metodo) {
         StringBuilder contenido = new StringBuilder();
-
-        // Obtener el nombre del método
         String methodName = metodo.getNombre();
-
-        // Obtener los parámetros del método
         List<ParametroMetodo> parametros = metodo.getParametros();
-
-        // Generar la llamada al método
-        contenido.append(generarLlamadaMetodo(methodName, parametros));
-
+        contenido.append(generateCallMethod(methodName, parametros));
         return contenido.toString();
     }
 
-    private String generarLlamadaMetodo(String methodName, List<ParametroMetodo> parametros) {
+    private String generateCallMethod(String methodName, List<ParametroMetodo> parametros) {
         StringBuilder contenido = new StringBuilder();
         // Agregar la llamada al método
         contenido.append(methodName).append("(");
@@ -127,81 +123,61 @@ public class GenerateMethodService implements IBaseModel, MockitoWhen {
 
 
 
-    private String generateContentMock(Metodo method, Clase clase) {
-        StringBuilder content = new StringBuilder();
-        String classNameCamelCase = stringEnsamble(clase.getNombre().substring(0, 1).toLowerCase(), clase.getNombre().substring(1));
-        String parametrosMethodTest =  this.addStringParametes(method.getParametros());
-        String testMethod = String.format("%s.%s(%s)" ,classNameCamelCase,method.getNombre(), parametrosMethodTest);
-//        String toMock = methodParameterObject( metodo,  project);
-//        content.append(this.generateCallMethodMock(testMethod, method, this.project, null));
-
-        if(method.getInstanceMethodCalls() !=null && !method.getInstanceMethodCalls().isEmpty() ){
-            // Recorrer las instancias de métodos
-            for (InstanceMethodCall instanceMethodCall : method.getInstanceMethodCalls()) {
-                    String methodName = instanceMethodCall.getMethod();
-                    String variableInstanceName = instanceMethodCall.getVariableInstace();
-                    List<ParametroMetodo> parametros = instanceMethodCall.getParametros();
-//                ..fallloooooooooooo
-                // Generar la llamada al metodos internos del metodo en operacion mock
-                content.append("\n");
-                    if(parametros == null || parametros.isEmpty()){
-                        String[] parts = instanceMethodCall.getOperation().split("\\.");
-                        String classNameInstanceMethodCall = parts[0];
-                        String parametersMethodInstanceMethodCall = parts[1];
-                        int indexPositionFirstParentesis = parametersMethodInstanceMethodCall.indexOf('(');
-                        String methodNameParts = parametersMethodInstanceMethodCall.substring(0, indexPositionFirstParentesis);
-                        String parametersParts = parametersMethodInstanceMethodCall.substring(indexPositionFirstParentesis + 1, parametersMethodInstanceMethodCall.length() - 1);
-
-                        if(methodIsVoid(methodNameParts, classNameInstanceMethodCall,  this.project)){
-                            content.append(this.generateCallMethodMockDoNothing(methodNameParts, classNameInstanceMethodCall,parametersParts));
-                        }else {
-
-//                            String contentCommons = COMMON_METHODS.contains(methodNameParts)
-//                                    ? this.generateCallMethodMock(instanceMethodCall.getOperation(), method, this.project, parametersParts)
-//                                    :this.generateCallMethodMock(
-//                                            instanceMethodCall.getOperation(),
-//                                            project.getClass(classNameInstanceMethodCall).getMetodos().stream().filter(metodo ->
-//                                                        method.getNombre().toLowerCase().equals(methodNameParts.toLowerCase())).findFirst().get(),
-//                                             this.project, null);
-//                            content.append(contentCommons);
-
-                            Clase clasS = project.getClass(classNameInstanceMethodCall);
-                            if (COMMON_METHODS.contains(methodNameParts) ) {
-                                content.append(this.generateCallMethodMock(instanceMethodCall.getOperation(), method, this.project, parametersParts));
-
-                                //****
-
-                                if(instanceMethodCall.getParametros().isEmpty()){
-                                    List<ParametroMetodo> parametersList = new ArrayList<>();
-                                    if(parametersParts.contains(",")){
-                                        List<String> ListTempral = Arrays.asList(parametersParts.split(","));
-                                        ListTempral.forEach(s -> parametersList.add(ParametroMetodo.builder().nombre(s).build()));
-                                    }else {
-                                         parametersList.add(ParametroMetodo.builder().nombre(parametersParts).build());
-                                    }
-                                    content.append("\n").append(verificarMock(instanceMethodCall.getVariableInstace(), instanceMethodCall.getMethod(),parametersList));
-                                }else {
-                                    content.append("\n").append(verificarMock(instanceMethodCall.getVariableInstace(), instanceMethodCall.getMethod(),instanceMethodCall.getParametros()));
-                                }
-
-                            }else {
-                                Metodo methodInClass = clasS.getMetodos().stream().filter(metodo -> method.getNombre().toLowerCase().equals(methodNameParts.toLowerCase())).findFirst().get();
-                                content.append(this.generateCallMethodMock(instanceMethodCall.getOperation(), methodInClass, this.project, null));
-                            }
-                        }
-                    }else{
-                        content.append(generarLlamadaMetodoMock(methodName, variableInstanceName, parametros,  method,  this.project));
-                    }
-            }
-        }
-
-        String resultValueName = String.format("%s%s" ,method.getNombre() ,"Result");
-        // operacion de prueba llamada al metodo y obtener resultado.
-       String operation =  String.format("%s %s = %s;" ,method.getTipoRetorno() ,resultValueName,testMethod);
-        content.append("\n").append(operation).append("\n");
-        content.append(generateCallAssertType(method, this.project, resultValueName)).append("\n");
-        return content.toString();
-    }
+//    private String generateContentMock2(Metodo method, Clase clase) {
+//        StringBuilder content = new StringBuilder("\n");
+//        String classNameCamelCase = stringEnsamble(clase.getNombre().substring(0, 1).toLowerCase(), clase.getNombre().substring(1));
+//        String parametrosMethodTest =  this.addStringParametes(method.getParametros());
+//        String testMethod = String.format("%s.%s(%s)" ,classNameCamelCase,method.getNombre(), parametrosMethodTest);
+//        String verifyMock ="";
+//
+//        if(method.getInstanceMethodCalls() !=null && !method.getInstanceMethodCalls().isEmpty() ){
+//            // Recorrer las instancias de métodos
+//            for (InstanceMethodCall instanceMethodCall : method.getInstanceMethodCalls()) {
+//
+//                String[] parts = instanceMethodCall.getOperation().split("\\.");
+//                String classNameInstanceMethodCall = parts[0];
+//                String parametersMethodInstanceMethodCall = parts[1];
+//                int indexPositionFirstParentesis = parametersMethodInstanceMethodCall.indexOf('(');
+//                String methodNameParts = parametersMethodInstanceMethodCall.substring(0, indexPositionFirstParentesis);
+//                String parametersParts = parametersMethodInstanceMethodCall.substring(indexPositionFirstParentesis + 1, parametersMethodInstanceMethodCall.length() - 1);
+//
+//                if (methodIsVoid(methodNameParts, classNameInstanceMethodCall, this.project)) {
+//                    content.append("\t").append(this.generateCallMethodMockDoNothing(methodNameParts, classNameInstanceMethodCall, parametersParts));
+//                } else {
+//
+//                    Clase clasS = project.getClass(classNameInstanceMethodCall);
+//                    if (COMMON_METHODS.contains(methodNameParts)) {
+//                        content.append("\t").append(this.generateCallMethodMock(instanceMethodCall.getOperation(), method, this.project, parametersParts));
+//
+//                        if (instanceMethodCall.getParametros().isEmpty()) {
+//                            List<ParametroMetodo> parametersList = new ArrayList<>();
+//                            if (parametersParts.contains(",")) {
+//                                List<String> ListTempral = Arrays.asList(parametersParts.split(","));
+//                                ListTempral.forEach(s -> parametersList.add(ParametroMetodo.builder().nombre(s).build()));
+//                            } else {
+//                                parametersList.add(ParametroMetodo.builder().nombre(parametersParts).build());
+//                            }
+//                            verifyMock = verificarMock(instanceMethodCall.getVariableInstace(), instanceMethodCall.getMethod(), parametersList);
+//
+//                        } else {
+//                            verifyMock = verificarMock(instanceMethodCall.getVariableInstace(), instanceMethodCall.getMethod(), instanceMethodCall.getParametros());
+//                        }
+//
+//                    } else {
+//                        Metodo methodInClass = clasS.getMetodos().stream().filter(metodo -> method.getNombre().toLowerCase().equals(methodNameParts.toLowerCase())).findFirst().get();
+//                        content.append("\t").append(this.generateCallMethodMock(instanceMethodCall.getOperation(), methodInClass, this.project, null));
+//                    }
+//                }
+//            }
+//        }
+//
+//        String resultValueName = String.format("%s%s" ,method.getNombre() ,"Result");
+//       String operation =  String.format("%s %s = %s;" ,method.getTipoRetorno() ,resultValueName,testMethod);
+//        content.append("\n").append("\t").append(operation).append("\n");
+//        content.append("\n").append("\t").append(verifyMock);
+//        content.append("\t").append(generateCallAssertType(method, this.project, resultValueName)).append("\n");
+//        return content.toString();
+//    }
 
 
     private String addStringParametes(List<ParametroMetodo> parametros){
@@ -221,44 +197,109 @@ private String methodParameterObject(Metodo method, Project project){
 
     List<Clase> clasesParameters = new ArrayList<>();
     if (method.getParametros() != null && !method.getParametros().isEmpty()) {
-//        for (ParametroMetodo parametroMethod : method.getParametros()) {
-//            Clase found = project.getClass(parametroMethod.getTipo());
-//            if (found != null) {
-//                clasesParameters.add(found);
-//            }
-//        }
-
-//        method.getParametros().forEach(parametroMethod -> {
-//            Clase found = project.getClass(parametroMethod.getTipo());
-//            if (found != null) {
-//                clasesParameters.add(found);
-//            }
-//        });
-
         method.getParametros().stream()
                 .map(parametroMethod -> project.getClass(parametroMethod.getTipo()))
                 .filter(foundClass -> foundClass != null)
                 .forEach(clasesParameters::add);
     }
-
-
-
-
+    //TODO: LLEVAR LA LISTA A sTRING PERO PRIMERO POR QUE SE CREO ESTE METODO
         return null;
 }
 
-    public Clase getClass(String className, Project project){
-        Clase foundClass = null;
-        if(project.getClaseList() != null && !project.getClaseList().isEmpty() && className !=null && !className.equals("")){
-            for(Clase cla : project.getClaseList()){
-                if(cla.getNombre()!=null && cla.getNombre().equals(className)){
-                    foundClass = cla;
-                }
-            }
+//    public Clase getClass(String className, Project project){
+//        Clase foundClass = null;
+//        if(project.getClaseList() != null && !project.getClaseList().isEmpty() && className !=null && !className.equals("")){
+//            for(Clase cla : project.getClaseList()){
+//                if(cla.getNombre()!=null && cla.getNombre().equals(className)){
+//                    foundClass = cla;
+//                }
+//            }
+//        }
+//        return foundClass;
+//    }
 
-        }
-        return foundClass;
+
+
+
+    private String generateContentMock(Metodo method, Clase clase) {
+        StringBuilder content = new StringBuilder("\n");
+        String classNameCamelCase = StringUtils.uncapitalize(clase.getNombre()); // Use StringUtils if available
+        String parametersMethodTest = this.addStringParametes(method.getParametros());
+        String testMethodCall = String.format("%s.%s(%s)", classNameCamelCase, method.getNombre(), parametersMethodTest);
+
+        // Process instance method calls if any
+        String mockCalls = processInstanceMethodCalls(method);
+        content.append(mockCalls);
+
+        String resultValueName = method.getNombre() + "Result";
+        String operation = String.format("%s %s = %s;", method.getTipoRetorno(), resultValueName, testMethodCall);
+        content.append("\n\t").append(operation).append("\n");
+
+        // Extract verifyMock logic to a dedicated method
+        String verifyMock = extractVerifyMock(method);
+        content.append("\n\t").append(verifyMock);
+
+        content.append("\t").append(generateCallAssertType(method, this.project, resultValueName)).append("\n");
+        return content.toString();
     }
 
+    private String processInstanceMethodCalls(Metodo method) {
+        if (method.getInstanceMethodCalls() == null || method.getInstanceMethodCalls().isEmpty()) {
+            return "";
+        }
+
+        StringBuilder mockCalls = new StringBuilder();
+        for (InstanceMethodCall instanceMethodCall : method.getInstanceMethodCalls()) {
+            String[] parts = instanceMethodCall.getOperation().split("\\.");
+            String classNameInstanceMethodCall = parts[0];
+            String methodCallWithParams = parts[1];
+
+            int parenthesisIndex = methodCallWithParams.indexOf('(');
+            String methodName = methodCallWithParams.substring(0, parenthesisIndex);
+            String parameters = methodCallWithParams.substring(parenthesisIndex + 1, methodCallWithParams.length() - 1);
+
+            if (methodIsVoid(methodName, classNameInstanceMethodCall, this.project)) {
+                mockCalls.append("\t").append(generateCallMethodMockDoNothing(methodName, classNameInstanceMethodCall, parameters));
+            } else {
+                Clase calledClass = project.getClass(classNameInstanceMethodCall);
+                if (COMMON_METHODS.contains(methodName)) {
+                    mockCalls.append("\t").append(generateCallMethodMock(instanceMethodCall.getOperation(), method, this.project, parameters));
+                } else if (calledClass != null) { //Check if calledClass is not null
+                    Optional<Metodo> methodInClass = calledClass.getMetodos().stream()
+                            .filter(m -> m.getNombre().equalsIgnoreCase(methodName))
+                            .findFirst();
+                    if(methodInClass.isPresent()){
+                        mockCalls.append("\t").append(generateCallMethodMock(instanceMethodCall.getOperation(), methodInClass.get(), this.project, null));
+                    } else{
+                        //Handle the case where the method is not found in the class. Throw an exception or log a warning.
+                        System.err.println("Method " + methodName + " not found in class " + classNameInstanceMethodCall);
+                        //Or throw an exception:
+                        //throw new RuntimeException("Method not found");
+                    }
+                }
+            }
+        }
+        return mockCalls.toString();
+    }
+
+    private String extractVerifyMock(Metodo method) {
+        if (method.getInstanceMethodCalls() == null || method.getInstanceMethodCalls().isEmpty()) {
+            return "";
+        }
+
+        return method.getInstanceMethodCalls().stream()
+                .filter(instanceMethodCall -> COMMON_METHODS.contains(instanceMethodCall.getMethod()))
+                .map(instanceMethodCall -> {
+                    String parametersParts = instanceMethodCall.getOperation().substring(instanceMethodCall.getOperation().indexOf('(') + 1, instanceMethodCall.getOperation().length() - 1);
+                    List<ParametroMetodo> parametersList = instanceMethodCall.getParametros().isEmpty()
+                            ? Arrays.stream(parametersParts.split(","))
+                            .filter(s -> !s.isEmpty()) // filter out empty strings
+                            .map(s -> ParametroMetodo.builder().nombre(s.trim()).build()) // trim white space
+                            .collect(Collectors.toList())
+                            : instanceMethodCall.getParametros();
+                    return verificarMock(instanceMethodCall.getVariableInstace(), instanceMethodCall.getMethod(), parametersList);
+                })
+                .collect(Collectors.joining());
+    }
 
 }

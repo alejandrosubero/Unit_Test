@@ -32,9 +32,9 @@ public class BuildTestFile {
         }
     }
 
-    //TODO: LA FINALIDAD ES VERIFICAR SI ESXISTE YA EL ARCHIVO CREADO Y PODER REESCRIBIR DEJENDO LO ANTERIOR O CREAR UNO NUEVO APARTE O REESCRIBIR TODO COMPLETAMENTE.
 
-    private String fileExistS(File archivo){
+
+    private String fileExist(File archivo){
         String contenido ="";
         if (!archivo.getParentFile().exists()) {
             if (archivo.getParentFile().mkdirs()) {
@@ -55,13 +55,13 @@ public class BuildTestFile {
 
 
     private String getContentActual(String content){
-//TODO: HACER INGENIERIA INVERSA CON ANALIZAR PARA CREAR UNA CLASE DE ESTO Y TRATAR DE USAR LO QUE SE NECESITE E IDENTIFICAR QUE ES LO QUE VAS A HACER
+    //TODO: HACER INGENIERIA INVERSA CON ANALIZAR PARA CREAR UNA CLASE DE ESTO Y TRATAR DE USAR LO QUE SE NECESITE E IDENTIFICAR QUE ES LO QUE VAS A HACER
         return null;
     }
 
-
-    private  void fileExist(File archivo){
-        if (!archivo.getParentFile().exists()) {
+    //TODO: LA FINALIDAD ES VERIFICAR SI ESXISTE YA EL ARCHIVO CREADO Y PODER REESCRIBIR DEJENDO LO ANTERIOR O CREAR UNO NUEVO APARTE O REESCRIBIR TODO COMPLETAMENTE.
+    private  void fileExistS(File archivo){
+        if (archivo.getParentFile().exists()) {
 
             try {
                 String contenido = FileUtils.readFileToString(archivo, "UTF-8");

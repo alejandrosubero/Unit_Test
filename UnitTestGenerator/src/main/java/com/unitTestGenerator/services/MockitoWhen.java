@@ -21,7 +21,7 @@ public interface MockitoWhen extends ReturnType {
     default String generateCallAssertType(Metodo metodo, Project project, String result) {
         StringBuilder contex = new StringBuilder();
         String valueReturn = generateRetrunValue(metodo, project);
-        contex.append("\n").append(getAssertType(metodo.getTipoRetorno(), valueReturn, result));
+        contex.append("\n").append("\t").append(getAssertType(metodo.getTipoRetorno(), valueReturn, result));
         return contex.toString();
     }
 
@@ -154,7 +154,7 @@ public interface MockitoWhen extends ReturnType {
 //        contenido.append("\n").append(getAssertType(metodo.getTipoRetorno(), null));
 
         // Verificar si se utilizaron las clases simuladas en los mocks
-        contenido.append("\n").append(verificarMock(variableInstanceName, methodName, parametros));
+//        contenido.append("\n").append(verificarMock(variableInstanceName, methodName, parametros));
 
         return contenido.toString();
     }
