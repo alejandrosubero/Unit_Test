@@ -2,6 +2,7 @@ package com.unitTestGenerator.services;
 
 import com.unitTestGenerator.pojos.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public interface MockitoWhen extends ReturnType {
@@ -91,16 +92,23 @@ public interface MockitoWhen extends ReturnType {
         contenido.append("new ").append(clase.getNombre()).append("(");
 
         if(clase.getConstructores() !=null && !clase.getConstructores().isEmpty() && clase.getConstructores().stream().anyMatch(Constructor::isNoneParam)){
-            // Agregar los parámetros del constructor
-//           Optional <Constructor> constructorOptional =  clase.getConstructores().stream().filter(constructor -> !constructor.isEmptyParameters()).findFirst();
-            List<ParametroMetodo> parametros = clase.getConstructores().stream().filter(constructor -> !constructor.isEmptyParameters()).findFirst().get().getParametros();
 
-            for (int i = 0; i < parametros.size(); i++) {
-                ParametroMetodo parametro = parametros.get(i);
-                contenido.append(parametro.getNombre());
+            if(!clase.getConstructores().isEmpty()){
+                List<ParametroMetodo> parametros = new ArrayList<>();
+                for (Constructor constructor : clase.getConstructores()){
+                    if( !constructor.isEmptyParameters()){
+                        parametros.addAll(constructor.getParametros());
+                        break;
+                    }
+                }
 
-                if (i < parametros.size() - 1) {
-                    contenido.append(", ");
+                for (int i = 0; i < parametros.size(); i++) {
+                    ParametroMetodo parametro = parametros.get(i);
+                    contenido.append(parametro.getNombre());
+
+                    if (i < parametros.size() - 1) {
+                        contenido.append(", ");
+                    }
                 }
             }
         }
@@ -163,18 +171,17 @@ public interface MockitoWhen extends ReturnType {
     default String getMokitoSetUpBeforeEach(boolean isAutoCloseable){
         StringBuilder mokitoSetUpBeforeEach = new StringBuilder("\n");
         if(isAutoCloseable) {
-            mokitoSetUpBeforeEach.append("private AutoCloseable closeable;").append("\n").append("\n");
-            mokitoSetUpBeforeEach.append("@BeforeEach").append("\n");
-            mokitoSetUpBeforeEach.append("void setUp() {").append("\n");
-            mokitoSetUpBeforeEach.append("closeable = MockitoAnnotations.openMocks(this);").append("\n").append("}").append("\n").append("\n");
-            mokitoSetUpBeforeEach.append("@AfterEach").append("\n");
-            mokitoSetUpBeforeEach.append("void tearDown() throws Exception {").append("\n");
-            mokitoSetUpBeforeEach.append("  closeable.close();").append("\n").append("}").append("\n").append("\n");
+            mokitoSetUpBeforeEach.append("\t").append("private AutoCloseable closeable;").append("\n").append("\n");
+            mokitoSetUpBeforeEach.append("\t").append("@BeforeEach").append("\n");
+            mokitoSetUpBeforeEach.append("\t").append("void setUp() {").append("\n");
+            mokitoSetUpBeforeEach.append("\t").append("closeable = MockitoAnnotations.openMocks(this);").append("\n").append("}").append("\n").append("\n");
+            mokitoSetUpBeforeEach.append("\t").append("@AfterEach").append("\n");
+            mokitoSetUpBeforeEach.append("\t").append("void tearDown() throws Exception {").append("\n");
+            mokitoSetUpBeforeEach.append("\t").append("  closeable.close();").append("\n").append("}").append("\n").append("\n");
         }else {
-            mokitoSetUpBeforeEach.append("@BeforeEach").append("\n");
-            mokitoSetUpBeforeEach.append("void setUp() {").append("\n");
-            mokitoSetUpBeforeEach.append("MockitoAnnotations.openMocks(this);")
-                    .append("\n").append("}").append("\n").append("\n");
+            mokitoSetUpBeforeEach.append("\t").append("@BeforeEach").append("\n");
+            mokitoSetUpBeforeEach.append("\t").append("void setUp() {").append("\n");
+            mokitoSetUpBeforeEach.append("\t").append("MockitoAnnotations.openMocks(this);").append("\n").append("\t").append("}").append("\n").append("\n");
         }
         return mokitoSetUpBeforeEach.toString();
     }

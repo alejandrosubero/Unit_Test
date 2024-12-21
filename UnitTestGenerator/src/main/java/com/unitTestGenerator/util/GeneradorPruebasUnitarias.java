@@ -33,14 +33,21 @@ public class GeneradorPruebasUnitarias implements IBaseModel {
     }
 
     private  String generateTestFileBody(Clase clase) {
-        StringBuilder contenido = new StringBuilder();
+        StringBuffer contenido = new StringBuffer();
         GeneratedVariableService variableService = GeneratedVariableService.getInstance();
 
-        contenido.append(this.generateImport(clase)).append("\n");
-        contenido.append(this.classSingne(clase));
-        contenido.append(variableService.generateVariable(clase));
-        contenido.append(GenerateMethodService.getInstance().generateMethods(clase,project) );
-        contenido.append("}\n");
+        TestFileContent fileContent = TestFileContent.builder()
+                .testsClassImport(this.generateImport(clase))
+                .testsClassSingne(this.classSingne(clase))
+                .testsClassVariables(variableService.generateVariable(clase))
+                .testsClassMethods("")
+                .build();
+
+//        contenido.append(this.generateImport(clase)).append("\n");
+//        contenido.append(this.classSingne(clase));
+//        contenido.append(variableService.generateVariable(clase));
+        TestFileContent fileContentGenerate =  GenerateMethodService.getInstance().generateMethods(clase,project, fileContent);
+        contenido.append(fileContentGenerate.toString());
         return contenido.toString();
     }
 

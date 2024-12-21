@@ -10,13 +10,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class GenerateMethodService implements IBaseModel, MockitoWhen {
 
     private Project project;
     private static GenerateMethodService instance;
     private static final List<String> COMMON_METHODS = Arrays.asList("save", "findAllById", "findById", "delete", "deleteAll", "deleteById");
-
+    private static final List<String> COMMON_IMPORTS = Arrays.asList( "Date", "List", "Map" );
     private GenerateMethodService(){}
 
     public static GenerateMethodService getInstance(){
@@ -30,41 +32,109 @@ public class GenerateMethodService implements IBaseModel, MockitoWhen {
         this.project = project;
     }
 
-    public String generateMethods( Clase clase, Project project){
+    public TestFileContent generateMethods( Clase clase, Project project,  TestFileContent fileContent ){
+
         this.setProject(project);
         StringBuilder contex = new StringBuilder();
 
         if (clase.getTestMethod().toLowerCase().equals("all")){
             clase.getMetodos().forEach(metodo -> {
-                contex.append(MethodParameterObject.getInstance().methodParameterObject(metodo, project, clase.getUseMock()));
-                contex.append(obtenerContenidoMetodo(metodo, clase));
+                fileContent.update(this.setContent(fileContent,clase, project, metodo));
         });
         }else{
             for (Metodo metodo : clase.getMetodos()) {
                 if (clase.getTestMethod().toLowerCase().equals(metodo.getNombre().toLowerCase())){
-                    contex.append(MethodParameterObject.getInstance().methodParameterObject(metodo, project, clase.getUseMock()));
-                    contex.append(obtenerContenidoMetodo(metodo, clase));
+                    fileContent.update(this.setContent(fileContent,clase, project, metodo));
                 }
             }
         }
         contex.append("\n");
-        return contex.toString();
+        if(clase.getUseMock()){
+            fileContent.addVariable("\n");
+            fileContent.addVariable(MethodParameterObject.getInstance().getMokitoSetUpBeforeEach(false));
+        }
+        return fileContent;
     }
 
-    private  String obtenerContenidoMetodo(Metodo metodo, Clase clase) {
+    private TestFileContent setContent(TestFileContent fileContent,  Clase clase, Project project,Metodo metodo){
+        String variable = MethodParameterObject.getInstance().methodParameterObject(metodo, project, clase.getUseMock());
+        if (variable != null) {
+            List<String> mockDeclarations = new ArrayList<>();
+            String regex = "(?s)@Mock\\s+private\\s+\\w+\\s+\\w+;";
+            Pattern pattern = Pattern.compile(regex);
+            Matcher matcher = pattern.matcher(variable);
+
+            while (matcher.find()) {
+                mockDeclarations.add(matcher.group().trim());
+            }
+            for (String declaration : mockDeclarations) {
+                if (!fileContent.getTestsClassVariables().contains(declaration)) {
+                    fileContent.addVariable(new StringBuffer("\t").append(declaration).toString());
+                    fileContent.addImport(this.getImportInMockObject(declaration, project));
+                }
+            }
+        }
+        fileContent.addMethod(this.obtenerContenidoMetodo(metodo, clase, fileContent));
+        return fileContent;
+    }
+
+
+
+
+    private  String obtenerContenidoMetodo(Metodo metodo, Clase clase, TestFileContent fileContent) {
         String methodName = String.format("%s%s", metodo.getNombre().substring(0, 1).toUpperCase(), metodo.getNombre().substring(1));
-        String content = generarContenidoMetodoPrueba(metodo, clase);
+        String content = generarContenidoMetodoPrueba(metodo, clase, fileContent);
         String methodoTest = String.format("\n \t@Test\n \tpublic void test%s() {\n  \t%s \n }\n", methodName,content);
         return methodoTest;
     }
 
-    private String generarContenidoMetodoPrueba(Metodo metodo, Clase clase) {
-        StringBuilder contenido = new StringBuilder();
-        String conten = clase.getUseMock()? generateContentMock(metodo, clase):generarContenidoSinMock(metodo);
+    private String generarContenidoMetodoPrueba(Metodo metodo, Clase clase, TestFileContent fileContent) {
+        StringBuffer contenido = new StringBuffer();
+        String conten = clase.getUseMock()? generateContentMock(metodo, clase, fileContent):generarContenidoSinMock(metodo);
         contenido.append(conten);
         return contenido.toString();
     }
-//===============================================================================================================================================================================
+
+    private String getImportInMockObject(String input, Project project){
+
+        String importName ="";
+        try {
+            String regex = "\\bprivate\\b\\s+(\\w+)";
+            Pattern pattern = Pattern.compile(regex);
+            Matcher matcher = pattern.matcher(input);
+
+            if (matcher.find()) {
+                String className = matcher.group(1);
+                Clase clase = project.getClass(className);
+                if(clase != null && clase.getNombre() !=null && clase.getPaquete() != null){
+                    importName = String.format("\nimport %s.%s;",clase.getPaquete(), clase.getNombre());
+                }else if(COMMON_IMPORTS.contains(className)){
+                    importName = String.format("\nimport %s.%s;","java.util", className);
+                }
+            }
+            return importName;
+        }catch (Exception e){
+            e.printStackTrace();
+            return importName;
+        }
+    }
+
+    private String getImportInObject(String input, Project project){
+        String importName ="";
+        try {
+            String className = input;
+            Clase clase = project.getClass(className);
+            if(clase != null && clase.getNombre() !=null && clase.getPaquete() != null){
+                importName = String.format("\nimport %s.%s;",clase.getPaquete(), clase.getNombre());
+            }
+            return importName;
+        }catch (Exception e){
+            e.printStackTrace();
+            return importName;
+        }
+    }
+
+    //===============================================================================================================================================================================
     private String generarContenidoSinMock(Metodo metodo) {
         StringBuilder contenido = new StringBuilder();
         String methodName = metodo.getNombre();
@@ -193,49 +263,35 @@ public class GenerateMethodService implements IBaseModel, MockitoWhen {
         return contenido.toString();
 }
 
-private String methodParameterObject(Metodo method, Project project){
+    private String methodParameterObject(Metodo method, Project project) {
 
-    List<Clase> clasesParameters = new ArrayList<>();
-    if (method.getParametros() != null && !method.getParametros().isEmpty()) {
-        method.getParametros().stream()
-                .map(parametroMethod -> project.getClass(parametroMethod.getTipo()))
-                .filter(foundClass -> foundClass != null)
-                .forEach(clasesParameters::add);
-    }
-    //TODO: LLEVAR LA LISTA A sTRING PERO PRIMERO POR QUE SE CREO ESTE METODO
+        List<Clase> clasesParameters = new ArrayList<>();
+        if (method.getParametros() != null && !method.getParametros().isEmpty()) {
+            method.getParametros().stream()
+                    .map(parametroMethod -> project.getClass(parametroMethod.getTipo()))
+                    .filter(foundClass -> foundClass != null)
+                    .forEach(clasesParameters::add);
+        }
+        //TODO: LLEVAR LA LISTA A sTRING PERO PRIMERO POR QUE SE CREO ESTE METODO
         return null;
-}
-
-//    public Clase getClass(String className, Project project){
-//        Clase foundClass = null;
-//        if(project.getClaseList() != null && !project.getClaseList().isEmpty() && className !=null && !className.equals("")){
-//            for(Clase cla : project.getClaseList()){
-//                if(cla.getNombre()!=null && cla.getNombre().equals(className)){
-//                    foundClass = cla;
-//                }
-//            }
-//        }
-//        return foundClass;
-//    }
+    }
 
 
 
 
-    private String generateContentMock(Metodo method, Clase clase) {
+    private String generateContentMock(Metodo method, Clase clase, TestFileContent fileContent) {
         StringBuilder content = new StringBuilder("\n");
         String classNameCamelCase = StringUtils.uncapitalize(clase.getNombre()); // Use StringUtils if available
         String parametersMethodTest = this.addStringParametes(method.getParametros());
         String testMethodCall = String.format("%s.%s(%s)", classNameCamelCase, method.getNombre(), parametersMethodTest);
 
-        // Process instance method calls if any
         String mockCalls = processInstanceMethodCalls(method);
         content.append(mockCalls);
 
         String resultValueName = method.getNombre() + "Result";
         String operation = String.format("%s %s = %s;", method.getTipoRetorno(), resultValueName, testMethodCall);
         content.append("\n\t").append(operation).append("\n");
-
-        // Extract verifyMock logic to a dedicated method
+        fileContent.addImport(this.getImportInObject(method.getTipoRetorno(), project));
         String verifyMock = extractVerifyMock(method);
         content.append("\n\t").append(verifyMock);
 
@@ -243,12 +299,13 @@ private String methodParameterObject(Metodo method, Project project){
         return content.toString();
     }
 
+
     private String processInstanceMethodCalls(Metodo method) {
         if (method.getInstanceMethodCalls() == null || method.getInstanceMethodCalls().isEmpty()) {
             return "";
         }
 
-        StringBuilder mockCalls = new StringBuilder();
+        StringBuffer mockCalls = new StringBuffer();
         for (InstanceMethodCall instanceMethodCall : method.getInstanceMethodCalls()) {
             String[] parts = instanceMethodCall.getOperation().split("\\.");
             String classNameInstanceMethodCall = parts[0];

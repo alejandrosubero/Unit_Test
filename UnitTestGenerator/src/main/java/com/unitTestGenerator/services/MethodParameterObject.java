@@ -72,7 +72,7 @@ public class MethodParameterObject implements IGenerateVariable, MockitoWhen {
                     ).append("\n");
                 });
             }
-            contentWentisMock.append(this.getMokitoSetUpBeforeEach(false));
+//            contentWentisMock.append(this.getMokitoSetUpBeforeEach(false));
         return contentWentisMock.toString();
     }
 
