@@ -27,13 +27,13 @@ public class GeneradorPruebasUnitarias implements IBaseModel {
     public void generarPruebas(Clase clase, String pathProject) {
 
        this.projectTypeDependencesAnalizer(pathProject);
-        String contedOfTestClass = generateTestFileBody(clase);
+        String contedOfTestClass = generateTestFileBody(clase).toString();
         String pathOfTest = this.getPathOfTest( clase,  pathProject);
         BuildTestFile.getInstance().createTestFile(pathOfTest, contedOfTestClass);
     }
 
-    private  String generateTestFileBody(Clase clase) {
-        StringBuffer contenido = new StringBuffer();
+    private  TestFileContent generateTestFileBody(Clase clase) {
+
         GeneratedVariableService variableService = GeneratedVariableService.getInstance();
 
         TestFileContent fileContent = TestFileContent.builder()
@@ -43,12 +43,8 @@ public class GeneradorPruebasUnitarias implements IBaseModel {
                 .testsClassMethods("")
                 .build();
 
-//        contenido.append(this.generateImport(clase)).append("\n");
-//        contenido.append(this.classSingne(clase));
-//        contenido.append(variableService.generateVariable(clase));
         TestFileContent fileContentGenerate =  GenerateMethodService.getInstance().generateMethods(clase,project, fileContent);
-        contenido.append(fileContentGenerate.toString());
-        return contenido.toString();
+        return fileContentGenerate;
     }
 
     private String classSingne(Clase clase){

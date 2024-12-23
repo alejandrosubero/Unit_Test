@@ -1,10 +1,16 @@
 package com.unitTestGenerator.builders;
 
+import com.unitTestGenerator.pojos.TestFileContent;
 import org.apache.commons.io.FileUtils;
 
-import java.io.File;
+import java.io.*;
+import java.nio.file.*;
+import java.util.stream.*;
 import java.io.FileWriter;
 import java.io.IOException;
+
+
+
 import org.apache.commons.io.FileUtils;
 
 public class BuildTestFile {
@@ -96,4 +102,41 @@ public class BuildTestFile {
             }
         }
     }
+
+
+
+
+
+    public void JavaFileEditor( String filePath, TestFileContent fileContent ) {
+
+        try {
+            Stream<String> fileStream = Files.lines(Paths.get(filePath));
+            String content = fileStream.collect(Collectors.joining("\n"));
+            fileStream.close();
+
+            int lastBraceIndex = content.lastIndexOf("}");
+
+            if (lastBraceIndex == -1) {
+                throw new IllegalArgumentException("El archivo no tiene un cierre de llave.");
+            }
+
+            // Modificar el contenido en una sola operación
+            String updatedContent = content.substring(0, content.indexOf("{") + 1) + "\n" +
+                    fileContent.getTestsClassVariables() + "\n" +
+                    content.substring(content.indexOf("{") + 1, content.lastIndexOf("}")) +
+                    fileContent.getTestsClassMethods() + "\n" +
+                    content.substring(content.lastIndexOf("}"));
+
+//            String testMethodCall = String.format("%s.%s(%s)", classNameCamelCase, method.getNombre(), parametersMethodTest);
+
+            // Escribir el contenido modificado de vuelta al archivo
+            Files.write(Paths.get(filePath), updatedContent.getBytes());
+            System.out.println("Archivo modificado y guardado exitosamente.");
+
+        } catch (IOException e) {
+            System.err.println("Error al procesar el archivo: " + e.getMessage());
+        }
+        }
+    }
+
 }
