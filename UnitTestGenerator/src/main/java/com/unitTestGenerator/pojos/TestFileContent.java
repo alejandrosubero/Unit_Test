@@ -9,6 +9,8 @@ public class TestFileContent {
     private String testsClassVariables;
     private String testsClassMethods;
 
+
+
     public TestFileContent() {
     }
 
