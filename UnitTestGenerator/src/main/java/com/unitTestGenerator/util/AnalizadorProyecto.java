@@ -8,6 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.unitTestGenerator.pojos.*;
+import com.unitTestGenerator.services.AnalyzeClassService;
 import com.unitTestGenerator.services.MethodService;
 import org.apache.commons.io.FileUtils;
 
@@ -29,11 +30,8 @@ public class AnalizadorProyecto {
 
     public  List<Clase> analizarProyecto(String rutaProyecto) {
         List<Clase> clases = new ArrayList<>();
-
         File carpetaProyecto = new File(rutaProyecto);
-
         analizarProyectoRecursivo(carpetaProyecto, clases);
-
         return clases;
     }
 
@@ -47,7 +45,8 @@ public class AnalizadorProyecto {
                     if (archivo.isDirectory()) {
                         analizarProyectoRecursivo(archivo, clases);
                     } else if (archivo.getName().endsWith(".java")) {
-                        clases.add(analizarClase(archivo));
+                        clases.add(AnalyzeClassService.getInstance().analyzeClase(archivo));
+//                        clases.add(analizarClase(archivo));
                     }
                 }
             }
