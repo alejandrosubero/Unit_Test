@@ -285,7 +285,7 @@ public class GenerateMethodService implements IBaseModel, MockitoWhen {
         String parametersMethodTest = this.addStringParametes(method.getParametros());
         String testMethodCall = String.format("%s.%s(%s)", classNameCamelCase, method.getNombre(), parametersMethodTest);
 
-        String mockCalls = processInstanceMethodCalls(method);
+        String mockCalls = processInstanceMethodCalls(method, fileContent);
         content.append(mockCalls);
 
         String resultValueName = method.getNombre() + "Result";
@@ -300,7 +300,7 @@ public class GenerateMethodService implements IBaseModel, MockitoWhen {
     }
 
 
-    private String processInstanceMethodCalls(Metodo method) {
+    private String processInstanceMethodCalls(Metodo method, TestFileContent fileContent) {
         if (method.getInstanceMethodCalls() == null || method.getInstanceMethodCalls().isEmpty()) {
             return "";
         }
@@ -319,6 +319,18 @@ public class GenerateMethodService implements IBaseModel, MockitoWhen {
                 mockCalls.append("\t").append(generateCallMethodMockDoNothing(methodName, classNameInstanceMethodCall, parameters));
             } else {
                 Clase calledClass = project.getClass(classNameInstanceMethodCall);
+
+                if(instanceMethodCall.getParametros() !=null && !instanceMethodCall.getParametros().isEmpty()){
+
+                    instanceMethodCall.getParametros().forEach(parametroMetodo ->
+                        fileContent.addVariable(
+                                GeneratedVariableService.getInstance().generateVariable(
+                                        parametroMetodo.getTipo(),
+                                        parametroMetodo.getNombre(),
+                                        false, true))
+                    );
+                }
+
                 if (COMMON_METHODS.contains(methodName)) {
                     mockCalls.append("\t").append(generateCallMethodMock(instanceMethodCall.getOperation(), method, this.project, parameters));
                 } else if (calledClass != null) { //Check if calledClass is not null
