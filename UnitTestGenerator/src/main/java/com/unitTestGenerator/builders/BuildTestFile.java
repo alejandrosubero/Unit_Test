@@ -28,9 +28,9 @@ public class BuildTestFile {
         File archivo = new File(ruta);
         String oldVlue = fileExist(archivo);
 
-        if(oldVlue != null && !oldVlue.equals("")){
-//            JavaFileEditor( String content, TestFileContent fileContent)
-        }
+//        if(oldVlue != null && !oldVlue.equals("")){
+////            JavaFileEditor( String content, TestFileContent fileContent)
+//        }
 
         this.writefiles( archivo,content);
 //        fileWriter( archivo,contenido,ruta);
