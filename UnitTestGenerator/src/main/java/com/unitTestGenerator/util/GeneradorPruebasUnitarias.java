@@ -27,9 +27,11 @@ public class GeneradorPruebasUnitarias implements IBaseModel {
     public void generarPruebas(Clase clase, String pathProject) {
 
        this.projectTypeDependencesAnalizer(pathProject);
-        String contedOfTestClass = generateTestFileBody(clase).toString();
+
+        TestFileContent fileContent = generateTestFileBody(clase);
+//        String contedOfTestClass = fileContent.toString();
         String pathOfTest = this.getPathOfTest( clase,  pathProject);
-        BuildTestFile.getInstance().createTestFile(pathOfTest, contedOfTestClass);
+        BuildTestFile.getInstance().createTestFile(pathOfTest, fileContent);
     }
 
     private  TestFileContent generateTestFileBody(Clase clase) {

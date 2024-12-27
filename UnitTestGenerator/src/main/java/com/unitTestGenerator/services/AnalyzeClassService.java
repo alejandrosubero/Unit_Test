@@ -35,24 +35,28 @@ public class AnalyzeClassService {
         return clase;
     }
 
-
     public Clase analyzeClase(File archivo) {
-        Clase clase = new Clase();
-
         try {
-            String contenido = FileUtils.readFileToString(archivo, "UTF-8");
-
-            analizarPaquete(contenido, clase);
-            analizarNombreYTipoClase(contenido, clase);
-            analizarConstructores(contenido, clase);
-            analizarMetodos(contenido, clase);
-            analizarVariables(contenido, clase);
-            analizarEstructurasControl(contenido, clase);
+            String content = FileUtils.readFileToString(archivo, "UTF-8");
+            return analyzeClaseContentString(content);
 
         } catch (Exception e) {
             System.out.println("Error al analizar archivo: " + archivo.getName());
         }
 
+    }
+
+
+
+
+    public Clase analyzeClaseContentString( String content) throws Exception {
+        Clase clase = new Clase();
+            analizarPaquete(content, clase);
+            analizarNombreYTipoClase(content, clase);
+            analizarConstructores(content, clase);
+            analizarMetodos(content, clase);
+            analizarVariables(content, clase);
+            analizarEstructurasControl(content, clase);
         return postClassMethodAnalysis(clase);
     }
 

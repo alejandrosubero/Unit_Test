@@ -1,5 +1,6 @@
 package com.unitTestGenerator.builders;
 
+import com.unitTestGenerator.pojos.Clase;
 import com.unitTestGenerator.pojos.TestFileContent;
 import com.unitTestGenerator.services.AnalyzeClassService;
 import org.apache.commons.io.FileUtils;
@@ -24,15 +25,15 @@ public class BuildTestFile {
     }
 
 
-    public  void createTestFile(String ruta, String content) {
+    public  void createTestFile(String ruta, TestFileContent content) {
         File archivo = new File(ruta);
         String oldVlue = fileExist(archivo);
 
-//        if(oldVlue != null && !oldVlue.equals("")){
-////            JavaFileEditor( String content, TestFileContent fileContent)
-//        }
+        if(oldVlue != null && !oldVlue.equals("")){
+            this.JavaFileEditor(oldVlue,content);
+        }
 
-        this.writefiles( archivo,content);
+        this.writefiles( archivo,content.toString());
 //        fileWriter( archivo,contenido,ruta);
     }
 
@@ -78,26 +79,34 @@ public class BuildTestFile {
     }
 
 
-    public String JavaFileEditor( String content, TestFileContent fileContent) {
+    public String JavaFileEditor( String oldContentValue, TestFileContent newfileContent) {
         try {
+
             String contentWithVariables = "";
             String updatedContent = "";
-            Integer lastBraceIndex = content.lastIndexOf("}");
-            Integer firstBraceIndex = content.indexOf("{");
+            Integer lastBraceIndex = oldContentValue.lastIndexOf("}");
+            Integer firstBraceIndex = oldContentValue.indexOf("{");
 
             if (lastBraceIndex == -1) {
                 return "The file Don't have \" } \" ";
             }
             //TODO: SE REQUIERE UN METODO QUE ANALICE SI EXISTE EN EL CONTENIDO LAS VARIABLES Y EN LOS METODOS EL METODO PARA MODIFICARLO
-            
-            if (fileContent != null && fileContent.getTestsClassVariables() != null) {
+
+            Clase newClassContent = AnalyzeClassService.getInstance().analyzeClaseContentString(newfileContent.toString());
+            Clase oldClassContent = AnalyzeClassService.getInstance().analyzeClaseContentString(oldContentValue);
+
+            if (newfileContent != null && newfileContent.getTestsClassVariables() != null) {
+                oldClassContent.getVariables().forEach(variable -> {
+                    if(!newClassContent.getVariables().contains(variable)){
+                        contentWithVariables = this.formatUpdatedContent(oldContentValue, firstBraceIndex, newfileContent.getTestsClassVariables());
+                    }
+                });
                 //        AnalyzeClassService.getInstance().getAnalisisOfVariables()
-                contentWithVariables = this.formatUpdatedContent(content, firstBraceIndex, fileContent.getTestsClassVariables());
             }
 
-            if (fileContent != null && fileContent.getTestsClassMethods() != null) {
+            if (newfileContent != null && newfileContent.getTestsClassMethods() != null) {
                 //        AnalyzeClassService.getInstance().getAnalisisOfContenidoMetodo()
-                updatedContent = this.formatUpdatedContent(contentWithVariables, lastBraceIndex, fileContent.getTestsClassMethods());
+                updatedContent = this.formatUpdatedContent(contentWithVariables, lastBraceIndex, newfileContent.getTestsClassMethods());
             }
 
            return updatedContent;
