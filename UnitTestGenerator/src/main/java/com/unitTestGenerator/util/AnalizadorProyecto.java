@@ -45,8 +45,10 @@ public class AnalizadorProyecto {
                     if (archivo.isDirectory()) {
                         analizarProyectoRecursivo(archivo, clases);
                     } else if (archivo.getName().endsWith(".java")) {
-                        clases.add(AnalyzeClassService.getInstance().analyzeClase(archivo));
-//                        clases.add(analizarClase(archivo));
+                        Clase clase = AnalyzeClassService.getInstance().analyzeClase(archivo);
+                        if(clase !=null) {
+                            clases.add(clase);
+                        }
                     }
                 }
             }

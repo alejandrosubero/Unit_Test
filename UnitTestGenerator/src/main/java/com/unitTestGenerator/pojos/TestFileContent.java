@@ -76,6 +76,17 @@ public class TestFileContent {
         return filetoString.toString();
     }
 
+
+    public String toStringTemplate() {
+        StringBuffer filetoString = new StringBuffer("\n");
+        filetoString.append(this.getTestsClassImport()).append("\n").append("\n");
+        filetoString.append(this.testsClassSingne).append("\n");
+        filetoString.append("@ClassVariables@").append("\n");
+        filetoString.append("@ClassMethods@").append("\n");
+        filetoString.append("}\n");
+        return filetoString.toString();
+    }
+
     public static TestFileContent getNewInstance( TestFileContent old){
         return TestFileContent.builder()
                 .testsClassImport(old.getTestsClassImport())

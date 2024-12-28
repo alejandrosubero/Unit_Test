@@ -14,13 +14,14 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import com.unitTestGenerator.builders.BuildTestFile;
 import com.unitTestGenerator.interfaces.IBaseModel;
+import com.unitTestGenerator.interfaces.IFileManager;
 import org.apache.commons.io.FileUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-public class GradleAnalyzer implements IBaseModel {
+public class GradleAnalyzer implements IBaseModel, IFileManager {
 
     private File archivoGradle;
 
@@ -39,8 +40,8 @@ public class GradleAnalyzer implements IBaseModel {
             List<String> dependencesList4  =  this.addDependences(   "org.mockito", "mockito-core", "3.12.4", dependencesList3,  contenido);
             this.analizarEstructura();
             String newContenido =  this.listStringStructureToColummString(dependencesList3);
-
-            BuildTestFile.getInstance().writefiles( archivoGradle,  newContenido);
+            this.writefilesI( archivoGradle,  newContenido);
+//            BuildTestFile.getInstance().writefiles( archivoGradle,  newContenido);
 
         } catch (IOException e) {
             throw new RuntimeException(e);

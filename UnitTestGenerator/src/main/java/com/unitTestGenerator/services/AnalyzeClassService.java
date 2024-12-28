@@ -25,7 +25,11 @@ public class AnalyzeClassService {
 
     public Clase getAnalisisOfVariables(String content){
         Clase clase = new Clase();
-        analizarVariables( content, clase);
+        try {
+            clase = analyzeClaseContentString(content);
+        } catch (Exception e) {
+            System.out.println("Error  analized the content of file...");
+        }
         return clase;
     }
 
@@ -43,19 +47,17 @@ public class AnalyzeClassService {
         } catch (Exception e) {
             System.out.println("Error al analizar archivo: " + archivo.getName());
         }
-
+        return null;
     }
 
 
-
-
-    public Clase analyzeClaseContentString( String content) throws Exception {
+    private  Clase analyzeClaseContentString( String content) throws Exception {
         Clase clase = new Clase();
             analizarPaquete(content, clase);
             analizarNombreYTipoClase(content, clase);
             analizarConstructores(content, clase);
             analizarMetodos(content, clase);
-            analizarVariables(content, clase);
+            analyzeVariables(content, clase);
             analizarEstructurasControl(content, clase);
         return postClassMethodAnalysis(clase);
     }
@@ -110,19 +112,25 @@ public class AnalyzeClassService {
         }
     }
 
-    private void analizarMetodos(String contenido, Clase clase) {
+    private void analizarMetodos2(String contenido, Clase clase) {
         List<Metodo> metodoList = new ArrayList<>();
 
         if ("class".equals(clase.getTypeClass())) {
             Pattern patronMetodo = Pattern.compile("public (\\w+) (\\w+)\\((.*?)\\)", Pattern.DOTALL);
-            Matcher matcherMetodo = patronMetodo.matcher(contenido);
+//            Pattern patronMetodo = Pattern.compile("(public|protected|private) (\\w+) (\\w+)\\((.*?)\\)", Pattern.DOTALL);
+                Matcher matcherMetodo = patronMetodo.matcher(contenido);
 
             while (matcherMetodo.find()) {
                 Metodo metodo = new Metodo();
+//                metodo.setNombre(matcherMetodo.group(3));
+//                metodo.setTipoRetorno(matcherMetodo.group(2));
+//                metodo.setAccessModifier(matcherMetodo.group(1));
+
                 metodo.setNombre(matcherMetodo.group(2));
                 metodo.setTipoRetorno(matcherMetodo.group(1));
 
-                // Analizar parámetros
+
+                // Analized parameters
                 String[] parametros = matcherMetodo.group(3).split(",");
                 for (String parametro : parametros) {
                     if (!parametro.trim().isEmpty()) {
@@ -132,9 +140,20 @@ public class AnalyzeClassService {
                     }
                 }
 
-                // Obtener contenido del método
-                analizarContenidoMetodo(contenido, metodo);
+//                // Analized Method Signature
+//                String firmaMetodo = matcherMetodo.group(0).trim();
+//                metodo.setMethodSignature(firmaMetodo);
 
+//                // Analized Method anotation
+//                Pattern patronAnotacion = Pattern.compile("@[^\\n]*");
+//                Matcher matcherAnotacion = patronAnotacion.matcher(firmaMetodo);
+//                StringBuilder anotaciones = new StringBuilder();
+//                while (matcherAnotacion.find()) {
+//                    anotaciones.append(matcherAnotacion.group()).append(" ");
+//                }
+//                metodo.setAnotation(anotaciones.toString().trim());
+
+                analizarContenidoMetodo(contenido, metodo);
                 metodoList.add(metodo);
             }
         } else if ("interface".equals(clase.getTypeClass())) {
@@ -158,9 +177,125 @@ public class AnalyzeClassService {
                 metodoList.add(metodo);
             }
         }
-
         clase.addMetodos(metodoList);
     }
+
+private void analizarMetodos(String contenido, Clase clase){
+    // Analizar métodos
+    if (clase != null) {
+        if ("class".equals(clase.getTypeClass())) {
+//            Pattern patronMetodo = Pattern.compile("(public|protected|private) (\\w+) (\\w+)\\((.*?)\\)", Pattern.DOTALL);
+            Pattern patronMetodo = Pattern.compile("(?:@[^\\n]*)*(public|protected|private) (\\w+) (\\w+)\\((.*?)\\)", Pattern.DOTALL);
+            Matcher matcherMetodo = patronMetodo.matcher(contenido);
+
+            while (matcherMetodo.find()) {
+                Metodo metodo = new Metodo(); // Declarar el objeto Metodo dentro del bucle
+
+                metodo.setNombre(matcherMetodo.group(3));
+                metodo.setTipoRetorno(matcherMetodo.group(2));
+                metodo.setAccessModifier(matcherMetodo.group(1)); // Agregar modificador de acceso
+
+                // Analizar parámetros
+                String[] parametros = matcherMetodo.group(4).split(",");
+                for (String parametro : parametros) {
+                    if (!parametro.trim().isEmpty()) {
+                        String[] partes = parametro.trim().split("\\s+");
+                        ParametroMetodo parametroMetodo = new ParametroMetodo(partes[1], partes[0]);
+                        metodo.agregarParametro(parametroMetodo);
+                    }
+                }
+
+                // Analizar y Obtener contenido del metodo
+                String patronContenidoMetodo = matcherMetodo.group(1) + " " + metodo.getTipoRetorno() + " " + metodo.getNombre() + "\\((.*?)\\)\\s*\\{([^}]*)\\}";
+                Pattern pattern = Pattern.compile(patronContenidoMetodo, Pattern.DOTALL | Pattern.MULTILINE);
+                Matcher matcherContenidoMetodo = pattern.matcher(contenido);
+                if (matcherContenidoMetodo.find()) {
+                    String contenidoMetodo = matcherContenidoMetodo.group(2).trim();
+                    metodo.setContenido(contenidoMetodo);
+                }
+
+                // Analizar firma del método
+                String firmaMetodo = matcherMetodo.group(0).trim();
+                metodo.setMethodSignature(firmaMetodo);
+
+                // Analizar anotaciones del método
+
+
+                ...
+                String[] lineas = contenido.split("\n");
+
+                for (int i = 0; i < lineas.length - 1; i++) {
+                    if (lineas[i].trim().startsWith("@") && lineas[i + 1].trim().startsWith("public void testUpdateEmpleado() {")) {
+                        System.out.println("Se encontró la línea que contiene @: " + lineas[i]);
+                        System.out.println("Se encontró la línea que contiene public void testUpdateEmpleado() {: " + lineas[i + 1]);
+                    }
+                }
+
+
+
+
+                String nameMethodSingnature = firmaMetodo.replaceAll("\\(.*?\\)", "");
+                String patterAnotationTxt = "(@[\\w]+)\\s+"+nameMethodSingnature+"\\(\\)\\s*\\{";
+                Pattern patterAnotation = Pattern.compile(patterAnotationTxt, Pattern.DOTALL | Pattern.MULTILINE);
+                Matcher matcher = pattern.matcher(contenido);
+
+                if (matcher.find()) {
+                    String anotacion = matcher.group(1);
+//                    System.out.println("Se encontró la anotación: " + anotacion);
+                    metodo.setAnotation(anotacion);
+                }
+
+
+                clase.addMetodo(metodo);
+            }
+        }
+//        ...
+        if ("interface".equals(clase.getTypeClass())) {
+            // Modificar el patrón de métodos para interfaces
+//            Pattern patronMetodoInterface = Pattern.compile("(public|protected|private) (\\w+(?:<.*?>)?) (\\w+)\\s*\\((.*?)\\)\\s*;", Pattern.DOTALL);
+            Pattern patronMetodoInterface = Pattern.compile("(?:@[^\\n]*)*(public|protected|private) (\\w+(?:<.*?>)?) (\\w+)\\s*\\((.*?)\\)\\s*;", Pattern.DOTALL);
+            Matcher matcherMetodoInterface = patronMetodoInterface.matcher(contenido);
+
+            while (matcherMetodoInterface.find()) {
+                Metodo metodo = new Metodo(); // Declarar el objeto Metodo dentro del bucle
+
+                metodo.setNombre(matcherMetodoInterface.group(3));
+                metodo.setTipoRetorno(matcherMetodoInterface.group(2));
+                metodo.setAccessModifier(matcherMetodoInterface.group(1)); // Agregar modificador de acceso
+
+                // Analizar parámetros
+                String[] parametros = matcherMetodoInterface.group(4).split(",");
+                for (String parametro : parametros) {
+                    if (!parametro.trim().isEmpty()) {
+                        String[] partes = parametro.trim().split("\\s+");
+                        ParametroMetodo parametroMetodo = new ParametroMetodo(partes[1], partes[0]);
+                        metodo.agregarParametro(parametroMetodo);
+                    }
+                }
+
+                // Analizar firma del método
+                String firmaMetodo = matcherMetodoInterface.group(0).trim();
+                metodo.setMethodSignature(firmaMetodo);
+
+                // Analizar anotaciones del método
+                String nameMethodSingnature = firmaMetodo.replaceAll("\\(.*?\\)", "");
+                String patterAnotation = "(@[\\w]+)\\s+public\\s+void\\s+"+nameMethodSingnature+"\\(\\)\\s*\\{";
+                Pattern pattern = Pattern.compile(patterAnotation, Pattern.DOTALL | Pattern.MULTILINE);
+                Matcher matcher = pattern.matcher(contenido);
+
+                if (matcher.find()) {
+                    String anotacion = matcher.group(1);
+                    System.out.println("Se encontró la anotación: " + anotacion);
+                    metodo.setAnotation(anotacion);
+                }
+
+
+
+                clase.addMetodo(metodo);
+            }
+        }
+    }
+}
 
 
 
@@ -178,14 +313,25 @@ public class AnalyzeClassService {
 
 
 
-    private void analizarVariables(String contenido, Clase clase) {
-        Pattern patronVariable = Pattern.compile("private (\\w+) (\\w+);");
-        Matcher matcherVariable = patronVariable.matcher(contenido);
+    private void analyzeVariables(String content, Clase clase) {
+
+        Pattern patronVariable = Pattern.compile("(?:@[^\\n]*)*\\s*(public|protected|private) (\\w+) (\\w+);");
+        Matcher matcherVariable = patronVariable.matcher(content);
 
         while (matcherVariable.find()) {
             Variable variable = new Variable();
-            variable.setTipo(matcherVariable.group(1));
-            variable.setNombre(matcherVariable.group(2));
+            variable.setTipo(matcherVariable.group(2));
+            variable.setNombre(matcherVariable.group(3));
+            variable.setAccessModifier(matcherVariable.group(1));
+
+            Pattern patronAnotacion = Pattern.compile("@[^\\n]*");
+            Matcher matcherAnotacion = patronAnotacion.matcher(matcherVariable.group(0));
+
+            StringBuilder anotations = new StringBuilder();
+            while (matcherAnotacion.find()) {
+                anotations.append(matcherAnotacion.group()).append(" ");
+            }
+            variable.setAnotation(anotations.toString().trim());
             clase.addVariable(variable);
         }
     }

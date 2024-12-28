@@ -2,6 +2,7 @@ package com.unitTestGenerator.pojos;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Metodo {
 
@@ -10,6 +11,9 @@ public class Metodo {
     private List<ParametroMetodo> parametros= new ArrayList<>();
     private String contenido;
     private List<InstanceMethodCall> instanceMethodCalls = new ArrayList<>();
+    private String accessModifier;
+    private String anotation;
+    private String methodSignature;
 
 
     public String getContenido() {
@@ -21,6 +25,22 @@ public class Metodo {
     }
 
     public Metodo() {
+    }
+
+    public String getAnotation() {
+        return anotation;
+    }
+
+    public void setAnotation(String anotation) {
+        this.anotation = anotation;
+    }
+
+    public String getMethodSignature() {
+        return methodSignature;
+    }
+
+    public void setMethodSignature(String methodSignature) {
+        this.methodSignature = methodSignature;
     }
 
     public void agregarParametro(ParametroMetodo parametro) {
@@ -72,5 +92,29 @@ public class Metodo {
             this.instanceMethodCalls.addAll(insCalls);
         }
 
+    }
+
+    public String getAccessModifier() {
+        return accessModifier;
+    }
+
+    public void setAccessModifier(String accessModifier) {
+        this.accessModifier = accessModifier;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Metodo metodo = (Metodo) o;
+        return Objects.equals(nombre, metodo.nombre) &&
+                Objects.equals(tipoRetorno, metodo.tipoRetorno) &&
+                Objects.equals(parametros, metodo.parametros) &&
+                Objects.equals(contenido, metodo.contenido);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(nombre, tipoRetorno, parametros, contenido);
     }
 }
