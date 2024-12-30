@@ -66,5 +66,9 @@ public class ParametroMetodo {
         }
     }
 
+    @Override
+    public String toString() {
+        return tipo + " " + nombre;
+    }
 }
 

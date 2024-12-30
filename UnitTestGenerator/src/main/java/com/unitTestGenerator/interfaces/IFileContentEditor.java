@@ -29,12 +29,14 @@ public interface IFileContentEditor {
             Clase oldClassContent = AnalyzeClassService.getInstance().getAnalisisOfVariables(oldContentValue);
 
             if (newfileContent != null && newfileContent.getTestsClassVariables() != null) {
+
                 for (Variable variable : newClassContent.getVariables()) {
 
                     Boolean isExistvariable = oldClassContent.getVariables().stream().anyMatch(val -> val.getNombre().toLowerCase().equals(variable.getNombre().toLowerCase()) && val.getTipo().toLowerCase().equals(variable.getTipo().toLowerCase()));
                     if (!isExistvariable) {
                         contentWithVariables = this.formatUpdatedContent(oldContentValue, firstBraceIndex, newfileContent.getTestsClassVariables());
                     }
+
                 }
             }
 

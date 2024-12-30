@@ -2,6 +2,7 @@ package com.unitTestGenerator.pojos;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.Objects;
 
 public class Metodo {
@@ -116,5 +117,27 @@ public class Metodo {
     @Override
     public int hashCode() {
         return Objects.hash(nombre, tipoRetorno, parametros, contenido);
+    }
+
+
+    @Override
+    public String toString() {
+            String anota ="";
+            if(anotation != null && !anotation.equals("")) {
+                anota =   String.format("\t%s\n",anotation); //"\t" + anotation + "\n";
+            }
+
+        if (!parametros.isEmpty()){
+           return String.format("%s\t%s\n { \n%s \n{", anota, methodSignature, contenido);
+        }else {
+
+            String parametrosString = parametros.stream()
+                    .map(ParametroMetodo::toString)
+                    .collect(Collectors.joining(", "));
+
+            return String.format("%s\t%s\n { \n%s \n{", anota, methodSignature, contenido);
+        }
+
+        .....
     }
 }
