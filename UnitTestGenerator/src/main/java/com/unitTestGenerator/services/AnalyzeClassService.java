@@ -185,7 +185,7 @@ private void analizarMetodos(String contenido, Clase clase){
     if (clase != null) {
         if ("class".equals(clase.getTypeClass())) {
 //            Pattern patronMetodo = Pattern.compile("(public|protected|private) (\\w+) (\\w+)\\((.*?)\\)", Pattern.DOTALL);
-            Pattern patronMetodo = Pattern.compile("(?:@[^\\n]*)*(public|protected|private) (\\w+) (\\w+)\\((.*?)\\)", Pattern.DOTALL);
+            Pattern patronMetodo = Pattern.compile("(?:@[^\\n]*)*(public|protected|private|void) (\\w+) (\\w+)\\((.*?)\\)", Pattern.DOTALL);
             Matcher matcherMetodo = patronMetodo.matcher(contenido);
 
             while (matcherMetodo.find()) {
@@ -219,38 +219,17 @@ private void analizarMetodos(String contenido, Clase clase){
                 metodo.setMethodSignature(methodSignature);
 
                 // Analizar anotaciones del método
-                metodo.setAnotation(methodAnotation(contenido,methodSignature));
-
                 String[] lineas = contenido.split("\n");
                 for (int i = 0; i < lineas.length - 1; i++) {
-                    if (lineas[i].trim().startsWith("@") && lineas[i + 1].trim().startsWith("public void testUpdateEmpleado() {")) {
-                        System.out.println("Se encontró la línea que contiene @: " + lineas[i]);
-                        System.out.println("Se encontró la línea que contiene public void testUpdateEmpleado() {: " + lineas[i + 1]);
+                    if (lineas[i].trim().startsWith("@") && lineas[i + 1].trim().startsWith(methodSignature)) {
+                        metodo.setAnotation(lineas[i].trim());
                     }
                 }
-
-
-
-
-//                String nameMethodSingnature = firmaMetodo.replaceAll("\\(.*?\\)", "");
-//                String patterAnotationTxt = "(@[\\w]+)\\s+"+nameMethodSingnature+"\\(\\)\\s*\\{";
-//                Pattern patterAnotation = Pattern.compile(patterAnotationTxt, Pattern.DOTALL | Pattern.MULTILINE);
-//                Matcher matcher = pattern.matcher(contenido);
-//
-//                if (matcher.find()) {
-//                    String anotacion = matcher.group(1);
-////                    System.out.println("Se encontró la anotación: " + anotacion);
-//                    metodo.setAnotation(anotacion);
-//                }
-
-
                 clase.addMetodo(metodo);
             }
         }
 //        ...
         if ("interface".equals(clase.getTypeClass())) {
-            // Modificar el patrón de métodos para interfaces
-//            Pattern patronMetodoInterface = Pattern.compile("(public|protected|private) (\\w+(?:<.*?>)?) (\\w+)\\s*\\((.*?)\\)\\s*;", Pattern.DOTALL);
             Pattern patronMetodoInterface = Pattern.compile("(?:@[^\\n]*)*(public|protected|private) (\\w+(?:<.*?>)?) (\\w+)\\s*\\((.*?)\\)\\s*;", Pattern.DOTALL);
             Matcher matcherMetodoInterface = patronMetodoInterface.matcher(contenido);
 
@@ -295,41 +274,6 @@ private void analizarMetodos(String contenido, Clase clase){
     }
 }
 
-
-private String methodAnotation(String content, String methodSignature){
-
-    String findMethod = transformSignatureInRegex(methodSignature);
-    String regex = "@(\\w+)\\s*\\((.*?)\\)\\s*" + findMethod;
-
-    Pattern patter = Pattern.compile(regex, Pattern.DOTALL);
-    Matcher matcher = patter.matcher(content);
-    String anotacion ="";
-
-    if (matcher.find()) {
-        String nameAnotacion = matcher.group(1); // Captura el nombre de la anotación
-        String atributosAnotacion = matcher.group(2); // Captura los atributos de la anotación
-
-        anotacion = "@" + nameAnotacion;
-    } else {
-        System.out.println("No se encontró ninguna anotación para el método especificado.");
-    }
-    return anotacion;
-}
-
-
-    public static String transformSignatureInRegex(String firma) {
-        // Eliminar líneas nuevas y reemplazar múltiples espacios por un solo espacio
-        String firmaCompacta = firma.replaceAll("\\s+", " ").trim();
-
-        // Agregar \\s* alrededor de paréntesis y separadores
-        String firmaRegex = firmaCompacta
-                .replaceAll("\\(", "\\\\s*\\\\(")
-                .replaceAll("\\)", "\\\\s*\\\\)")
-                .replaceAll(",", "\\\\s*,\\\\s*");
-
-        // Retornar la firma transformada
-        return firmaRegex;
-    }
 
 
 
