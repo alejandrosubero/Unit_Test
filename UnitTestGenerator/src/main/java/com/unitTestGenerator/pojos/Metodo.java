@@ -128,16 +128,15 @@ public class Metodo {
             }
 
         if (!parametros.isEmpty()){
-           return String.format("%s\t%s\n { \n%s \n{", anota, methodSignature, contenido);
+           return String.format("%s\t%s{ \n%s \n{", anota, methodSignature, contenido);
         }else {
+            String[] partsOfSignatire = methodSignature.split("\\(");
 
             String parametrosString = parametros.stream()
                     .map(ParametroMetodo::toString)
                     .collect(Collectors.joining(", "));
-
-            return String.format("%s\t%s\n { \n%s \n{", anota, methodSignature, contenido);
+            return String.format("%s\t%s(%s){\n \t%s\n}", anota, partsOfSignatire[0], parametrosString, contenido);
         }
 
-        .....
     }
 }

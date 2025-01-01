@@ -29,7 +29,6 @@ public class GeneradorPruebasUnitarias implements IBaseModel {
        this.projectTypeDependencesAnalizer(pathProject);
 
         TestFileContent fileContent = generateTestFileBody(clase);
-//        String contedOfTestClass = fileContent.toString();
         String pathOfTest = this.getPathOfTest( clase,  pathProject);
         BuildTestFile.getInstance().createTestFile(pathOfTest, fileContent);
     }
@@ -91,7 +90,6 @@ public class GeneradorPruebasUnitarias implements IBaseModel {
         StringBuilder contex = new StringBuilder();
 
         contex.append("package ").append(clase.getPaquete()).append(";").append("\n");
-
         contex.append("import org.junit.jupiter.api.Test;").append("\n");
         contex.append("import org.junit.jupiter.api.BeforeEach;").append("\n");
         contex.append("import org.junit.jupiter.api.extension.ExtendWith;").append("\n");;

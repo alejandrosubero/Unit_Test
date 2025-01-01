@@ -7,9 +7,30 @@ public class Constructor {
 
     private List<ParametroMetodo> parametros = new ArrayList<>();
     private boolean isNoneParam;
+    private String costructorSignature;
+    private String costructorContent;
+
+
 
     public Constructor() {
     }
+
+    public String getCostructorContent() {
+        return costructorContent;
+    }
+
+    public void setCostructorContent(String costructorContent) {
+        this.costructorContent = costructorContent;
+    }
+
+    public String getCostructorSignature() {
+        return costructorSignature;
+    }
+
+    public void setCostructorSignature(String costructorSignature) {
+        this.costructorSignature = costructorSignature;
+    }
+
 
     public List<ParametroMetodo> getParametros() {
         return parametros;
@@ -30,5 +51,6 @@ public class Constructor {
     public Boolean isEmptyParameters(){
         return this.parametros.isEmpty();
     }
+
 
 }

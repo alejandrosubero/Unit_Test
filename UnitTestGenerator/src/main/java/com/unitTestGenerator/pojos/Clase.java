@@ -43,7 +43,6 @@ public class Clase {
         this.constructores.add(constructor);
     }
 
-
     public Boolean getUseMock() {
         return useMock;
     }
@@ -80,20 +79,8 @@ public class Clase {
         return metodos;
     }
 
-    public void addMetodo(Metodo metodo) {
-        this.metodos.add(metodo);
-    }
-
-    public void addMetodos(List<Metodo> metodos) {
-        this.metodos.addAll(metodos);
-    }
-
     public List<Variable> getVariables() {
         return variables;
-    }
-
-    public void addVariable(Variable variable) {
-        this.variables.add(variable);
     }
 
     public List<EstructuraControl> getEstructuras() {
@@ -103,4 +90,23 @@ public class Clase {
     public void addEstructura(EstructuraControl estructura) {
         this.estructuras.add(estructura);
     }
+
+    public void addMetodo(Metodo metodo) {
+        this.metodos.add(metodo);
+    }
+
+    public void addMetodos(List<Metodo> metodos) {
+        this.metodos.addAll(metodos);
+    }
+
+    public void addVariable(Variable variable) {
+        this.variables.add(variable);
+    }
+
+    public void addVariableS(List<Variable> variable) {
+        this.variables.addAll(variable);
+    }
+
+
+
 }

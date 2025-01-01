@@ -65,7 +65,7 @@ public class BuildTestFile implements IFileContentEditor, IFileManager {
                         this.writefilesI(archivo, newContentFile);
                     } else {
                         System.out.println("Error: Something happened in file Analyze, the file will be Overwrite everything...");
-                        this.writefilesI(archivo, content.toString());
+                        this.errorOrInvalidOption(archivo, content.toString());
                     }
                     continuar = false;
                     break;
@@ -75,13 +75,36 @@ public class BuildTestFile implements IFileContentEditor, IFileManager {
                     break;
                 default:
                     System.out.println("Invalid option");
-                    System.out.println("The file will be Overwrite everything...");
-                    this.writefilesI(archivo, content.toString());
+                    this.errorOrInvalidOption(archivo, content.toString());
                     continuar = false;
                     break;
             }
         }
     }
 
+    private void errorOrInvalidOption(File archivo,String content) {
+        Scanner scanner = new Scanner(System.in);
+        this.message();
+        int opcion = scanner.nextInt();
+        switch (opcion) {
+            case 1:
+                System.out.println("End the process...");
+                break;
+            case 2:
+                System.out.println("The file will be Overwrite everything...");
+                this.writefilesI(archivo, content);
+                break;
+            default:
+                System.out.println("End the process...");
+                break;
+        }
+    }
+
+    private void message(){
+        System.out.println("Do you want to overwrite or end the process");
+        System.out.println("Choose an option:");
+        System.out.println("1. End the process");
+        System.out.println("2. Overwrite everything");
+    }
 
 }

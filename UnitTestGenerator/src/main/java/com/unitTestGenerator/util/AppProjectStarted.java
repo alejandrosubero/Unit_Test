@@ -183,7 +183,7 @@ public class AppProjectStarted {
         System.out.println("What method do you want to test?");
         System.out.println("Choose an option:");
         System.out.println("1. All");
-        System.out.println("2. Nama of Specific method");
+        System.out.println("2. Name of Specific method");
         int opcion = 0;
 
         try {
@@ -194,7 +194,7 @@ public class AppProjectStarted {
             System.out.println("Choose an option:");
             System.out.println("Only numbers 1 or 2");
             System.out.println("1. All");
-            System.out.println("2. Nama of Specific method");
+            System.out.println("2. Name of Specific method");
             opcion = scanner.nextInt();
         }
 
@@ -219,7 +219,7 @@ public class AppProjectStarted {
             if( opcion != 1 && opcion != 2){
                 System.out.println("You have entered an invalid option again. Do you want to continue or cancel?");
                 System.out.println("1. All");
-                System.out.println("2. Nama of Specific method");
+                System.out.println("2. Name of Specific method");
                 int opcionInvalid = scanner.nextInt();
                 respuesta = opcionInvalid == 1? "all":"CANCEL";
             }
