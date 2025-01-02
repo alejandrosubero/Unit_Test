@@ -336,7 +336,7 @@ public class GenerateMethodService implements IBaseModel {
                 }
 
                 if (COMMON_METHODS.contains(methodName)) {
-                    mockCalls.append("\t").append( this.mockitoWhen.generateCallMethodMock(instanceMethodCall.getOperation(), method, this.project, parameters, fileContent,methodName));
+                    mockCalls.append("\t").append( this.mockitoWhen.generateCallMethodMock(instanceMethodCall.getOperation(), method, this.project, null, fileContent,methodName));
                 } else if (calledClass != null) { //Check if calledClass is not null
                     Optional<Metodo> methodInClass = calledClass.getMetodos().stream()
                             .filter(m -> m.getNombre().equalsIgnoreCase(methodName))

@@ -68,9 +68,27 @@ public class MockitoWhen implements ReturnType, IBaseModel {
 
         if (retrunValue == null && tipoRetorno !=null && tipoRetorno.contains("Optional")){
             content.append( this.optionalRetrunValue(testMethod, tipoRetorno, fileContent, metodo));
-        } else if (methodName != null ) {
-            .....
 
+        } else if (methodName != null && metodo.getContenido().contains("Optional") && !tipoRetorno.contains("Optional")) {
+
+            if (methodName.equals("findById")){
+                tipoRetorno ="Optional<"+metodo.getTipoRetorno()+">";
+
+                Pattern patron = Pattern.compile("\\((.*?)\\)");
+                Matcher matcher = patron.matcher(testMethod);
+                String data ="";
+                if (matcher.find()) {
+                     data = matcher.group(1);
+                }
+
+                String resultado = testMethod.replace(data, "Mockito.any(Long.class)");
+
+//                Long id = 1L;
+//                empleadoEntity.setId(id);
+            // Mockito.when(empleadorepository.findById(Mockito.any(Long.class))).thenReturn(optionalEmpleado);
+
+                content.append( this.optionalRetrunValue(resultado, tipoRetorno, fileContent, metodo));
+            }
 
         }else {
             content.append("\tMockito.when(").append(testMethod).append(")").append(".thenReturn(");
