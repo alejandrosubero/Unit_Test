@@ -32,12 +32,16 @@ public interface IFileContentEditor {
             Clase oldClassContent = AnalyzeClassService.getInstance().getAnalisisOfVariables(oldContentValue);
 
             if (newfileContent != null && newfileContent.getTestsClassVariables() != null) {
+
+                StringBuffer variables = new StringBuffer("\n");
+
                 for (Variable variable : newClassContent.getVariables()) {
                     Boolean isExistvariable = oldClassContent.getVariables().stream().anyMatch(val -> val.getNombre().toLowerCase().equals(variable.getNombre().toLowerCase()) && val.getTipo().toLowerCase().equals(variable.getTipo().toLowerCase()));
                     if (!isExistvariable) {
-                        contentWithVariables = this.formatUpdatedContent(oldContentValue, firstBraceIndex, variable.toString());
+                       variables.append(variable.toString()).append("\n");
                     }
                 }
+                contentWithVariables = this.formatUpdatedContent(oldContentValue, firstBraceIndex, variables.toString());
             }
 
             if (newfileContent != null && newfileContent.getTestsClassMethods() != null ) {

@@ -7,7 +7,7 @@ import com.unitTestGenerator.pojos.Project;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class MethodParameterObject implements IGenerateVariable, MockitoWhen {
+public class MethodParameterObject implements IGenerateVariable {
 
     private Map<String, Clase> claseDirectory = new HashMap<>();
     private static MethodParameterObject instance;

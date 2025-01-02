@@ -1,25 +1,93 @@
 package com.unitTestGenerator.services;
 
+import com.unitTestGenerator.interfaces.IBaseModel;
 import com.unitTestGenerator.pojos.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-public interface MockitoWhen extends ReturnType {
+public class MockitoWhen implements ReturnType, IBaseModel {
 
-    default String generateCallMethodMock(String testMethod, Metodo metodo, Project project, String retrunValue) {
-        StringBuilder contenido = new StringBuilder();
-        contenido.append("Mockito.when(").append(testMethod).append(")").append(".thenReturn(");
-        String valueReturn = retrunValue != null ? retrunValue: generateRetrunValue(metodo, project);
-        contenido.append(valueReturn).append(");");
-        return contenido.toString();
+    public MockitoWhen() {
     }
 
-    default String generateCallMethodMockDoNothing( String methodNameParts, String classNameCamelCase, String parametrosMethodTest) {
+
+    private String optionalRetrunValue(String testMethod, String tipoRetorno,  TestFileContent fileContent, Metodo metodo){
+
+        StringBuilder optionalRetrunValue = new StringBuilder();
+        String typeOfOptionalReturn="";
+        String typeOfOptionalName ="";
+        String typeOfOptional ="null";
+
+        Pattern pattern = Pattern.compile("<(.*?)>");
+        Matcher matcher = pattern.matcher(tipoRetorno);
+
+        if (matcher.find()) {
+            typeOfOptional = matcher.group(1);
+        }
+
+        if(!typeOfOptional.equals("null")){
+            typeOfOptionalName =  typeOfOptional.toLowerCase()+"Entity";
+            typeOfOptionalReturn = "optional"+typeOfOptional;
+            fileContent.addVariable(GeneratedVariableService.getInstance().generateVariable(
+                    typeOfOptional,
+                    typeOfOptionalName,
+                    false, true));
+        }
+        optionalRetrunValue.append("\n")
+                .append(tipoRetorno).append(" ")
+                .append(typeOfOptionalReturn).append(" = ")
+                .append("Optional.of(").append(typeOfOptionalName).append(");")
+                .append("\n");
+
+        optionalRetrunValue.append("\tMockito.when(").append(testMethod).append(")").append(".thenReturn(");
+        optionalRetrunValue.append(typeOfOptionalReturn).append(");");
+
+        return optionalRetrunValue.toString();
+
+    }
+
+    public String generateCallMethodMock(String testMethod, Metodo metodo, Project project, String retrunValue, TestFileContent fileContent, String methodName) {
+        StringBuilder content = new StringBuilder();
+        String typeOfOptionalReturn="";
+        String tipoRetorno = "";
+/**
+ 1)   verificar si esta en la lista de metodos
+  2)     luego verificar el conteido :
+    ejemplo:    Optional <Empleado> empleadoById  = empleadorepository.findById(id);
+                    if(empleadoById.isPresent()){
+                        return empleadoById.get();
+*/
+
+        if(metodo != null && metodo.getTipoRetorno() != null){
+             tipoRetorno = metodo.getTipoRetorno();
+        }
+
+        if (retrunValue == null && tipoRetorno !=null && tipoRetorno.contains("Optional")){
+            content.append( this.optionalRetrunValue(testMethod, tipoRetorno, fileContent, metodo));
+        } else if (methodName != null ) {
+            .....
+
+
+        }else {
+            content.append("\tMockito.when(").append(testMethod).append(")").append(".thenReturn(");
+            String valueReturn = retrunValue != null ? retrunValue : generateRetrunValue(metodo, project);
+            content.append(valueReturn).append(");");
+        }
+
+
+        return content.toString();
+    }
+
+
+    public String generateCallMethodMockDoNothing( String methodNameParts, String classNameCamelCase, String parametrosMethodTest) {
         return new StringBuilder("Mockito.doNothing().when(").append(classNameCamelCase).append(")").append(String.format(".%s(%s);" ,methodNameParts, parametrosMethodTest)).toString();
     }
 
-    default String generateCallAssertType(Metodo metodo, Project project, String result) {
+    public String generateCallAssertType(Metodo metodo, Project project, String result) {
         StringBuilder contex = new StringBuilder();
         String valueReturn = generateRetrunValue(metodo, project);
         contex.append("\n").append("\t").append(getAssertType(metodo.getTipoRetorno(), valueReturn, result));
@@ -27,47 +95,45 @@ public interface MockitoWhen extends ReturnType {
     }
 
 
-    default String generateCallVerificarMock(String methodName, String variableInstanceName, List<ParametroMetodo> parametros) {
-        StringBuilder contenido = new StringBuilder();
-        // Verificar si se utilizaron las clases simuladas en los mocks
-        contenido.append("\n").append(verificarMock(variableInstanceName, methodName, parametros));
-        return contenido.toString();
-    }
-
-    default String generateCallMethodMock(String methodName, String variableInstanceName, List<ParametroMetodo> parametros, Metodo metodo, Project project) {
-        StringBuilder contenido = new StringBuilder();
-
-        // Agregar la llamada al método mock
-        contenido.append("Mockito.when(").append(variableInstanceName).append(".").append(methodName).append("(");
-
-        // Agregar los parámetros
-        for (int i = 0; i < parametros.size(); i++) {
-            ParametroMetodo parametro = parametros.get(i);
-            contenido.append(parametro.getNombre());
-
-            if (i < parametros.size() - 1) {
-                contenido.append(", ");
-            }
-        }
-
-        contenido.append(")).thenReturn(");
-
-        // Agregar el valor de retorno
-        contenido.append(generateRetrunValue(metodo, project)).append(");");
-        String resultValueName = String.format("%s%s;" ,metodo.getNombre() ,"Result");
-        // Agregar el assert adecuado según el tipo de retorno
-        contenido.append("\n").append(getAssertType(metodo.getTipoRetorno(), null, resultValueName));
-
-        // Verificar si se utilizaron las clases simuladas en los mocks
+//    default String generateCallVerificarMock(String methodName, String variableInstanceName, List<ParametroMetodo> parametros) {
+//        StringBuilder contenido = new StringBuilder();
+//        // Verificar si se utilizaron las clases simuladas en los mocks
 //        contenido.append("\n").append(verificarMock(variableInstanceName, methodName, parametros));
+//        return contenido.toString();
+//    }
 
-        return contenido.toString();
-    }
+//    default String generateCallMethodMock(String methodName, String variableInstanceName, List<ParametroMetodo> parametros, Metodo metodo, Project project) {
+//        StringBuilder contenido = new StringBuilder();
+//
+//        // Agregar la llamada al método mock
+//        contenido.append("Mockito.when(").append(variableInstanceName).append(".").append(methodName).append("(");
+//
+//        // Agregar los parámetros
+//        for (int i = 0; i < parametros.size(); i++) {
+//            ParametroMetodo parametro = parametros.get(i);
+//            contenido.append(parametro.getNombre());
+//
+//            if (i < parametros.size() - 1) {
+//                contenido.append(", ");
+//            }
+//        }
+//
+//        contenido.append(")).thenReturn(");
+//
+//        // Agregar el valor de retorno
+//        contenido.append(generateRetrunValue(metodo, project)).append(");");
+//        String resultValueName = String.format("%s%s;" ,metodo.getNombre() ,"Result");
+//        // Agregar el assert adecuado según el tipo de retorno
+//        contenido.append("\n").append(getAssertType(metodo.getTipoRetorno(), null, resultValueName));
+//
+//        // Verificar si se utilizaron las clases simuladas en los mocks
+////        contenido.append("\n").append(verificarMock(variableInstanceName, methodName, parametros));
+//
+//        return contenido.toString();
+//    }
 
 
-
-
-    default String generateRetrunValue (Metodo metodo, Project project) {
+    public String generateRetrunValue (Metodo metodo, Project project) {
         String tipoRetorno = metodo.getTipoRetorno();
         Clase claseRetorno = null;
 
@@ -86,7 +152,7 @@ public interface MockitoWhen extends ReturnType {
 
 
 
-    default String generateClassObject(Clase clase) {
+    public String generateClassObject(Clase clase) {
         StringBuilder contenido = new StringBuilder();
 
         contenido.append("new ").append(clase.getNombre()).append("(");
@@ -118,7 +184,7 @@ public interface MockitoWhen extends ReturnType {
     }
 
 
-    default String verificarMock(String variableInstanceName, String methodName, List<ParametroMetodo> parametros) {
+    public String verificarMock(String variableInstanceName, String methodName, List<ParametroMetodo> parametros) {
         StringBuilder contenido = new StringBuilder();
 
         contenido.append("Mockito.verify(").append(variableInstanceName).append(", Mockito.times(1)).").append(methodName).append("(");
@@ -137,38 +203,38 @@ public interface MockitoWhen extends ReturnType {
     }
 
 
-    default String generarLlamadaMetodoMock(String methodName, String variableInstanceName, List<ParametroMetodo> parametros, Metodo metodo, Project project) {
-        StringBuilder contenido = new StringBuilder();
+//    default String generarLlamadaMetodoMock(String methodName, String variableInstanceName, List<ParametroMetodo> parametros, Metodo metodo, Project project) {
+//        StringBuilder contenido = new StringBuilder();
+//
+//        // Agregar la llamada al método mock
+//        contenido.append("Mockito.when(").append(variableInstanceName).append(".").append(methodName).append("(");
+//
+//        // Agregar los parámetros
+//        for (int i = 0; i < parametros.size(); i++) {
+//            ParametroMetodo parametro = parametros.get(i);
+//            contenido.append(parametro.getNombre());
+//
+//            if (i < parametros.size() - 1) {
+//                contenido.append(", ");
+//            }
+//        }
+//
+//        contenido.append(")).thenReturn(");
+//
+//        // Agregar el valor de retorno
+//        contenido.append(generateRetrunValue(metodo, project)).append(");");
+//
+//        // Agregar el assert adecuado según el tipo de retorno
+////        contenido.append("\n").append(getAssertType(metodo.getTipoRetorno(), null));
+//
+//        // Verificar si se utilizaron las clases simuladas en los mocks
+////        contenido.append("\n").append(verificarMock(variableInstanceName, methodName, parametros));
+//
+//        return contenido.toString();
+//    }
 
-        // Agregar la llamada al método mock
-        contenido.append("Mockito.when(").append(variableInstanceName).append(".").append(methodName).append("(");
 
-        // Agregar los parámetros
-        for (int i = 0; i < parametros.size(); i++) {
-            ParametroMetodo parametro = parametros.get(i);
-            contenido.append(parametro.getNombre());
-
-            if (i < parametros.size() - 1) {
-                contenido.append(", ");
-            }
-        }
-
-        contenido.append(")).thenReturn(");
-
-        // Agregar el valor de retorno
-        contenido.append(generateRetrunValue(metodo, project)).append(");");
-
-        // Agregar el assert adecuado según el tipo de retorno
-//        contenido.append("\n").append(getAssertType(metodo.getTipoRetorno(), null));
-
-        // Verificar si se utilizaron las clases simuladas en los mocks
-//        contenido.append("\n").append(verificarMock(variableInstanceName, methodName, parametros));
-
-        return contenido.toString();
-    }
-
-
-    default String getMokitoSetUpBeforeEach(boolean isAutoCloseable){
+    public String getMokitoSetUpBeforeEach(boolean isAutoCloseable){
         StringBuilder mokitoSetUpBeforeEach = new StringBuilder("\n");
         if(isAutoCloseable) {
             mokitoSetUpBeforeEach.append("\t").append("private AutoCloseable closeable;").append("\n").append("\n");

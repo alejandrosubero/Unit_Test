@@ -13,13 +13,17 @@ import java.util.stream.Collectors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class GenerateMethodService implements IBaseModel, MockitoWhen {
+public class GenerateMethodService implements IBaseModel {
 
     private Project project;
     private static GenerateMethodService instance;
-    private static final List<String> COMMON_METHODS = Arrays.asList("save", "findAllById", "findById", "delete", "deleteAll", "deleteById");
-    private static final List<String> COMMON_IMPORTS = Arrays.asList( "Date", "List", "Map" );
-    private GenerateMethodService(){}
+//    private static final List<String> COMMON_METHODS = Arrays.asList("save", "findAllById", "findById", "delete", "deleteAll", "deleteById");
+//    private static final List<String> COMMON_IMPORTS = Arrays.asList( "Date", "List", "Map" );
+    private MockitoWhen mockitoWhen;
+
+    private GenerateMethodService(){
+            this.mockitoWhen = new MockitoWhen();
+    }
 
     public static GenerateMethodService getInstance(){
         if(instance == null){
@@ -51,7 +55,7 @@ public class GenerateMethodService implements IBaseModel, MockitoWhen {
         contex.append("\n");
         if(clase.getUseMock()){
             fileContent.addVariable("\n");
-            fileContent.addVariable(MethodParameterObject.getInstance().getMokitoSetUpBeforeEach(false));
+            fileContent.addVariable( this.mockitoWhen.getMokitoSetUpBeforeEach(false));
         }
         return fileContent;
     }
@@ -295,7 +299,7 @@ public class GenerateMethodService implements IBaseModel, MockitoWhen {
         String verifyMock = extractVerifyMock(method);
         content.append("\n\t").append(verifyMock);
 
-        content.append("\t").append(generateCallAssertType(method, this.project, resultValueName)).append("\n");
+        content.append("\t").append( this.mockitoWhen.generateCallAssertType(method, this.project, resultValueName)).append("\n");
         return content.toString();
     }
 
@@ -316,7 +320,7 @@ public class GenerateMethodService implements IBaseModel, MockitoWhen {
             String parameters = methodCallWithParams.substring(parenthesisIndex + 1, methodCallWithParams.length() - 1);
 
             if (methodIsVoid(methodName, classNameInstanceMethodCall, this.project)) {
-                mockCalls.append("\t").append(generateCallMethodMockDoNothing(methodName, classNameInstanceMethodCall, parameters));
+                mockCalls.append("\t").append( this.mockitoWhen.generateCallMethodMockDoNothing(methodName, classNameInstanceMethodCall, parameters));
             } else {
                 Clase calledClass = project.getClass(classNameInstanceMethodCall);
 
@@ -332,13 +336,13 @@ public class GenerateMethodService implements IBaseModel, MockitoWhen {
                 }
 
                 if (COMMON_METHODS.contains(methodName)) {
-                    mockCalls.append("\t").append(generateCallMethodMock(instanceMethodCall.getOperation(), method, this.project, parameters));
+                    mockCalls.append("\t").append( this.mockitoWhen.generateCallMethodMock(instanceMethodCall.getOperation(), method, this.project, parameters, fileContent,methodName));
                 } else if (calledClass != null) { //Check if calledClass is not null
                     Optional<Metodo> methodInClass = calledClass.getMetodos().stream()
                             .filter(m -> m.getNombre().equalsIgnoreCase(methodName))
                             .findFirst();
                     if(methodInClass.isPresent()){
-                        mockCalls.append("\t").append(generateCallMethodMock(instanceMethodCall.getOperation(), methodInClass.get(), this.project, null));
+                        mockCalls.append("\t").append( this.mockitoWhen.generateCallMethodMock(instanceMethodCall.getOperation(), methodInClass.get(), this.project, null, fileContent, null));
                     } else{
                         //Handle the case where the method is not found in the class. Throw an exception or log a warning.
                         System.err.println("Method " + methodName + " not found in class " + classNameInstanceMethodCall);
@@ -366,7 +370,7 @@ public class GenerateMethodService implements IBaseModel, MockitoWhen {
                             .map(s -> ParametroMetodo.builder().nombre(s.trim()).build()) // trim white space
                             .collect(Collectors.toList())
                             : instanceMethodCall.getParametros();
-                    return verificarMock(instanceMethodCall.getVariableInstace(), instanceMethodCall.getMethod(), parametersList);
+                    return  this.mockitoWhen.verificarMock(instanceMethodCall.getVariableInstace(), instanceMethodCall.getMethod(), parametersList);
                 })
                 .collect(Collectors.joining());
     }

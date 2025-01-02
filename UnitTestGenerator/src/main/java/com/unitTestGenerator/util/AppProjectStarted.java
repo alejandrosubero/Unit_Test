@@ -127,6 +127,8 @@ public class AppProjectStarted {
             generate.generarPruebas(claseEncontrada, pathProject);
         } catch (IndexOutOfBoundsException e) {
             System.out.println("Class not found");
+            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
     }
 

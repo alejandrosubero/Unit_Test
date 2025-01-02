@@ -1,6 +1,8 @@
 package com.unitTestGenerator.interfaces;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 
 public interface IConstantModel {
 
@@ -145,6 +147,7 @@ public interface IConstantModel {
     public final String JUNIT_TEST_IMPORT 									= "import org.junit.Test;"+ BREAK_LINE;
     public final String JUNIT_JUPITER_TEST_IMPORT 							= "import org.junit.jupiter.api.Test;"+ BREAK_LINE;
 
-
+    public static final List<String> COMMON_METHODS = Arrays.asList("save", "findAllById", "findById", "delete", "deleteAll", "deleteById");
+    public static final List<String> COMMON_IMPORTS = Arrays.asList( "Date", "List", "Map" );
 
 }

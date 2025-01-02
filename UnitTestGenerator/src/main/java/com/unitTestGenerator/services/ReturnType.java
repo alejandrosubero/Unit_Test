@@ -20,7 +20,7 @@ public interface ReturnType {
             case "Integer":
                 return "0";
             case "Long":
-                return "0L";
+                return "1L";
             case "Double":
                 return "0.0";
             case "Float":
@@ -79,6 +79,8 @@ public interface ReturnType {
                 }
         }
     }
+
+
 
 
 }
