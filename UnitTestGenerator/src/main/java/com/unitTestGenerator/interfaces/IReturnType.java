@@ -1,6 +1,6 @@
-package com.unitTestGenerator.services;
+package com.unitTestGenerator.interfaces;
 
-public interface ReturnType {
+public interface IReturnType {
 
 
     default String getValorPorDefecto(String tipoRetorno) {

@@ -1,6 +1,6 @@
 package com.unitTestGenerator.services;
 
-import com.unitTestGenerator.interfaces.IBaseModel;
+import com.unitTestGenerator.interfaces.IGenerateVariable;
 import com.unitTestGenerator.pojos.Clase;
 import com.unitTestGenerator.pojos.Project;
 import com.unitTestGenerator.pojos.Variable;

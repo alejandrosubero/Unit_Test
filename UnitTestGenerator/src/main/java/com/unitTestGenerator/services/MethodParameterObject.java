@@ -1,11 +1,11 @@
 package com.unitTestGenerator.services;
 
+import com.unitTestGenerator.interfaces.IGenerateVariable;
 import com.unitTestGenerator.pojos.Clase;
 import com.unitTestGenerator.pojos.Metodo;
 import com.unitTestGenerator.pojos.Project;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class MethodParameterObject implements IGenerateVariable {
 
