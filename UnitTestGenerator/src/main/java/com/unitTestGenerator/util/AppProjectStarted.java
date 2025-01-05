@@ -26,6 +26,17 @@ public class AppProjectStarted {
         return instance;
     }
 
+    public void ejecuteTestOfGenerateUnitTest(String pathProject,  boolean isAnalisis, String nombreClase,String method,Boolean useMock) {
+        this.projectAnalize( pathProject,  isAnalisis );
+        if(!isAnalisis){
+            if(method == null || method.equals("")){
+                method = "all";
+            }
+            this.generateUnitTest( nombreClase, method, useMock);
+        }
+    }
+
+
     public void start(){
         Scanner scanner = new Scanner(System.in);
         boolean continuar = true;
@@ -59,20 +70,41 @@ public class AppProjectStarted {
         }
     }
 
+    private  void generarPruebasUnitarias(Scanner scanner) {
+
+        if(this.clases.isEmpty()){
+            analizarProyecto(scanner, false);
+        }
+        System.out.println("Enter the class name to test to generate the unit tests:");
+        String nombreClase = scanner.next();
+        String method =  questionOfMethodToTest( scanner);
+        if(method.equals("CANCEL")){
+            preguntarContinuar(scanner);
+        }
+        Boolean useMock = this.questionAboutUseMock(scanner);
+        this.generateUnitTest(nombreClase, method, useMock);
+    }
 
     private void analizarProyecto(Scanner scanner,  boolean isAnalisis ) {
-
         System.out.println("Enter the project path:");
         this.pathProject = scanner.next();
+        projectAnalize(this.pathProject, isAnalisis );
+    }
+
+    private void projectAnalize(String pathProject,  boolean isAnalisis ){
+
+        if(this.pathProject == null && pathProject !=null){
+            this.pathProject = pathProject;
+        }
 
         if(this.pathProject != null){
-            clases = AnalizadorProyecto.getInstance().analizarProyecto(pathProject);
-            project = new Project(clases, pathProject);
+            this.clases = AnalizadorProyecto.getInstance().analizarProyecto(pathProject);
+            this.project = new Project(this.clases, pathProject);
             this.projectAnalyzerType();
 
             if(isAnalisis) {
                 System.out.println("Classes found:...");
-                for (Clase clase : clases) {
+                for (Clase clase : this.clases) {
                     if(clase.getMetodos() != null && !clase.getMetodos().isEmpty()){
                         System.out.println(clase.getNombre() + "  package: " + clase.getPaquete());
                         for(Metodo metod : clase.getMetodos()){
@@ -85,53 +117,37 @@ public class AppProjectStarted {
                     }
                 }
             }
-
             if(isAnalisis) {
                 System.out.println("Classes found:");
-                for (Clase clase : clases) {
+                for (Clase clase : this.clases) {
                     System.out.println(clase.getNombre() + "  package: " + clase.getPaquete());
                 }
             }
         }
     }
 
-    private  void generarPruebasUnitarias(Scanner scanner) {
+    private void generateUnitTest( String nombreClase,String method,Boolean useMock){
         List<Clase> clasesTemporal = new ArrayList<>();
         Clase claseEncontrada = null;
 
-        if(clases.isEmpty()){
-            analizarProyecto(scanner, false);
-        }
-
-        System.out.println("Enter the class name to test to generate the unit tests:");
-        String nombreClase = scanner.next();
-
-        String method =  questionOfMethodToTest( scanner);
-        if(method.equals("CANCEL")){
-            preguntarContinuar(scanner);
-        }
-
-        Boolean useMock = this.questionAboutUseMock(scanner);
-
-        clases.stream().forEach(clase -> {
+        this.clases.stream().forEach(clase -> {
             if (clase.getNombre() != null && clase.getNombre().equals(nombreClase)) {
                 clasesTemporal.add(clase);
             }
         });
 
         try {
-            GeneradorPruebasUnitarias generate = new GeneradorPruebasUnitarias(project);
+            GeneradorPruebasUnitarias generate = new GeneradorPruebasUnitarias(this.project);
             claseEncontrada = clasesTemporal.get(0);
             claseEncontrada.setUseMock(useMock);
             claseEncontrada.setTestMethod(method);
-            generate.generarPruebas(claseEncontrada, pathProject);
+            generate.generarPruebas(claseEncontrada, this.pathProject);
         } catch (IndexOutOfBoundsException e) {
             System.out.println("Class not found");
             System.out.println(e.getMessage());
             e.printStackTrace();
         }
     }
-
 
     private boolean questionAboutUseMock(Scanner scanner) {
         String respuesta ="n";
@@ -168,13 +184,12 @@ public class AppProjectStarted {
         }
     }
 
-
     public List<Clase> getClases() {
         return clases;
     }
 
     public Project getProject() {
-        return project;
+        return this.project;
     }
 
     public  String getRutaProyecto() {
@@ -199,12 +214,10 @@ public class AppProjectStarted {
             System.out.println("2. Name of Specific method");
             opcion = scanner.nextInt();
         }
-
         return opcion;
     }
 
     public String questionOfMethodToTest(Scanner scanner){
-
         String respuesta ="";
         Integer opcion = this.getNumber( scanner);
 
