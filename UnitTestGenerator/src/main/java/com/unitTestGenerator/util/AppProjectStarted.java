@@ -1,15 +1,15 @@
 package com.unitTestGenerator.util;
 
+import com.unitTestGenerator.interfaces.IInternalTest;
 import com.unitTestGenerator.pojos.Clase;
 import com.unitTestGenerator.pojos.Metodo;
 import com.unitTestGenerator.pojos.Project;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class AppProjectStarted {
+public class AppProjectStarted implements IInternalTest {
 
     private String pathProject;
     private static AppProjectStarted instance;
@@ -24,16 +24,6 @@ public class AppProjectStarted {
             instance = new AppProjectStarted();
         }
         return instance;
-    }
-
-    public void ejecuteTestOfGenerateUnitTest(String pathProject,  boolean isAnalisis, String nombreClase,String method,Boolean useMock) {
-        this.projectAnalize( pathProject,  isAnalisis );
-        if(!isAnalisis){
-            if(method == null || method.equals("")){
-                method = "all";
-            }
-            this.generateUnitTest( nombreClase, method, useMock);
-        }
     }
 
 
@@ -243,7 +233,14 @@ public class AppProjectStarted {
     }
 
 
-
-
-
+    @Override
+    public void executeTest(String pathProject, boolean isAnalisis, String nombreClase, String method, Boolean useMock) {
+        this.projectAnalize( pathProject,  isAnalisis );
+        if(!isAnalisis){
+            if(method == null || method.equals("")){
+                method = "all";
+            }
+            this.generateUnitTest( nombreClase, method, useMock);
+        }
+    }
 }
