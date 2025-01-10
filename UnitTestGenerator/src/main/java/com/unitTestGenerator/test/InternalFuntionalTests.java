@@ -20,8 +20,8 @@ public class InternalFuntionalTests {
 
         Boolean isAnalisis = false;
         Boolean useMock = false;
-
-        String pathProject = "/Users/user/Documents/TEST_REPOSITORY/Employee1";
+        String pathProject = "/Users/alejandrosubero/Documents/TESTREPOSITORY/Employee1";
+//        String pathProject = "/Users/user/Documents/TEST_REPOSITORY/Employee1";
         String nombreClase = "EmpleadoServiceImplement";
         String method = "updateEmpleado";
 //        String method ="findById";
