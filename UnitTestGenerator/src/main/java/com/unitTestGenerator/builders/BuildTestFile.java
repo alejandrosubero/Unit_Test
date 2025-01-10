@@ -2,22 +2,10 @@ package com.unitTestGenerator.builders;
 
 import com.unitTestGenerator.interfaces.IFileContentEditor;
 import com.unitTestGenerator.interfaces.IFileManager;
-import com.unitTestGenerator.pojos.Clase;
-import com.unitTestGenerator.pojos.Metodo;
 import com.unitTestGenerator.pojos.TestFileContent;
-import com.unitTestGenerator.pojos.Variable;
-import com.unitTestGenerator.services.AnalyzeClassService;
-import org.apache.commons.io.FileUtils;
 
-import java.io.*;
-import java.nio.file.*;
+import java.io.File;
 import java.util.Scanner;
-import java.util.stream.*;
-import java.io.FileWriter;
-import java.io.IOException;
-
-
-import org.apache.commons.io.FileUtils;
 
 public class BuildTestFile implements IFileContentEditor, IFileManager {
 
@@ -82,7 +70,7 @@ public class BuildTestFile implements IFileContentEditor, IFileManager {
         }
     }
 
-    private void errorOrInvalidOption(File archivo,String content) {
+    private void errorOrInvalidOption(File archivo, String content) {
         Scanner scanner = new Scanner(System.in);
         this.message();
         int opcion = scanner.nextInt();
@@ -100,7 +88,7 @@ public class BuildTestFile implements IFileContentEditor, IFileManager {
         }
     }
 
-    private void message(){
+    private void message() {
         System.out.println("Do you want to overwrite or end the process");
         System.out.println("Choose an option:");
         System.out.println("1. End the process");

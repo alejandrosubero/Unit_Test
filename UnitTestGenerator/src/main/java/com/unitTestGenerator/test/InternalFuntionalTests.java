@@ -19,14 +19,14 @@ public class InternalFuntionalTests {
     public static void executeTest() {
 
         Boolean isAnalisis = false;
-        Boolean useMock = true;
+        Boolean useMock = false;
 
         String pathProject = "/Users/user/Documents/TEST_REPOSITORY/Employee1";
         String nombreClase = "EmpleadoServiceImplement";
-//        String method = "updateEmpleado";
+        String method = "updateEmpleado";
 //        String method ="findById";
 //        String method ="findByFechaEgreso";
-        String method = "findByTotalHorasFeriadoYear";
+//        String method = "findByTotalHorasFeriadoYear";
         AppProjectStarted.getInstance().executeTest(pathProject, isAnalisis, nombreClase, method, useMock);
 
     }

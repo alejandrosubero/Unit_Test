@@ -1,0 +1,118 @@
+[
+  {
+    "areaOrDivision": "HHR",
+    "hierarchyOfAreas": 2,
+    "positioName": "HHR_Manager",
+    "positioCode": "HHR_Manager",
+    "positionNumber": 5,
+    "description": "HHR Manager"
+  },
+  {
+    "areaOrDivision": "HHR",
+    "subAreaOrDivision": "hiring",
+    "hierarchyOfAreas": 2,
+    "positioName": "hiring_manager",
+    "positioCode": "HHR_hiring_manager",
+    "positionNumber": 4,
+    "description": "HHR hiring Manager"
+  },
+  {
+    "areaOrDivision": "HHR",
+    "subAreaOrDivision": "hiring",
+    "hierarchyOfAreas": 2,
+    "positioName": "Analist_ii",
+    "positioCode": "hhr_hiring_Analist_ii",
+    "positionNumber": 1,
+    "description": "hhr_Analist.."
+  },
+  {
+    "areaOrDivision": "HHR",
+    "subAreaOrDivision": "hiring",
+    "hierarchyOfAreas": 2,
+    "positioName": "Analist_i",
+    "positioCode": "hhr_hiring_Analist_i",
+    "positionNumber": 0,
+    "description": "hhr_Analist"
+  },
+  {
+    "areaOrDivision": "HHR",
+    "subAreaOrDivision": "personnel",
+    "hierarchyOfAreas": 2,
+    "positioName": "HHR_personnel_manager",
+    "positioCode": "HHR_personnel_manager",
+    "positionNumber": 4,
+    "description": "HHR Personnel Manager"
+  },
+  {
+    "areaOrDivision": "HHR",
+    "subAreaOrDivision": "personnel",
+    "hierarchyOfAreas": 2,
+    "positioName": "personnel_Analist_ii",
+    "positioCode": "hhr_Analist_ii",
+    "positionNumber": 1,
+    "description": "hhr_Analist.."
+  },
+  {
+    "areaOrDivision": "HHR",
+    "subAreaOrDivision": "personnel",
+    "hierarchyOfAreas": 2,
+    "positioName": "personnel_Analist_i",
+    "positioCode": "hhr_Analist_i",
+    "positionNumber": 0,
+    "description": "hhr_Analist.."
+  },
+  {
+    "areaOrDivision": "IT",
+    "hierarchyOfAreas": 3,
+    "positioName": "manager",
+    "positioCode": "IT_manager",
+    "positionNumber": 5,
+    "description": "IT manager"
+  },
+  {
+    "areaOrDivision": "IT",
+    "subAreaOrDivision": "BPM",
+    "hierarchyOfAreas": 3,
+    "positioName": "manager",
+    "positioCode": "IT_manager_BPM",
+    "positionNumber": 4,
+    "description": "IT manager"
+  },
+  {
+    "areaOrDivision": "IT",
+    "subAreaOrDivision": "BPM",
+    "hierarchyOfAreas": 3,
+    "positioName": "leader",
+    "positioCode": "IT_leader",
+    "positionNumber": 3,
+    "description": "leader..."
+  },
+  {
+    "areaOrDivision": "IT",
+    "subAreaOrDivision": "BPM",
+    "hierarchyOfAreas": 3,
+    "positioName": "JAVA_ANALYST_II",
+    "positioCode": "IT_DEVELOPER_ii",
+    "positionNumber": 2,
+    "description": "IT JAVA DEVELOP AREA"
+  },
+  {
+    "areaOrDivision": "IT",
+    "subAreaOrDivision": "BPM",
+    "hierarchyOfAreas": 3,
+    "positioName": "JAVA_tester",
+    "positioCode": "IT_tester",
+    "positionNumber": 1,
+    "description": "IT JAVA tester AREA"
+  },
+  {
+    "areaOrDivision": "IT",
+    "subAreaOrDivision": "BPM",
+    "hierarchyOfAreas": 3,
+    "positioName": "JAVA_ANALYST",
+    "positioCode": "IT_DEVELOPER",
+    "positionNumber": 0,
+    "description": "IT JAVA DEVELOP AREA"
+  }
+]
+

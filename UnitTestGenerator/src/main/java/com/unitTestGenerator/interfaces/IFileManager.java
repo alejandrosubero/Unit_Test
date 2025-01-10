@@ -2,10 +2,9 @@ package com.unitTestGenerator.interfaces;
 
 import org.apache.commons.io.FileUtils;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -38,7 +37,7 @@ public interface IFileManager {
         try {
             writer = new FileWriter(fileToWrite, false);
             writer.write(content);
-            System.out.println("Write Successful :" + fileToWrite.getAbsolutePath());
+            System.out.println("Write Successful :" +fileToWrite.getName()+" Path: "+ fileToWrite.getAbsolutePath());
         } catch (IOException e) {
             System.err.println("Error in process write file: " + fileToWrite.getAbsolutePath());
             System.err.println("Error : " + e.getMessage());
@@ -64,11 +63,15 @@ public interface IFileManager {
     }
 
 
-    default  String getFileContent(File file, String ruta){
+    default  String getFileContent(File file, String filePath){
         Stream<String> fileStream = null;
         String content ="";
         try {
-            fileStream = Files.lines(file.toPath());
+            if(file != null){
+                fileStream = Files.lines(file.toPath());
+            } else if(filePath != null){
+                fileStream = Files.lines(Paths.get(filePath));
+            }
             content = fileStream.collect(Collectors.joining("\n"));
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -76,6 +79,17 @@ public interface IFileManager {
             fileStream.close();
         }
         return content;
+    }
+
+    default String readFile(String filePath) throws IOException {
+        StringBuilder content = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                content.append(line).append("\n");
+            }
+        }
+        return content.toString();
     }
 
 }

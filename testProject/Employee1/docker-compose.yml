@@ -1,0 +1,35 @@
+version: '3'
+services:
+  employee:
+    networks:
+      - network_bpm
+    container_name: employee
+    image: employee:1.0.0
+    build: .
+    ports:
+      - 1112:1112
+    environment:
+      - DATABASE_URL=jdbc:mysql://mysql_db_2:3306/employee_bpm?serverTimezone=UTC
+      - DATABASE_USERNAME=root
+      - DATABASE_PASSWORD=docker
+      - DATABASE_SQL=update
+    depends_on:
+      - mysql_db_2
+
+  mysql_db_2:
+    networks:
+      - network_bpm
+    container_name: mysql_db_2
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: docker
+      MYSQL_DATABASE: employee_bpm
+    ports:
+      - "12306:3306"
+    volumes:
+      - D:\TEST REPOSITORIES\docker_mysql\mysql-data:/var/lib/mysql
+
+networks:
+  network_bpm:
+    driver: bridge

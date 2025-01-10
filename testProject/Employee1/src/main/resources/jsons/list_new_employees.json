@@ -1,0 +1,574 @@
+[
+  {
+    "name": "raul",
+    "lastName": "bueno",
+    "address": "2305 Killeanr Center Blvr APT-H16",
+    "socialSecurityNumber": "0000-2222-934",
+    "phoneNumber": "850-5555550",
+    "fechaIngreso": "2023-12-23T16:01:49.691Z",
+    "informacionMedica": {
+      "alergias": [],
+      "altura": 6.5,
+      "edad": 45,
+      "enfermedades": [],
+      "etnia": "latin",
+      "genero": "male",
+      "peso": 183,
+      "seguroMedicoComp": "Florida_cooper",
+      "seguroMedicoPersonal": ""
+    },
+    "computerSheet": {
+      "mail": "compnyNameEmploy1@company.com",
+      "userName": "hx30000",
+      "userPassword": "employee",
+      "bpmAcceptGranted": true,
+      "webGranted": true
+    },
+    "position": {
+      "areaOrDivision": "HHR",
+      "subAreaOrDivision": "none",
+      "name": "HHR_Manager",
+      "code": "HHR_Manager",
+      "description": "HHR Manager"
+    },
+    "sueldo": {
+      "horasJornadaDia":8,
+      "jornadasemanalDias":5,
+      "sueldoIntegral": 3500,
+      "tasaDia": 175,
+      "tasaHora": 21.875,
+      "tasaHoraExtra":32.8125,
+      "tasaHoraFeriado":28,
+      "tipoDePago": "BIWEEKLY PAYMENT",
+      "totalAnual": 42000
+    }
+  },
+  {
+    "name": "carlos",
+    "lastName": "servantes",
+    "address": "2305 Killeanr Center Blvr",
+    "socialSecurityNumber": "0000-2222-933",
+    "phoneNumber": "850-5555550",
+    "fechaIngreso": "2023-12-23T16:01:49.691Z",
+    "informacionMedica": {
+      "alergias": [],
+      "altura": 6.5,
+      "edad": 45,
+      "enfermedades": [],
+      "etnia": "latin",
+      "genero": "male",
+      "peso": 183,
+      "seguroMedicoComp": "Florida_cooper",
+      "seguroMedicoPersonal": ""
+    },
+    "computerSheet": {
+      "mail": "compnyNameEmploy2@company.com",
+      "userName": "hx30001",
+      "userPassword": "employee",
+      "bpmAcceptGranted": true,
+      "webGranted": true
+    },
+    "position": {
+      "areaOrDivision": "HHR",
+      "subAreaOrDivision": "hiring",
+      "name": "hiring_manager",
+      "code": "HHR_hiring_manager",
+      "description": "HHR hiring Manager"
+    },
+    "sueldo": {
+      "horasJornadaDia":8,
+      "jornadasemanalDias":5,
+      "sueldoIntegral": 3500,
+      "tasaDia": 175,
+      "tasaHora": 21.875,
+      "tasaHoraExtra":32.8125,
+      "tasaHoraFeriado":28,
+      "tipoDePago": "BIWEEKLY PAYMENT",
+      "totalAnual": 42000
+    }
+  },
+  {
+    "name": "jesica",
+    "lastName": "white",
+    "address": "2305 Killeanr Center Blvr",
+    "socialSecurityNumber": "0000-2222-883",
+    "phoneNumber": "850-5555550",
+    "fechaIngreso": "2023-12-23T16:01:49.691Z",
+    "informacionMedica": {
+      "alergias": [],
+      "altura": 6.5,
+      "edad": 45,
+      "enfermedades": [],
+      "etnia": "latin",
+      "genero": "female",
+      "peso": 183,
+      "seguroMedicoComp": "Florida_cooper",
+      "seguroMedicoPersonal": ""
+    },
+    "computerSheet": {
+      "mail": "compnyNameEmploy3@company.com",
+      "userName": "hx30002",
+      "userPassword": "employee",
+      "bpmAcceptGranted": true,
+      "webGranted": true
+    },
+    "position": {
+      "areaOrDivision": "HHR",
+      "subAreaOrDivision": "hiring",
+      "name": "Analist_ii",
+      "code": "hhr_hiring_Analist_ii",
+      "description": "hhr_Analist.."
+    },
+    "sueldo": {
+      "horasJornadaDia":8,
+      "jornadasemanalDias":5,
+      "sueldoIntegral": 3500,
+      "tasaDia": 175,
+      "tasaHora": 21.875,
+      "tasaHoraExtra":32.8125,
+      "tasaHoraFeriado":28,
+      "tipoDePago": "BIWEEKLY PAYMENT",
+      "totalAnual": 42000
+    }
+  },
+  {
+    "name": "veronica",
+    "lastName": "succestrada",
+    "address": "2305 Killeanr Center Blvr",
+    "socialSecurityNumber": "0000-2252-383",
+    "phoneNumber": "850-5555550",
+    "fechaIngreso": "2023-12-23T16:01:49.691Z",
+    "informacionMedica": {
+      "alergias": [],
+      "altura": 6.5,
+      "edad": 45,
+      "enfermedades": [],
+      "etnia": "latin",
+      "genero": "female",
+      "peso": 183,
+      "seguroMedicoComp": "Florida_cooper",
+      "seguroMedicoPersonal": ""
+    },
+    "computerSheet": {
+      "mail": "compnyNameEmploy4@company.com",
+      "userName": "hx30003",
+      "userPassword": "employee",
+      "bpmAcceptGranted": true,
+      "webGranted": true
+    },
+    "position": {
+      "areaOrDivision": "HHR",
+      "subAreaOrDivision": "hiring",
+      "name": "Analist_i",
+      "code": "hhr_hiring_Analist_i",
+      "description": "hhr_Analist.."
+    },
+    "sueldo": {
+      "horasJornadaDia":8,
+      "jornadasemanalDias":5,
+      "sueldoIntegral": 3500,
+      "tasaDia": 175,
+      "tasaHora": 21.875,
+      "tasaHoraExtra":32.8125,
+      "tasaHoraFeriado":28,
+      "tipoDePago": "BIWEEKLY PAYMENT",
+      "totalAnual": 42000
+    }
+  },
+  {
+    "name": "claudia",
+    "lastName": "boniste",
+    "address": "2305 Killeanr Center Blvr",
+    "socialSecurityNumber": "0000-2252-383",
+    "phoneNumber": "850-5555550",
+    "fechaIngreso": "2023-12-23T16:01:49.691Z",
+    "informacionMedica": {
+      "alergias": [],
+      "altura": 6.5,
+      "edad": 45,
+      "enfermedades": [],
+      "etnia": "latin",
+      "genero": "female",
+      "peso": 183,
+      "seguroMedicoComp": "Florida_cooper",
+      "seguroMedicoPersonal": ""
+    },
+    "computerSheet": {
+      "mail": "compnyNameEmploy4@company.com",
+      "userName": "hx30004",
+      "userPassword": "employee",
+      "bpmAcceptGranted": true,
+      "webGranted": true
+    },
+    "position": {
+      "areaOrDivision": "HHR",
+      "subAreaOrDivision": "personnel",
+      "name": "HHR_personnel_manager",
+      "code": "HHR_personnel_manager",
+      "description": "HHR personnel manager"
+    },
+    "sueldo": {
+      "horasJornadaDia":8,
+      "jornadasemanalDias":5,
+      "sueldoIntegral": 3500,
+      "tasaDia": 175,
+      "tasaHora": 21.875,
+      "tasaHoraExtra":32.8125,
+      "tasaHoraFeriado":28,
+      "tipoDePago": "BIWEEKLY PAYMENT",
+      "totalAnual": 42000
+    }
+  },
+  {
+    "name": "michel",
+    "lastName": "sander",
+    "address": "2305 Killeanr Center Blvr",
+    "socialSecurityNumber": "0000-2322-213",
+    "phoneNumber": "850-5555550",
+    "fechaIngreso": "2023-12-23T16:01:49.691Z",
+    "informacionMedica": {
+      "alergias": [],
+      "altura": 6.5,
+      "edad": 45,
+      "enfermedades": [],
+      "etnia": "latin",
+      "genero": "male",
+      "peso": 183,
+      "seguroMedicoComp": "Florida_cooper",
+      "seguroMedicoPersonal": ""
+    },
+    "computerSheet": {
+      "mail": "compnyNameEmploy5@company.com",
+      "userName": "hx30005",
+      "userPassword": "employee",
+      "bpmAcceptGranted": true,
+      "webGranted": true
+    },
+    "position": {
+      "areaOrDivision": "HHR",
+      "subAreaOrDivision": "personnel",
+      "name": "personnel_Analist_ii",
+      "code": "hhr_Analist_ii",
+      "description": "hhr_Analist.."
+    },
+    "sueldo": {
+      "horasJornadaDia":8,
+      "jornadasemanalDias":5,
+      "sueldoIntegral": 3500,
+      "tasaDia": 175,
+      "tasaHora": 21.875,
+      "tasaHoraExtra":32.8125,
+      "tasaHoraFeriado":28,
+      "tipoDePago": "BIWEEKLY PAYMENT",
+      "totalAnual": 42000
+    }
+  },
+  {
+    "name": "royer",
+    "lastName": "stone",
+    "address": "2305 Killeanr Center Blvr",
+    "socialSecurityNumber": "0000-2322-319",
+    "phoneNumber": "850-5555550",
+    "fechaIngreso": "2023-12-23T16:01:49.691Z",
+    "informacionMedica": {
+      "alergias": [],
+      "altura": 6.5,
+      "edad": 45,
+      "enfermedades": [],
+      "etnia": "latin",
+      "genero": "male",
+      "peso": 183,
+      "seguroMedicoComp": "Florida_cooper",
+      "seguroMedicoPersonal": ""
+    },
+    "computerSheet": {
+      "mail": "compnyNameEmploy6@company.com",
+      "userName": "hx30006",
+      "userPassword": "employee",
+      "bpmAcceptGranted": true,
+      "webGranted": true
+    },
+    "position": {
+      "areaOrDivision": "HHR",
+      "subAreaOrDivision": "personnel",
+      "name": "personnel_Analist_i",
+      "code": "hhr_Analist_i",
+      "description": "hhr_Analist.."
+    },
+    "sueldo": {
+      "horasJornadaDia":8,
+      "jornadasemanalDias":5,
+      "sueldoIntegral": 3500,
+      "tasaDia": 175,
+      "tasaHora": 21.875,
+      "tasaHoraExtra":32.8125,
+      "tasaHoraFeriado":28,
+      "tipoDePago": "BIWEEKLY PAYMENT",
+      "totalAnual": 42000
+    }
+  },
+  {
+    "name": "jose",
+    "lastName": "danes",
+    "address": "2305 Killeanr Center Blvr APT",
+    "socialSecurityNumber": "0000-2222-999",
+    "phoneNumber": "850-5555550",
+    "fechaIngreso": "2023-12-29T16:01:49.691Z",
+    "informacionMedica": {
+      "alergias": [],
+      "altura": 6.5,
+      "edad": 45,
+      "enfermedades": [],
+      "etnia": "latin",
+      "genero": "male",
+      "peso": 183,
+      "seguroMedicoComp": "Florida_cooper",
+      "seguroMedicoPersonal": ""
+    },
+    "computerSheet": {
+      "mail": "compnyNameEmploy7@company.com",
+      "userName": "hx30007",
+      "userPassword": "employee",
+      "bpmAcceptGranted": true,
+      "webGranted": true
+    },
+    "position": {
+      "areaOrDivision": "IT",
+      "subAreaOrDivision": "none",
+      "name": "manager",
+      "code": "IT_manager",
+      "description": "IT Manager"
+    },
+    "sueldo": {
+      "horasJornadaDia":8,
+      "jornadasemanalDias":5,
+      "sueldoIntegral": 3500,
+      "tasaDia": 175,
+      "tasaHora": 21.875,
+      "tasaHoraExtra":32.8125,
+      "tasaHoraFeriado":28,
+      "tipoDePago": "BIWEEKLY PAYMENT",
+      "totalAnual": 42000
+    }
+  },
+  {
+    "name": "manuel",
+    "lastName": "morales",
+    "address": "2305 Killeanr Center Blvr",
+    "socialSecurityNumber": "0000-3222-359",
+    "phoneNumber": "850-5455550",
+    "fechaIngreso": "2023-12-29T16:01:49.691Z",
+    "informacionMedica": {
+      "alergias": [],
+      "altura": 6.5,
+      "edad": 45,
+      "enfermedades": [],
+      "etnia": "latin",
+      "genero": "male",
+      "peso": 183,
+      "seguroMedicoComp": "Florida_cooper",
+      "seguroMedicoPersonal": ""
+    },
+    "computerSheet": {
+      "mail": "compnyNameEmploy8@company.com",
+      "userName": "hx30008",
+      "userPassword": "employee",
+      "bpmAcceptGranted": true,
+      "webGranted": true
+    },
+    "position": {
+      "areaOrDivision": "IT",
+      "subAreaOrDivision": "BPM",
+      "name": "manager",
+      "code": "IT_manager_BPM",
+      "description": "IT manager"
+    },
+    "sueldo": {
+      "horasJornadaDia":8,
+      "jornadasemanalDias":5,
+      "sueldoIntegral": 3500,
+      "tasaDia": 175,
+      "tasaHora": 21.875,
+      "tasaHoraExtra":32.8125,
+      "tasaHoraFeriado":28,
+      "tipoDePago": "BIWEEKLY PAYMENT",
+      "totalAnual": 42000
+    }
+  },
+  {
+    "name": "pablo",
+    "lastName": "vertedor",
+    "address": "2305 Killeanr Center Blvr",
+    "socialSecurityNumber": "0000-3222-359",
+    "phoneNumber": "850-5455550",
+    "fechaIngreso": "2023-12-29T16:01:49.691Z",
+    "informacionMedica": {
+      "alergias": [],
+      "altura": 6.5,
+      "edad": 45,
+      "enfermedades": [],
+      "etnia": "latin",
+      "genero": "male",
+      "peso": 183,
+      "seguroMedicoComp": "Florida_cooper",
+      "seguroMedicoPersonal": ""
+    },
+    "computerSheet": {
+      "mail": "compnyNameEmploy9@company.com",
+      "userName": "hx30009",
+      "userPassword": "employee",
+      "bpmAcceptGranted": true,
+      "webGranted": true
+    },
+    "position": {
+      "areaOrDivision": "IT",
+      "subAreaOrDivision": "BPM",
+      "name": "leader",
+      "code": "IT_leader",
+      "description": "leader..."
+    },
+    "sueldo": {
+      "horasJornadaDia":8,
+      "jornadasemanalDias":5,
+      "sueldoIntegral": 3500,
+      "tasaDia": 175,
+      "tasaHora": 21.875,
+      "tasaHoraExtra":32.8125,
+      "tasaHoraFeriado":28,
+      "tipoDePago": "BIWEEKLY PAYMENT",
+      "totalAnual": 42000
+    }
+  },
+  {
+    "name": "paul",
+    "lastName": "verasierta",
+    "address": "2305 Killeanr Center Blvr",
+    "socialSecurityNumber": "0000-3287-260",
+    "phoneNumber": "850-5455550",
+    "fechaIngreso": "2023-12-29T16:01:49.691Z",
+    "informacionMedica": {
+      "alergias": [],
+      "altura": 6.5,
+      "edad": 45,
+      "enfermedades": [],
+      "etnia": "latin",
+      "genero": "male",
+      "peso": 183,
+      "seguroMedicoComp": "Florida_cooper",
+      "seguroMedicoPersonal": ""
+    },
+    "computerSheet": {
+      "mail": "compnyNameEmploy10@company.com",
+      "userName": "hx30010",
+      "userPassword": "employee",
+      "bpmAcceptGranted": true,
+      "webGranted": true
+    },
+    "position": {
+      "areaOrDivision": "IT",
+      "subAreaOrDivision": "BPM",
+      "name": "JAVA_ANALYST_II",
+      "code": "IT_DEVELOPER_ii",
+      "description": "IT JAVA DEVELOP AREA"
+    },
+    "sueldo": {
+      "horasJornadaDia":8,
+      "jornadasemanalDias":5,
+      "sueldoIntegral": 3500,
+      "tasaDia": 175,
+      "tasaHora": 21.875,
+      "tasaHoraExtra":32.8125,
+      "tasaHoraFeriado":28,
+      "tipoDePago": "BIWEEKLY PAYMENT",
+      "totalAnual": 42000
+    }
+  },
+  {
+    "name": "roxy",
+    "lastName": "sanders",
+    "address": "2305 Killeanr Center Blvr",
+    "socialSecurityNumber": "0000-1094-902",
+    "phoneNumber": "850-5455550",
+    "fechaIngreso": "2023-12-29T16:01:49.691Z",
+    "informacionMedica": {
+      "alergias": [],
+      "altura": 6.5,
+      "edad": 45,
+      "enfermedades": [],
+      "etnia": "white",
+      "genero": "female",
+      "peso": 183,
+      "seguroMedicoComp": "Florida_cooper",
+      "seguroMedicoPersonal": ""
+    },
+    "computerSheet": {
+      "mail": "compnyNameEmploy11@company.com",
+      "userName": "hx30011",
+      "userPassword": "employee",
+      "bpmAcceptGranted": true,
+      "webGranted": true
+    },
+    "position": {
+      "areaOrDivision": "IT",
+      "subAreaOrDivision": "BPM",
+      "name": "JAVA_tester",
+      "code": "IT_tester",
+      "description": "IT JAVA tester AREA"
+    },
+    "sueldo": {
+      "horasJornadaDia":8,
+      "jornadasemanalDias":5,
+      "sueldoIntegral": 3500,
+      "tasaDia": 175,
+      "tasaHora": 21.875,
+      "tasaHoraExtra":32.8125,
+      "tasaHoraFeriado":28,
+      "tipoDePago": "BIWEEKLY PAYMENT",
+      "totalAnual": 42000
+    }
+  },
+  {
+  "name": "Alejandro",
+  "lastName": "Subero",
+  "address": "2305 Killeanr Center Blvr APT-H169",
+  "socialSecurityNumber": "0000-2222-999",
+  "phoneNumber": "850-5555550",
+  "fechaIngreso": "2023-12-29T16:01:49.691Z",
+  "informacionMedica": {
+    "alergias": [],
+    "altura": 6.5,
+    "edad": 45,
+    "enfermedades": [],
+    "etnia": "latin",
+    "genero": "male",
+    "peso": 183,
+    "seguroMedicoComp": "Florida_cooper",
+    "seguroMedicoPersonal": ""
+  },
+  "computerSheet": {
+    "mail": "compnyNameEmploy@company.com",
+    "userName": "hx39075",
+    "userPassword": "employee",
+    "bpmAcceptGranted": true,
+    "webGranted": true
+  },
+  "position": {
+    "areaOrDivision": "IT",
+    "code": "IT_DEVELOPER",
+    "description": "IT JAVA DEVELOP AREA",
+    "name": "JAVA_ANALYST",
+    "subAreaOrDivision": "BPM"
+  },
+  "sueldo": {
+    "horasJornadaDia":8,
+    "jornadasemanalDias":5,
+    "sueldoIntegral": 3500,
+    "tasaDia": 175,
+    "tasaHora": 21.875,
+    "tasaHoraExtra":32.8125,
+    "tasaHoraFeriado":28,
+    "tipoDePago": "BIWEEKLY PAYMENT",
+    "totalAnual": 42000
+  }
+}
+]

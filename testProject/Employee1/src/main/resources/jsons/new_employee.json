@@ -1,0 +1,45 @@
+{
+  "name": "Alejandro",
+  "lastName": "Subero",
+  "address": "2305 Killeanr Center Blvr APT-H169",
+  "socialSecurityNumber": "0000-2222-999",
+  "phoneNumber": "850-5555550",
+  "fechaIngreso": "2023-12-29T16:01:49.691Z",
+  "informacionMedica": {
+    "alergias": [],
+    "altura": 6.5,
+    "edad": 45,
+    "enfermedades": [],
+    "etnia": "latin",
+    "genero": "male",
+    "peso": 183,
+    "seguroMedicoComp": "Florida_cooper",
+    "seguroMedicoPersonal": ""
+  },
+  "computerSheet": {
+    "mail": "compnyNameEmploy@company.com",
+    "userName": "hx39075",
+    "userPassword": "employee",
+    "bpmAcceptGranted": true,
+    "webGranted": true
+  },
+  "position": {
+    "areaOrDivision": "IT",
+    "code": "IT_DEVELOPER",
+    "description": "IT JAVA DEVELOP AREA",
+    "name": "JAVA_ANALYST",
+    "subAreaOrDivision": "BPM"
+  },
+  "sueldo": {
+    "horasJornadaDia":8,
+    "jornadasemanalDias":5,
+    "sueldoIntegral": 3500,
+    "tasaDia": 175,
+    "tasaHora": 21.875,
+    "tasaHoraExtra":32.8125,
+    "tasaHoraFeriado":28,
+    "tipoDePago": "BIWEEKLY PAYMENT",
+    "totalAnual": 42000
+  }
+}
+
