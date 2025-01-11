@@ -2,18 +2,19 @@ package com.unitTestGenerator.util;
 
 import com.unitTestGenerator.builders.BuildTestFile;
 import com.unitTestGenerator.interfaces.IBaseModel;
-import com.unitTestGenerator.pojos.*;
+import com.unitTestGenerator.interfaces.IFileManager;
+import com.unitTestGenerator.pojos.Clase;
+import com.unitTestGenerator.pojos.Project;
+import com.unitTestGenerator.pojos.TestFileContent;
+import com.unitTestGenerator.pojos.Variable;
 import com.unitTestGenerator.services.GenerateMethodService;
 import com.unitTestGenerator.services.GeneratedVariableService;
 import com.unitTestGenerator.services.MethodParameterObject;
 
 import java.io.File;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
 
 
-public class GeneradorPruebasUnitarias implements IBaseModel {
+public class GeneradorPruebasUnitarias implements IBaseModel, IFileManager {
 
     private Project project;
 
@@ -44,9 +45,24 @@ public class GeneradorPruebasUnitarias implements IBaseModel {
                 .testsClassMethods("")
                 .build();
 
-        TestFileContent fileContentGenerate =  GenerateMethodService.getInstance().generateMethods(clase,project, fileContent);
+        if(!clase.getUseMock()) {
+            this.applicationTestPropertiesExist(this.project);
+        }
+
+        TestFileContent fileContentGenerate =  GenerateMethodService.getInstance().generateMethods(clase,this.project, fileContent);
         return fileContentGenerate;
     }
+
+
+
+    private void applicationTestPropertiesExist(Project project){
+        String basePath = stringPaths(true,true,"src","test","resources","application-test.properties");
+        if(!filePathExists(project.getPathProject(),basePath)){
+            ...
+            // crear el archivo verificar las dependencias
+        }
+    }
+
 
     private String classSingne(Clase clase){
         StringBuilder classSingne = new StringBuilder();
@@ -54,13 +70,18 @@ public class GeneradorPruebasUnitarias implements IBaseModel {
         if(clase.getUseMock()){
             classSingne.append("\n").append("@ExtendWith(MockitoExtension.class)").append("\n");
         }else{
+            //TODO VERIFICAR DE LAS A NOTACIONES ES MEJOR PARA TESTING EL REPOSITORIO
             classSingne.append("\n");
            if( clase.getNombre().contains("JpaRepository") || clase.getNombre().contains("Repository") || clase.getNombre().contains("CrudRepository")){
                classSingne.append("\n").append("@DataJpaTest").append("\n");
                classSingne.append("@AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)").append("\n");
+           } else {
+               classSingne.append("\n").append("\t").append("@ExtendWith(SpringExtension.class)").append("\n");
+               classSingne.append("\t").append("@SpringBootTest").append("\n");
+               classSingne.append("\t").append("@ActiveProfiles(\"test\")").append("\n");
            }
         }
-        classSingne.append("public class " + clase.getNombre() + "Test {\n");
+        classSingne.append("\t").append("public class " + clase.getNombre() + "Test {\n");
         return classSingne.toString();
     }
 
@@ -92,17 +113,22 @@ public class GeneradorPruebasUnitarias implements IBaseModel {
         contex.append("package ").append(clase.getPaquete()).append(";").append("\n");
         contex.append("import org.junit.jupiter.api.Test;").append("\n");
         contex.append("import org.junit.jupiter.api.BeforeEach;").append("\n");
-        contex.append("import org.junit.jupiter.api.extension.ExtendWith;").append("\n");;
-        contex.append("import org.mockito.InjectMocks;").append("\n");
-        contex.append("import org.mockito.Mock;").append("\n");
         contex.append("import org.junit.jupiter.api.extension.ExtendWith;").append("\n");
-        contex.append("import org.mockito.InjectMocks;").append("\n");
-        contex.append("import org.mockito.Mock;").append("\n");
-        contex.append("import org.mockito.Mockito;").append("\n");
-        contex.append("import org.mockito.MockitoAnnotations;").append("\n");
-        contex.append("import org.mockito.junit.jupiter.MockitoExtension;").append("\n").append("\n");
+//        contex.append("import org.junit.jupiter.api.extension.ExtendWith;").append("\n");
         contex.append("import static org.assertj.core.api.Assertions.assertThat;").append("\n");
         contex.append("import org.assertj.core.api.Assertions;").append("\n");
+
+        if(!clase.getUseMock()){
+            contex.append("import org.springframework.beans.factory.annotation.Autowired;");
+        }else {
+            contex.append("import org.mockito.InjectMocks;").append("\n");
+            contex.append("import org.mockito.Mock;").append("\n");
+            contex.append("import org.mockito.InjectMocks;").append("\n");
+            contex.append("import org.mockito.Mock;").append("\n");
+            contex.append("import org.mockito.Mockito;").append("\n");
+            contex.append("import org.mockito.MockitoAnnotations;").append("\n");
+            contex.append("import org.mockito.junit.jupiter.MockitoExtension;").append("\n").append("\n");
+        }
 
 
         contex.append( this.stringEnsamble("import ", clase.getPaquete(), ".",clase.getNombre())).append(";").append("\n");

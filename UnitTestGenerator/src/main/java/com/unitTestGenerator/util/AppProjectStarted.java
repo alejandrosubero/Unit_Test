@@ -89,10 +89,13 @@ public class AppProjectStarted implements IInternalTest {
 
         if(this.pathProject != null){
             this.clases = AnalizadorProyecto.getInstance().analizarProyecto(pathProject);
-            this.project = new Project(this.clases, pathProject);
+
+            if(this.clases != null){
+                this.project = new Project(this.clases, pathProject);
+            }
             this.projectAnalyzerType();
 
-            if(isAnalisis) {
+            if(isAnalisis && this.clases != null) {
                 System.out.println("Classes found:...");
                 for (Clase clase : this.clases) {
                     if(clase.getMetodos() != null && !clase.getMetodos().isEmpty()){
@@ -107,7 +110,7 @@ public class AppProjectStarted implements IInternalTest {
                     }
                 }
             }
-            if(isAnalisis) {
+            if(isAnalisis && this.clases != null) {
                 System.out.println("Classes found:");
                 for (Clase clase : this.clases) {
                     System.out.println(clase.getNombre() + "  package: " + clase.getPaquete());

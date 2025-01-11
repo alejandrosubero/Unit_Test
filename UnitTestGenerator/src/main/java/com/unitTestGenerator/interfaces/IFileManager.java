@@ -4,6 +4,7 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -92,4 +93,20 @@ public interface IFileManager {
         return content.toString();
     }
 
+
+    default Boolean filePathExists(String projectPath, String filePath ) {
+
+        //"/src/test/resources/application-test.properties";
+        //String basePath= stringPaths(true,true,"src","test","java");//"/src/test/java/"
+
+        String fileExist = projectPath + filePath;
+        Path path = Paths.get(fileExist);
+        if (Files.exists(path)) {
+            System.out.println("the file exist in : " + filePath);
+            return true;
+        } else {
+            System.out.println("the file does't exist in : " + filePath);
+            return false;
+        }
+    }
 }
