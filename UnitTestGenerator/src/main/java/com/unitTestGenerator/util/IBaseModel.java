@@ -1,4 +1,4 @@
-package com.unitTestGenerator.interfaces;
+package com.unitTestGenerator.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;

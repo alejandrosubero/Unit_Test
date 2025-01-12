@@ -1,6 +1,6 @@
 package com.unitTestGenerator.builders;
 
-import com.unitTestGenerator.interfaces.IFileManager;
+import com.unitTestGenerator.builders.interfaces.IFileManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -182,7 +182,7 @@ public class AddPatterBuilder implements IFileManager {
         return addBuildMethod.toString();
     }
 
-    private String capitalizeFirstLetter(String fieldName) {
+    public String capitalizeFirstLetter(String fieldName) {
         if (fieldName == null || fieldName.isEmpty()) {
             return fieldName;
         }

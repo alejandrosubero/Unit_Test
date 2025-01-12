@@ -1,6 +1,7 @@
-package com.unitTestGenerator.util;
+package com.unitTestGenerator.core;
 
-import com.unitTestGenerator.interfaces.IInternalTest;
+import com.unitTestGenerator.analyzers.AnalizadorProyecto;
+import com.unitTestGenerator.test.interfaces.IInternalTest;
 import com.unitTestGenerator.pojos.Clase;
 import com.unitTestGenerator.pojos.Metodo;
 import com.unitTestGenerator.pojos.Project;

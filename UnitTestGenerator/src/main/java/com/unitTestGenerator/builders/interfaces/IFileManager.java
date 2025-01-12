@@ -1,5 +1,7 @@
-package com.unitTestGenerator.interfaces;
+package com.unitTestGenerator.builders.interfaces;
 
+import com.unitTestGenerator.pojos.Clase;
+import com.unitTestGenerator.util.IBaseModel;
 import org.apache.commons.io.FileUtils;
 
 import java.io.*;
@@ -9,7 +11,7 @@ import java.nio.file.Paths;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public interface IFileManager {
+public interface IFileManager extends IBaseModel {
 
     default String fileExist(File file){
         String content ="";
@@ -94,13 +96,9 @@ public interface IFileManager {
     }
 
 
-    default Boolean filePathExists(String projectPath, String filePath ) {
+    default Boolean filePathExists(String filePath ) {
 
-        //"/src/test/resources/application-test.properties";
-        //String basePath= stringPaths(true,true,"src","test","java");//"/src/test/java/"
-
-        String fileExist = projectPath + filePath;
-        Path path = Paths.get(fileExist);
+        Path path = Paths.get(filePath);
         if (Files.exists(path)) {
             System.out.println("the file exist in : " + filePath);
             return true;
@@ -108,5 +106,13 @@ public interface IFileManager {
             System.out.println("the file does't exist in : " + filePath);
             return false;
         }
+    }
+
+    default String getPathOfTest(Clase clase, String pathProject){
+        String claseName = clase.getNombre();
+        String basePath=  this.stringPaths(true,true,"src","test","java");//"/src/test/java/"
+        String packagePath = clase.getPaquete().replace(".", Separator);
+        String pathOfTest = this.stringEnsamble(pathProject,basePath, packagePath, Separator, claseName, "Test.java");
+        return pathOfTest;
     }
 }

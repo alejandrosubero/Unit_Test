@@ -4,7 +4,7 @@ import com.unitTestGenerator.interfaces.IGenerateVariable;
 import com.unitTestGenerator.pojos.Clase;
 import com.unitTestGenerator.pojos.Project;
 import com.unitTestGenerator.pojos.Variable;
-import com.unitTestGenerator.util.AppProjectStarted;
+import com.unitTestGenerator.core.AppProjectStarted;
 
 public class GeneratedVariableService implements IGenerateVariable {
 

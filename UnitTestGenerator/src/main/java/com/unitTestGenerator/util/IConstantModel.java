@@ -1,4 +1,6 @@
-package com.unitTestGenerator.interfaces;
+package com.unitTestGenerator.util;
+
+import com.unitTestGenerator.pojos.Clase;
 
 import java.io.File;
 import java.util.Arrays;
@@ -149,5 +151,60 @@ public interface IConstantModel {
 
     public static final List<String> COMMON_METHODS = Arrays.asList("save", "findAllById", "findById", "delete", "deleteAll", "deleteById");
     public static final List<String> COMMON_IMPORTS = Arrays.asList( "Date", "List", "Map" );
+
+    public static final String JUNIT_DEPENDENCY =
+            "<dependency>\n" +
+                    "            <groupId>org.junit.jupiter</groupId>\n" +
+                    "            <artifactId>junit-jupiter</artifactId>\n" +
+                    "            <version>5.8.2</version>\n" +
+                    "            <scope>test</scope>\n" +
+                    "        </dependency>";
+
+    public static  final String MOCK_DEPENDENCY =
+            "<dependency>\n" +
+                    "            <groupId>org.mockito</groupId>\n" +
+                    "            <artifactId>mockito-junit-jupiter</artifactId>\n" +
+                    "            <version>3.12.4</version>\n" +
+                    "            <scope>test</scope>\n" +
+                    "        </dependency>";
+
+    public static  final String MOCK_DEPENDENCY_core ="<dependency>\n" +
+            "            <groupId>org.mockito</groupId>\n" +
+            "            <artifactId>mockito-core</artifactId>\n" +
+            "            <version>3.12.4</version>\n" +
+            "            <scope>test</scope>\n" +
+            "        </dependency>";
+
+
+    public static  final String H2_DEPENDENCY_TEST ="<dependency>\n" +
+            "    <groupId>com.h2database</groupId>\n" +
+            "    <artifactId>h2</artifactId>\n" +
+            "    <version>2.1.210</version>\n" +
+            "    <scope>test</scope>\n" +
+            "</dependency>";
+
+
+    default String getBaseImport(Clase clase) {
+        StringBuilder contex = new StringBuilder();
+        contex.append("package ").append(clase.getPaquete()).append(";").append("\n");
+        contex.append("import org.junit.jupiter.api.Test;").append("\n");
+        contex.append("import org.junit.jupiter.api.BeforeEach;").append("\n");
+        contex.append("import org.junit.jupiter.api.extension.ExtendWith;").append("\n");
+        contex.append("import static org.assertj.core.api.Assertions.assertThat;").append("\n");
+        contex.append("import org.assertj.core.api.Assertions;").append("\n");
+    return contex.toString();
+    }
+
+    default String getMockImport() {
+        StringBuilder contex = new StringBuilder();
+        contex.append("import org.mockito.InjectMocks;").append("\n");
+        contex.append("import org.mockito.Mock;").append("\n");
+        contex.append("import org.mockito.InjectMocks;").append("\n");
+        contex.append("import org.mockito.Mock;").append("\n");
+        contex.append("import org.mockito.Mockito;").append("\n");
+        contex.append("import org.mockito.MockitoAnnotations;").append("\n");
+        contex.append("import org.mockito.junit.jupiter.MockitoExtension;").append("\n").append("\n");
+        return contex.toString();
+    }
 
 }

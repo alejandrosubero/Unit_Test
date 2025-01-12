@@ -1,4 +1,4 @@
-package com.unitTestGenerator.util;
+package com.unitTestGenerator.analyzers;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -6,9 +6,8 @@ import java.util.Arrays;
 import java.util.List;
 
 
+import com.unitTestGenerator.analyzers.services.AnalyzeClassService;
 import com.unitTestGenerator.pojos.*;
-import com.unitTestGenerator.services.AnalyzeClassService;
-
 
 
 public class AnalizadorProyecto {

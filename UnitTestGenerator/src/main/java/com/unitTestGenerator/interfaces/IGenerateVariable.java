@@ -1,5 +1,7 @@
 package com.unitTestGenerator.interfaces;
 
+import com.unitTestGenerator.util.IBaseModel;
+
 public interface IGenerateVariable extends IBaseModel {
 
     default  String generateVariable(String type, String name, boolean isClass, boolean useMock) {

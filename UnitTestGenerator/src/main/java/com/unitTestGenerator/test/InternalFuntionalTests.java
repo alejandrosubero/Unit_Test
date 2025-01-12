@@ -1,6 +1,6 @@
 package com.unitTestGenerator.test;
 
-import com.unitTestGenerator.util.AppProjectStarted;
+import com.unitTestGenerator.core.AppProjectStarted;
 
 public class InternalFuntionalTests {
 
@@ -20,8 +20,8 @@ public class InternalFuntionalTests {
 
         Boolean isAnalisis = false;
         Boolean useMock = false;
-//        String pathProject = "/Users/alejandrosubero/Documents/TESTREPOSITORY/Employee1";
-        String pathProject = "/Users/user/Documents/TEST_REPOSITORY/Employee1";
+        String pathProject = "/Users/alejandrosubero/Documents/TESTREPOSITORY/Employee1";
+//        String pathProject = "/Users/user/Documents/TEST_REPOSITORY/Employee1";
         String nombreClase = "EmpleadoServiceImplement";
         String method = "updateEmpleado";
 //        String method ="findById";
@@ -47,16 +47,6 @@ NOTAS:
 TOMAR EN CUENTA UNA AVERTENCIA CUANDO SELECCIONAS ALL QUE SE SOBRE ESCRIBIRAN TODAS, TANBIEN DAR LA OCCION DE SOBRE ESCRIBIR TODAS ASI EL METODO ES DIFERENTE O IGUAL
 3) TRABAJAR cUANDO NO SE QUIERE USAR MOCK
 4) hay una falla si se tiene la variable que el debe de costruir no adiciona los metodos y falla cuando esta en mock add;
-
-
-<dependency>
-    <groupId>com.h2database</groupId>
-    <artifactId>h2</artifactId>
-    <scope>test</scope>
-</dependency>
-
-
-
 
 
 */

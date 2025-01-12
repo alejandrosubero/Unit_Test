@@ -1,11 +1,10 @@
 package com.unitTestGenerator.services;
 
-import com.unitTestGenerator.interfaces.IBaseModel;
+import com.unitTestGenerator.util.IBaseModel;
 import com.unitTestGenerator.interfaces.IMethodServiceTools;
 import com.unitTestGenerator.interfaces.IReturnType;
 import com.unitTestGenerator.pojos.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

@@ -1,8 +1,12 @@
-package com.unitTestGenerator.util;
+package com.unitTestGenerator.core;
 
+import com.unitTestGenerator.analyzers.GradleAnalyzer;
+import com.unitTestGenerator.analyzers.PomAnalyzer;
 import com.unitTestGenerator.builders.BuildTestFile;
-import com.unitTestGenerator.interfaces.IBaseModel;
-import com.unitTestGenerator.interfaces.IFileManager;
+import com.unitTestGenerator.interfaces.IApplicationTestProperties;
+import com.unitTestGenerator.interfaces.IManageMavenGadleAppProperties;
+import com.unitTestGenerator.util.IBaseModel;
+import com.unitTestGenerator.builders.interfaces.IFileManager;
 import com.unitTestGenerator.pojos.Clase;
 import com.unitTestGenerator.pojos.Project;
 import com.unitTestGenerator.pojos.TestFileContent;
@@ -14,7 +18,7 @@ import com.unitTestGenerator.services.MethodParameterObject;
 import java.io.File;
 
 
-public class GeneradorPruebasUnitarias implements IBaseModel, IFileManager {
+public class GeneradorPruebasUnitarias implements IManageMavenGadleAppProperties {
 
     private Project project;
 
@@ -26,43 +30,26 @@ public class GeneradorPruebasUnitarias implements IBaseModel, IFileManager {
     }
 
     public void generarPruebas(Clase clase, String pathProject) {
-
-       this.projectTypeDependencesAnalizer(pathProject);
-
+       this.projectTypeDependencesAnalizer(pathProject, this.project);
         TestFileContent fileContent = generateTestFileBody(clase);
-        String pathOfTest = this.getPathOfTest( clase,  pathProject);
+        String pathOfTest = this.getPathOfTest(clase,pathProject);
         BuildTestFile.getInstance().createTestFile(pathOfTest, fileContent);
     }
 
     private  TestFileContent generateTestFileBody(Clase clase) {
-
         GeneratedVariableService variableService = GeneratedVariableService.getInstance();
-
         TestFileContent fileContent = TestFileContent.builder()
                 .testsClassImport(this.generateImport(clase))
                 .testsClassSingne(this.classSingne(clase))
                 .testsClassVariables(variableService.generateVariable(clase))
                 .testsClassMethods("")
                 .build();
-
         if(!clase.getUseMock()) {
             this.applicationTestPropertiesExist(this.project);
         }
-
         TestFileContent fileContentGenerate =  GenerateMethodService.getInstance().generateMethods(clase,this.project, fileContent);
         return fileContentGenerate;
     }
-
-
-
-    private void applicationTestPropertiesExist(Project project){
-        String basePath = stringPaths(true,true,"src","test","resources","application-test.properties");
-        if(!filePathExists(project.getPathProject(),basePath)){
-            ...
-            // crear el archivo verificar las dependencias
-        }
-    }
-
 
     private String classSingne(Clase clase){
         StringBuilder classSingne = new StringBuilder();
@@ -85,51 +72,15 @@ public class GeneradorPruebasUnitarias implements IBaseModel, IFileManager {
         return classSingne.toString();
     }
 
-    private void gradleAnalyzer(String pathProject){
-        File fileGradle = new File( this.stringEnsamble(pathProject , Separator ,"build.gradle"));
-        GradleAnalyzer analyzer = new GradleAnalyzer(fileGradle);
-        analyzer.started();
-    }
-
-    private void projectTypeDependencesAnalizer(String pathProject){
-        if(project.getMaven()) {
-            PomAnalyzer.getInstance().agregarDependencias(pathProject);
-        } else if(this.project.getGradle()){
-            this.gradleAnalyzer( pathProject);
-        }
-    }
-
-    private String getPathOfTest(Clase clase, String pathProject){
-        String claseName = clase.getNombre();
-        String basePath=  this.stringPaths(true,true,"src","test","java");//"/src/test/java/"
-        String packagePath = clase.getPaquete().replace(".", Separator);
-        String pathOfTest = this.stringEnsamble(pathProject,basePath, packagePath, Separator, claseName, "Test.java");
-        return pathOfTest;
-    }
-
     private String generateImport(Clase clase){
         StringBuilder contex = new StringBuilder();
-
-        contex.append("package ").append(clase.getPaquete()).append(";").append("\n");
-        contex.append("import org.junit.jupiter.api.Test;").append("\n");
-        contex.append("import org.junit.jupiter.api.BeforeEach;").append("\n");
-        contex.append("import org.junit.jupiter.api.extension.ExtendWith;").append("\n");
-//        contex.append("import org.junit.jupiter.api.extension.ExtendWith;").append("\n");
-        contex.append("import static org.assertj.core.api.Assertions.assertThat;").append("\n");
-        contex.append("import org.assertj.core.api.Assertions;").append("\n");
+        contex.append(this.getBaseImport(clase)).append("\n");
 
         if(!clase.getUseMock()){
-            contex.append("import org.springframework.beans.factory.annotation.Autowired;");
+            contex.append(this.generateApplicationTestPropertiesImport()).append("\n");
         }else {
-            contex.append("import org.mockito.InjectMocks;").append("\n");
-            contex.append("import org.mockito.Mock;").append("\n");
-            contex.append("import org.mockito.InjectMocks;").append("\n");
-            contex.append("import org.mockito.Mock;").append("\n");
-            contex.append("import org.mockito.Mockito;").append("\n");
-            contex.append("import org.mockito.MockitoAnnotations;").append("\n");
-            contex.append("import org.mockito.junit.jupiter.MockitoExtension;").append("\n").append("\n");
+            contex.append(this.getMockImport()).append("\n").append("\n");
         }
-
 
         contex.append( this.stringEnsamble("import ", clase.getPaquete(), ".",clase.getNombre())).append(";").append("\n");
         contex.append(MethodParameterObject.getInstance().getImportMethodParameterObject(clase,project));

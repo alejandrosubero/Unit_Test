@@ -1,7 +1,7 @@
 package com.unitTestGenerator.builders;
 
-import com.unitTestGenerator.interfaces.IFileContentEditor;
-import com.unitTestGenerator.interfaces.IFileManager;
+import com.unitTestGenerator.builders.interfaces.IFileContentEditor;
+import com.unitTestGenerator.builders.interfaces.IFileManager;
 import com.unitTestGenerator.pojos.TestFileContent;
 
 import java.io.File;

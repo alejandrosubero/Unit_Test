@@ -1,6 +1,7 @@
-package com.unitTestGenerator.services;
+package com.unitTestGenerator.analyzers.services;
 
 import com.unitTestGenerator.pojos.*;
+import com.unitTestGenerator.services.MethodService;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;

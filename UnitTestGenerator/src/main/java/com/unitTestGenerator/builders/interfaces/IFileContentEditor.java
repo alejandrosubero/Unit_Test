@@ -1,18 +1,10 @@
-package com.unitTestGenerator.interfaces;
+package com.unitTestGenerator.builders.interfaces;
 
 import com.unitTestGenerator.pojos.Clase;
 import com.unitTestGenerator.pojos.Metodo;
 import com.unitTestGenerator.pojos.TestFileContent;
 import com.unitTestGenerator.pojos.Variable;
-import com.unitTestGenerator.services.AnalyzeClassService;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import com.unitTestGenerator.analyzers.services.AnalyzeClassService;
 
 public interface IFileContentEditor {
 

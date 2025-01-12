@@ -1,5 +1,6 @@
-package com.unitTestGenerator.util;
+package com.unitTestGenerator.analyzers;
 
+import com.unitTestGenerator.util.IConstantModel;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -16,12 +17,11 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.io.IOException;
 
-public class PomAnalyzer {
+public class PomAnalyzer implements IConstantModel {
 
     private static PomAnalyzer instance;
 
     private PomAnalyzer(){
-
     }
 
     public static PomAnalyzer getInstance() {
@@ -31,33 +31,44 @@ public class PomAnalyzer {
         return instance;
     }
 
-    private  final String JUNIT_DEPENDENCY =
-            "<dependency>\n" +
-                    "            <groupId>org.junit.jupiter</groupId>\n" +
-                    "            <artifactId>junit-jupiter</artifactId>\n" +
-                    "            <version>5.8.2</version>\n" +
-                    "            <scope>test</scope>\n" +
-                    "        </dependency>";
 
-    private  final String MOCK_DEPENDENCY =
-            "<dependency>\n" +
-                    "            <groupId>org.mockito</groupId>\n" +
-                    "            <artifactId>mockito-junit-jupiter</artifactId>\n" +
-                    "            <version>3.12.4</version>\n" +
-                    "            <scope>test</scope>\n" +
-                    "        </dependency>";
+    private Boolean addTestDependency(Document documento) {
+        Boolean existDependency = false;
+        try {
+            if (!existeDependencia(documento, this.JUNIT_DEPENDENCY)) {
+                agregarDependencia(documento, "org.junit.jupiter", "junit-jupiter", "5.8.2", "test");
+                existDependency = true;
+            }
+            if (!existeDependencia(documento, this.MOCK_DEPENDENCY)) {
+                existDependency = true;
+                agregarDependencia(documento, "org.mockito", "mockito-junit-jupiter", "3.12.4", "test");
+            }
+            if (!existeDependencia(documento, this.MOCK_DEPENDENCY_core)) {
+                existDependency = true;
+                agregarDependencia(documento, "org.mockito", "mockito-core", "3.12.4", "test");
+            }
+            return existDependency;
+        } catch (Exception e) {
+            System.out.println("Error add Test Dependency pom.xml: " + e.getMessage());
+            return false;
+        }
+    }
 
-    private  final String MOCK_DEPENDENCY_core ="<dependency>\n" +
-            "            <groupId>org.mockito</groupId>\n" +
-            "            <artifactId>mockito-core</artifactId>\n" +
-            "            <version>3.12.4</version>\n" +
-            "            <scope>test</scope>\n" +
-            "        </dependency>";
+    private Boolean addTestingDatabaseDependency(Document documento) {
+        Boolean existDependency = false;
+        try {
+            if (!existeDependencia(documento, this.H2_DEPENDENCY_TEST)) {
+                agregarDependencia(documento, "com.h2database", "h2", "2.1.210", "test");
+                existDependency = true;
+            }
+            return existDependency;
+        } catch (Exception e) {
+            System.out.println("Error add testing database Dependency pom.xml: " + e.getMessage());
+            return false;
+        }
+    }
 
-
-
-
-    public  void agregarDependencias(String rutaProyecto) {
+    public void addDependencys(String rutaProyecto, Integer typeDependency) {
 
         boolean existeDependency = false;
         try {
@@ -73,37 +84,7 @@ public class PomAnalyzer {
                 raiz.appendChild(dependenciesElement);
             }
 
-
-
-            if (!existeDependencia(documento, JUNIT_DEPENDENCY)) {
-                existeDependency = true;
-                agregarDependencia(documento,
-                        "org.junit.jupiter",
-                        "junit-jupiter",
-                        "5.8.2",
-                        "test");
-            }
-
-            if (!existeDependencia(documento, MOCK_DEPENDENCY)) {
-                existeDependency = true;
-                agregarDependencia(documento,
-                        "org.mockito",
-                        "mockito-junit-jupiter",
-                        "3.12.4",
-                        "test");
-            }
-
-
-            if (!existeDependencia(documento, MOCK_DEPENDENCY_core)) {
-                existeDependency = true;
-                agregarDependencia(documento,
-                        "org.mockito",
-                        "mockito-core",
-                        "3.12.4",
-                        "test");
-            }
-
-
+            existeDependency = typeDependency == 1? addTestDependency(documento):addTestingDatabaseDependency(documento);
 
             if (existeDependency) {
                 saveChanges(documento, rutaProyecto);

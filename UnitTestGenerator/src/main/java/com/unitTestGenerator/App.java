@@ -1,12 +1,6 @@
 package com.unitTestGenerator;
 
-import com.unitTestGenerator.util.AppProjectStarted;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
+import com.unitTestGenerator.core.AppProjectStarted;
 
 
 public class App {

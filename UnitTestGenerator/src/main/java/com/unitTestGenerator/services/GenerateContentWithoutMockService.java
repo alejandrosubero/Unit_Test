@@ -1,6 +1,6 @@
 package com.unitTestGenerator.services;
 
-import com.unitTestGenerator.interfaces.IBaseModel;
+import com.unitTestGenerator.util.IBaseModel;
 import com.unitTestGenerator.interfaces.IMethodServiceTools;
 import com.unitTestGenerator.pojos.*;
 
