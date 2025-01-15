@@ -54,6 +54,7 @@ public class AnalyzeClassService {
 
     private  Clase analyzeClaseContentString( String content) throws Exception {
         Clase clase = new Clase();
+        clase.setRawClass(content);
         analyzePackage(content, clase);
         analyzeNamesAndTypeOfClass(content, clase);
         analyzeConstructors(content, clase);
