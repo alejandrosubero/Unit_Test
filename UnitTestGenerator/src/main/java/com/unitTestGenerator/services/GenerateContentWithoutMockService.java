@@ -30,6 +30,7 @@ public class GenerateContentWithoutMockService implements IMethodServiceTools, I
         StringBuilder contenido = new StringBuilder();
         String methodName = metodo.getNombre();
         List<ParametroMetodo> parametros = metodo.getParametros();
+        Clase clase1 = this.project.getClass(parametros.get(0).getTipo());
         contenido.append(generateCallMethod(methodName, parametros));
         return contenido.toString();
     }
