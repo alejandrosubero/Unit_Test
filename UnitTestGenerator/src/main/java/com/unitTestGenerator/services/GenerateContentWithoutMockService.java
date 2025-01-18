@@ -4,6 +4,7 @@ import com.unitTestGenerator.util.IBaseModel;
 import com.unitTestGenerator.interfaces.IMethodServiceTools;
 import com.unitTestGenerator.pojos.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GenerateContentWithoutMockService implements IMethodServiceTools, IBaseModel {
@@ -27,11 +28,27 @@ public class GenerateContentWithoutMockService implements IMethodServiceTools, I
 
 
     public String generarContenidoSinMock(Metodo metodo, Clase clase, TestFileContent fileContent) {
+
         StringBuilder contenido = new StringBuilder();
-        String methodName = metodo.getNombre();
-        List<ParametroMetodo> parametros = metodo.getParametros();
-        Clase clase1 = this.project.getClass(parametros.get(0).getTipo());
-        contenido.append(generateCallMethod(methodName, parametros));
+        if(metodo != null  && metodo.getNombre() != null){
+            String methodName = metodo.getNombre();
+
+            List<Clase> parametersClassList = new ArrayList<>();
+            if( metodo.getParametros() !=null && !metodo.getParametros().isEmpty()){
+                metodo.getParametros().forEach(parametroMetodo -> parametersClassList.add(this.project.getClass(parametroMetodo.getTipo())));
+            }
+
+            // ver si la clases de la lista de los parametros objetos tiene el patron build.
+            //si lo tiene usarlo; si no lo tiene preguntar si quiere agregarlo:
+
+//            si es si ; preguntar si desea agregar a la clase el patter build o usar lombox (en este punto una previa evaluacion si se cuenta con la dependencia).
+            // si tiene la dependencia seria para indicar puesto que ya tiene la dependency en el proyecto.
+
+
+
+            contenido.append(generateCallMethod(methodName, metodo.getParametros()));
+        }
+
         return contenido.toString();
     }
 

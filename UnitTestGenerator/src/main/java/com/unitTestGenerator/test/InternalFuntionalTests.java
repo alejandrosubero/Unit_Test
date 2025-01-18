@@ -51,4 +51,17 @@ TOMAR EN CUENTA UNA AVERTENCIA CUANDO SELECCIONAS ALL QUE SE SOBRE ESCRIBIRAN TO
 4) hay una falla si se tiene la variable que el debe de costruir no adiciona los metodos y falla cuando esta en mock add;
 
 
+
+<dependency>
+    <groupId>org.projectlombok</groupId>
+    <artifactId>lombok</artifactId>
+    <version>1.18.34</version>
+    <scope>provided</scope>
+</dependency>
+
+'org.projectlombok', name: 'lombok', version: '1.18.34'
+
+
+
+
 */
