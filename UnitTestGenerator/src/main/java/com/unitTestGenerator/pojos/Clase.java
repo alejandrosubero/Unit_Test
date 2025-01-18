@@ -16,7 +16,8 @@ public class Clase {
     private List<Constructor> constructores;
     private String typeClass;
     private String rawClass;
-
+    private Boolean useLomboxBuild;
+    private Boolean applyBuildMethod;
 
     public Clase() {
         this.metodos = new ArrayList<>();
@@ -24,6 +25,24 @@ public class Clase {
         this.estructuras = new ArrayList<>();
         this.useMock = false;
         this.constructores = new ArrayList<>();
+        this.useLomboxBuild = false;
+        this.applyBuildMethod = false;
+    }
+
+    public Boolean getApplyBuildMethod() {
+        return applyBuildMethod;
+    }
+
+    public void setApplyBuildMethod(Boolean applyBuildMethod) {
+        this.applyBuildMethod = applyBuildMethod;
+    }
+
+    public Boolean getUseLomboxBuild() {
+        return useLomboxBuild;
+    }
+
+    public void setUseLomboxBuild(Boolean useLomboxBuild) {
+        this.useLomboxBuild = useLomboxBuild;
     }
 
     public String getRawClass() {

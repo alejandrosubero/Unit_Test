@@ -1,6 +1,7 @@
 package com.unitTestGenerator.test;
 
 import com.unitTestGenerator.core.AppProjectStarted;
+import com.unitTestGenerator.pojos.InstanceMethodCall;
 
 public class InternalFuntionalTests {
 
@@ -28,6 +29,7 @@ public class InternalFuntionalTests {
 //        String method ="findByFechaEgreso";
 //        String method = "findByTotalHorasFeriadoYear";
         AppProjectStarted.getInstance().executeTest(pathProject, isAnalisis, nombreClase, method, useMock);
+        InstanceMethodCall d = InstanceMethodCall.builder().build();
 
     }
 
