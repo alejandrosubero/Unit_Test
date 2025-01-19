@@ -1,12 +1,15 @@
 package com.unitTestGenerator.services;
 
+import com.unitTestGenerator.builders.AddPatterBuilder;
 import com.unitTestGenerator.interfaces.IManageMavenGadleAppProperties;
 import com.unitTestGenerator.util.IBaseModel;
 import com.unitTestGenerator.interfaces.IMethodServiceTools;
 import com.unitTestGenerator.pojos.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class GenerateContentWithoutMockService implements IMethodServiceTools, IBaseModel, IManageMavenGadleAppProperties {
 
@@ -40,7 +43,18 @@ public class GenerateContentWithoutMockService implements IMethodServiceTools, I
             }
 
             // ver si la clases de la lista de los parametros objetos tiene el patron build **** esto se hace en el analisis de las clases.
+            parametersClassList.forEach(clase1 -> {
 
+                if(!clase1.getUseLomboxBuild() && !clase1.getApplyBuildMethod()){
+                    askForAddBuildPatterInClass(clase1);
+                }
+
+                if(clase1.getUseLomboxBuild() || clase1.getApplyBuildMethod()){
+                    // ahora creamos el objeto con el patron
+                }
+
+
+            });
 
 
 
@@ -71,6 +85,58 @@ public class GenerateContentWithoutMockService implements IMethodServiceTools, I
         contenido.append(");");
         return contenido.toString();
     }
+
+    private String buildObject(Clase clase1){
+        // genera objetos atravez de new
+        return "";
+    }
+
+
+    private void askForAddBuildPatterInClass(Clase clase1){
+        Scanner scanner = new Scanner(System.in);
+            System.out.println("You want to implement the build pattern in class "+clase1.getNombre()+" for object creation?");
+            System.out.println("Choose an option:");
+            System.out.println("1. yes");
+            System.out.println("2. no");
+            int opcion = scanner.nextInt();
+            switch (opcion) {
+                case 1:
+                     this.buildObjectTypeBuild(clase1);
+                default:
+                    System.out.println("ok");
+            }
+    }
+
+
+    private void buildObjectTypeBuild(Clase clase1){
+        Scanner scanner = new Scanner(System.in);
+            System.out.println("You want to implement lombok o patter build in class "+clase1.getNombre()+"?");
+            System.out.println("Choose an option:");
+            System.out.println("1.Lombok");
+            System.out.println("2.Patter build in class");
+            int opcion = scanner.nextInt();
+            switch (opcion) {
+                case 1:
+                    this.addLombokDependency(project);
+                    break;
+                case 2:
+                    String filePath =  stringPaths(false, false,
+                            this.project.getPathProject(),
+                            packageToPaths(clase1.getPaquete()),
+                            stringEnsamble( clase1.getNombre(),".java")
+                    );
+                    try {
+                        AddPatterBuilder.getInstance().generateBuilderPatterFromClassFile(filePath);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    break;
+                default:
+                    System.out.println("Invalid option");
+                    System.out.println("No changes will be made to the class");
+            }
+    }
+
 
 
 }
