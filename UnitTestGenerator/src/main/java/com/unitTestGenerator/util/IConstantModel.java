@@ -183,6 +183,13 @@ public interface IConstantModel {
             "    <scope>test</scope>\n" +
             "</dependency>";
 
+    public static final String LOMBOK_DEPENDENCY = "<dependency>\n" +
+            "    <groupId>org.projectlombok</groupId>\n" +
+            "    <artifactId>lombok</artifactId>\n" +
+            "    <version>1.18.34</version>\n" +
+            "    <scope>provided</scope>\n" +
+            "</dependency>";
+
 
     default String getBaseImport(Clase clase) {
         StringBuilder contex = new StringBuilder();

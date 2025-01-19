@@ -1,5 +1,7 @@
 package com.unitTestGenerator.analyzers;
 
+import com.unitTestGenerator.pojos.Dependency;
+import com.unitTestGenerator.util.Dependencies;
 import com.unitTestGenerator.util.IConstantModel;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -36,16 +38,16 @@ public class PomAnalyzer implements IConstantModel {
         Boolean existDependency = false;
         try {
             if (!existeDependencia(documento, this.JUNIT_DEPENDENCY)) {
-                agregarDependencia(documento, "org.junit.jupiter", "junit-jupiter", "5.8.2", "test");
+                agregarDependencia(documento, Dependencies.JUNIT_DEPENDENCY);
                 existDependency = true;
             }
             if (!existeDependencia(documento, this.MOCK_DEPENDENCY)) {
                 existDependency = true;
-                agregarDependencia(documento, "org.mockito", "mockito-junit-jupiter", "3.12.4", "test");
+                agregarDependencia(documento, Dependencies.MOCK_DEPENDENCY);
             }
             if (!existeDependencia(documento, this.MOCK_DEPENDENCY_core)) {
                 existDependency = true;
-                agregarDependencia(documento, "org.mockito", "mockito-core", "3.12.4", "test");
+                agregarDependencia(documento, Dependencies.MOCK_DEPENDENCY_core);
             }
             return existDependency;
         } catch (Exception e) {
@@ -58,7 +60,7 @@ public class PomAnalyzer implements IConstantModel {
         Boolean existDependency = false;
         try {
             if (!existeDependencia(documento, this.H2_DEPENDENCY_TEST)) {
-                agregarDependencia(documento, "com.h2database", "h2", "2.1.210", "test");
+                agregarDependencia(documento, Dependencies.H2_DEPENDENCY_TEST);
                 existDependency = true;
             }
             return existDependency;
@@ -67,6 +69,21 @@ public class PomAnalyzer implements IConstantModel {
             return false;
         }
     }
+
+    private Boolean addLombokDependency(Document documento) {
+        Boolean existDependency = false;
+        try {
+            if (!existeDependencia(documento, this.LOMBOK_DEPENDENCY)) {
+                agregarDependencia(documento, Dependencies.LOMBOK_DEPENDENCY);
+                existDependency = true;
+            }
+            return existDependency;
+        } catch (Exception e) {
+            System.out.println("Error add testing database Dependency pom.xml: " + e.getMessage());
+            return false;
+        }
+    }
+
 
     public void addDependencys(String rutaProyecto, Integer typeDependency) {
 
@@ -84,7 +101,7 @@ public class PomAnalyzer implements IConstantModel {
                 raiz.appendChild(dependenciesElement);
             }
 
-            existeDependency = typeDependency == 1? addTestDependency(documento):addTestingDatabaseDependency(documento);
+            existeDependency = typeDependency == 1? addTestDependency(documento): typeDependency == 0? addTestingDatabaseDependency(documento):addLombokDependency(documento) ;
 
             if (existeDependency) {
                 saveChanges(documento, rutaProyecto);
@@ -94,7 +111,7 @@ public class PomAnalyzer implements IConstantModel {
         }
     }
 
-    private  boolean existeDependencia(Document documento, String dependencia) {
+    public Boolean existeDependencia(Document documento, String dependencia) {
         NodeList dependencies = documento.getElementsByTagName("dependency");
 
         for (int i = 0; i < dependencies.getLength(); i++) {
@@ -123,24 +140,25 @@ public class PomAnalyzer implements IConstantModel {
         return false;
     }
 
-    private  void agregarDependencia(Document documento, String groupId, String artifactId, String version, String scope) {
+    private  void agregarDependencia(Document documento, Dependency dependency) {
+
         Element dependencies = (Element) documento.getElementsByTagName("dependencies").item(0);
         Element nuevaDependencia = documento.createElement("dependency");
 
         Element grupoId = documento.createElement("groupId");
-        grupoId.setTextContent(groupId);
+        grupoId.setTextContent(dependency.getGroupId());
         nuevaDependencia.appendChild(grupoId);
 
         Element artifactIdElement = documento.createElement("artifactId");
-        artifactIdElement.setTextContent(artifactId);
+        artifactIdElement.setTextContent(dependency.getArtifactId());
         nuevaDependencia.appendChild(artifactIdElement);
 
         Element versionElement = documento.createElement("version");
-        versionElement.setTextContent(version);
+        versionElement.setTextContent(dependency.getVersion());
         nuevaDependencia.appendChild(versionElement);
 
         Element scopeElement = documento.createElement("scope");
-        scopeElement.setTextContent(scope);
+        scopeElement.setTextContent(dependency.getScope());
         nuevaDependencia.appendChild(scopeElement);
 
         dependencies.appendChild(nuevaDependencia);
@@ -148,12 +166,12 @@ public class PomAnalyzer implements IConstantModel {
 
 
 
-    private  void saveChanges(Document documento, String rutaProyecto) {
+    private  void saveChanges(Document documento, String projectPath) {
         try {
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer();
             DOMSource source = new DOMSource(documento);
-            StreamResult result = new StreamResult(new File(rutaProyecto + "/pom.xml"));
+            StreamResult result = new StreamResult(new File(projectPath + "/pom.xml"));
             transformer.transform(source, result);
             System.out.println("Dependencias agregadas correctamente.");
         } catch (TransformerException e) {

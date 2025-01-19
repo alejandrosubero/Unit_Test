@@ -30,6 +30,14 @@ public interface IManageMavenGadleAppProperties extends IApplicationTestProperti
         }
     }
 
+    default void addLombokDependency(Project project){
+        if(project.getMaven()) {
+            PomAnalyzer.getInstance().addDependencys(project.getPathProject(),2);
+        } else if(project.getGradle()){
+            this.gradleAnalyzer( project.getPathProject(), 1);
+        }
+    }
+
 
     default void applicationTestPropertiesExist(Project project){
         String basePath = stringPaths(true,true,project.getPathProject(),"src","test","resources","application-test.properties");

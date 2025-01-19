@@ -61,7 +61,7 @@ public class AnalyzeClassService {
         analyzeMethods(content, clase);
         analyzeVariables(content, clase);
         analyzeControlStructure(content, clase);
-        containPetterBuild(content, clase);
+        containPatterBuild(content, clase);
         containLomboxAnotacionBuild(content,clase);
         return postClassMethodAnalysis(clase);
     }
@@ -255,7 +255,7 @@ public class AnalyzeClassService {
     }
 
 
-    private void containPetterBuild(String contenido, Clase clase){
+    private void containPatterBuild(String contenido, Clase clase){
 
         Pattern patronMetodoBuilder = Pattern.compile("public static \\w+ builder\\(\\)");
         Pattern patronMetodoBuild = Pattern.compile("public \\w+ build\\(\\)");

@@ -1,5 +1,6 @@
 package com.unitTestGenerator.services;
 
+import com.unitTestGenerator.interfaces.IManageMavenGadleAppProperties;
 import com.unitTestGenerator.util.IBaseModel;
 import com.unitTestGenerator.interfaces.IMethodServiceTools;
 import com.unitTestGenerator.pojos.*;
@@ -7,7 +8,7 @@ import com.unitTestGenerator.pojos.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GenerateContentWithoutMockService implements IMethodServiceTools, IBaseModel {
+public class GenerateContentWithoutMockService implements IMethodServiceTools, IBaseModel, IManageMavenGadleAppProperties {
 
     public static GenerateContentWithoutMockService instance;
     private Project project;
@@ -38,13 +39,17 @@ public class GenerateContentWithoutMockService implements IMethodServiceTools, I
                 metodo.getParametros().forEach(parametroMetodo -> parametersClassList.add(this.project.getClass(parametroMetodo.getTipo())));
             }
 
-            // ver si la clases de la lista de los parametros objetos tiene el patron build.
+            // ver si la clases de la lista de los parametros objetos tiene el patron build **** esto se hace en el analisis de las clases.
+
+
+
+
             //si lo tiene usarlo; si no lo tiene preguntar si quiere agregarlo:
 
 //            si es si ; preguntar si desea agregar a la clase el patter build o usar lombox (en este punto una previa evaluacion si se cuenta con la dependencia).
             // si tiene la dependencia seria para indicar puesto que ya tiene la dependency en el proyecto.
 
-
+                this.addLombokDependency(project);
 
             contenido.append(generateCallMethod(methodName, metodo.getParametros()));
         }
