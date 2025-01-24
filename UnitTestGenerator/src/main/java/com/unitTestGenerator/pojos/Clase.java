@@ -2,6 +2,7 @@ package com.unitTestGenerator.pojos;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Clase {
 
@@ -14,6 +15,9 @@ public class Clase {
     private String testMethod;
     private List<Constructor> constructores;
     private String typeClass;
+    private String rawClass;
+    private Boolean useLomboxBuild;
+    private Boolean applyBuildMethod;
 
     public Clase() {
         this.metodos = new ArrayList<>();
@@ -21,6 +25,32 @@ public class Clase {
         this.estructuras = new ArrayList<>();
         this.useMock = false;
         this.constructores = new ArrayList<>();
+        this.useLomboxBuild = false;
+        this.applyBuildMethod = false;
+    }
+
+    public Boolean getApplyBuildMethod() {
+        return applyBuildMethod;
+    }
+
+    public void setApplyBuildMethod(Boolean applyBuildMethod) {
+        this.applyBuildMethod = applyBuildMethod;
+    }
+
+    public Boolean getUseLomboxBuild() {
+        return useLomboxBuild;
+    }
+
+    public void setUseLomboxBuild(Boolean useLomboxBuild) {
+        this.useLomboxBuild = useLomboxBuild;
+    }
+
+    public String getRawClass() {
+        return rawClass;
+    }
+
+    public void setRawClass(String rawClass) {
+        this.rawClass = rawClass;
     }
 
     public String getTypeClass() {
@@ -107,6 +137,17 @@ public class Clase {
         this.variables.addAll(variable);
     }
 
+    @Override
+    public boolean equals(Object o) {
 
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Clase clase = (Clase) o;
+        return Objects.equals(nombre, clase.nombre) && Objects.equals(paquete, clase.paquete) && Objects.equals(metodos, clase.metodos) && Objects.equals(variables, clase.variables) && Objects.equals(estructuras, clase.estructuras) && Objects.equals(useMock, clase.useMock) && Objects.equals(testMethod, clase.testMethod) && Objects.equals(constructores, clase.constructores) && Objects.equals(typeClass, clase.typeClass) && Objects.equals(rawClass, clase.rawClass);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(nombre, paquete, metodos, variables, estructuras, useMock, testMethod, constructores, typeClass, rawClass);
+    }
 }

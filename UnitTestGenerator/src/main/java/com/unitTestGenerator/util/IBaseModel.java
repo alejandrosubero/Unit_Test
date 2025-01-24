@@ -71,6 +71,14 @@ public interface IBaseModel extends IConstantModel {
 		return newString.toString();
 	}
 
+	default String packageToPaths(String packageClass){
+
+		String[] valor = packageClass.split("\\.");
+		return this.stringPaths(false,false, valor);
+	}
+
+
+
 
 	default String listStringStructureToColummString(List<String> parameters) {
 		StringBuilder stringColumm = new StringBuilder(BREAK_LINE);

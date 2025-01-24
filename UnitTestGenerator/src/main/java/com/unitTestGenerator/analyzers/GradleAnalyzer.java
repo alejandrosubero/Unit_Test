@@ -10,6 +10,8 @@ import java.util.Optional;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import com.unitTestGenerator.pojos.Dependency;
+import com.unitTestGenerator.util.Dependencies;
 import com.unitTestGenerator.util.IBaseModel;
 import com.unitTestGenerator.builders.interfaces.IFileManager;
 import org.apache.commons.io.FileUtils;
@@ -31,11 +33,27 @@ public class GradleAnalyzer implements IFileManager {
         return importType == 1 ? "implementation" : "testImplementation";
     }
 
+
+    public void addLombokDependency(){
+        try {
+            String contenido = FileUtils.readFileToString(archivoGradle, "UTF-8");
+            List<String> contenidoList = FileUtils.readLines(archivoGradle, "UTF-8");
+            List<String> dependencesList1 =  this.addDependences(contenidoList,  contenido,0, Dependencies.LOMBOK_DEPENDENCY);
+            this.analizarEstructura();
+            String newContenido =  this.listStringStructureToColummString(dependencesList1);
+            this.writefilesI( archivoGradle,  newContenido);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Error between add new dependency: " + e.getMessage());
+            throw new RuntimeException(e);
+        }
+    }
+
     public void startedWithoutMock(){
         try {
             String contenido = FileUtils.readFileToString(archivoGradle, "UTF-8");
             List<String> contenidoList = FileUtils.readLines(archivoGradle, "UTF-8");
-            List<String> dependencesList1 =  this.addDependences("com.h2database", "h2", "2.1.210",  contenidoList,  contenido,0);
+            List<String> dependencesList1 =  this.addDependences(contenidoList,  contenido,0, Dependencies.H2_DEPENDENCY_TEST);
             this.analizarEstructura();
             String newContenido =  this.listStringStructureToColummString(dependencesList1);
             this.writefilesI( archivoGradle,  newContenido);
@@ -50,22 +68,20 @@ public class GradleAnalyzer implements IFileManager {
             String contenido = FileUtils.readFileToString(archivoGradle, "UTF-8");
             List<String> contenidoList = FileUtils.readLines(archivoGradle, "UTF-8");
 
-            List<String> dependencesList1 =  this.addDependences("org.junit.jupiter", "junit-jupiter", "5.8.2",contenidoList,contenido,1);
-            List<String> dependencesList3  =  this.addDependences(   "org.mockito", "mockito-junit-jupiter", "3.12.4", dependencesList1,  contenido,1);
-            List<String> dependencesList4  =  this.addDependences(   "org.mockito", "mockito-core", "3.12.4",dependencesList3,contenido,1);
+            List<String> dependencesList1 =  this.addDependences(contenidoList, contenido,1, Dependencies.JUNIT_DEPENDENCY);
+            List<String> dependencesList3  =  this.addDependences(dependencesList1,  contenido,1, Dependencies.MOCK_DEPENDENCY);
+            List<String> dependencesList4  =  this.addDependences(dependencesList3,contenido,1, Dependencies.MOCK_DEPENDENCY_core);
             this.analizarEstructura();
             String newContenido =  this.listStringStructureToColummString(dependencesList4);
             this.writefilesI( archivoGradle,  newContenido);
-
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-
-    private boolean dependenciaExiste(String contenido , String grupo, String artefacto, String version, Integer importType) {
+    private boolean dependenciaExiste(String contenido , Integer importType, Dependency dependency) {
         try {
-            String dependencia = String.format("%s '%s:%s:%s'", this.getImportType(importType), grupo, artefacto, version);
+            String dependencia = String.format("%s '%s:%s:%s'", this.getImportType(importType), dependency.getGroupId(), dependency.getArtifactId(), dependency.getVersion());
             Boolean isPresent = contenido.contains(dependencia);
             return isPresent;
         } catch (Exception e) {
@@ -75,12 +91,12 @@ public class GradleAnalyzer implements IFileManager {
     }
 
 
-    public  List<String> addDependences(String grupo, String artefacto, String version,  List<String> contenidoList,  String contenido, Integer importType) {
+    public  List<String> addDependences(  List<String> contenidoList,  String contenido, Integer importType, Dependency dependency) {
         try {
             if(contenido != null && !contenido.equals("") && contenidoList != null &&
-                    !contenidoList.isEmpty() && !dependenciaExiste( contenido , grupo, artefacto, version, importType)){
+                    !contenidoList.isEmpty() && !dependenciaExiste( contenido, importType, dependency)){
 
-                String newDependencie = String.format("%s '%s:%s:%s'", this.getImportType(importType),grupo, artefacto, version);
+                String newDependencie = String.format("%s '%s:%s:%s'", this.getImportType(importType),dependency.getGroupId(), dependency.getArtifactId(), dependency.getVersion());
 
                 Optional<Integer> indice = contenidoList.stream()
                         .map(String::toLowerCase)
@@ -113,7 +129,6 @@ public class GradleAnalyzer implements IFileManager {
                         dependencia.getAttribute("artifactId") + ":" +
                         dependencia.getAttribute("version"));
             }
-
         } catch (ParserConfigurationException | SAXException | IOException e) {
             System.out.println("Error al analizar estructura: " + e.getMessage());
         }

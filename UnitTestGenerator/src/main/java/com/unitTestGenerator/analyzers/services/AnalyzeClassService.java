@@ -54,12 +54,15 @@ public class AnalyzeClassService {
 
     private  Clase analyzeClaseContentString( String content) throws Exception {
         Clase clase = new Clase();
+        clase.setRawClass(content);
         analyzePackage(content, clase);
         analyzeNamesAndTypeOfClass(content, clase);
         analyzeConstructors(content, clase);
         analyzeMethods(content, clase);
         analyzeVariables(content, clase);
         analyzeControlStructure(content, clase);
+        containPatterBuild(content, clase);
+        containLomboxAnotacionBuild(content,clase);
         return postClassMethodAnalysis(clase);
     }
 
@@ -240,5 +243,31 @@ public class AnalyzeClassService {
         }
         return classIn;
     }
+
+
+    private void containLomboxAnotacionBuild(String contenido, Clase clase){
+        Pattern patronBuilder = Pattern.compile("@Builder");
+        Matcher matcherBuilder = patronBuilder.matcher(contenido);
+        if (matcherBuilder.find()) {
+            clase.setUseLomboxBuild(true);
+        }
+
+    }
+
+
+    private void containPatterBuild(String contenido, Clase clase){
+
+        Pattern patronMetodoBuilder = Pattern.compile("public static \\w+ builder\\(\\)");
+        Pattern patronMetodoBuild = Pattern.compile("public \\w+ build\\(\\)");
+
+        Matcher matcherMetodoBuilder = patronMetodoBuilder.matcher(contenido);
+        Matcher matcherMetodoBuild = patronMetodoBuild.matcher(contenido);
+
+        if (matcherMetodoBuilder.find() && matcherMetodoBuild.find()) {
+            clase.setApplyBuildMethod(true);
+        }
+
+    }
+
 
 }
