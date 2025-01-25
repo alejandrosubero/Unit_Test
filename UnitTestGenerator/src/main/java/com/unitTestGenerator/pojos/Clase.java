@@ -18,6 +18,7 @@ public class Clase {
     private String rawClass;
     private Boolean useLomboxBuild;
     private Boolean applyBuildMethod;
+    private Integer indexFirmaClass;
 
     public Clase() {
         this.metodos = new ArrayList<>();
@@ -136,6 +137,32 @@ public class Clase {
     public void addVariableS(List<Variable> variable) {
         this.variables.addAll(variable);
     }
+
+    public Integer getIndexFirmaClass() {
+        return indexFirmaClass;
+    }
+
+    public void setIndexFirmaClass(Integer indexFirmaClass) {
+        this.indexFirmaClass = indexFirmaClass;
+    }
+
+    public void addClassAnotation(String anotation){
+        String newRawClass = this.addTxtBeforeClassSignature(this.rawClass, this.indexFirmaClass, anotation);
+        this.setRawClass(newRawClass);
+    }
+
+    private String addTxtBeforeClassSignature(String content, Integer indexManeClass, String text) {
+        int indiceFinLinea = content.lastIndexOf("\n", indexManeClass);
+        if (indiceFinLinea != -1) {
+            String contenidoAntesDeNombreClase = content.substring(0, indiceFinLinea + 1);
+            String contenidoDespuesDeNombreClase = content.substring(indiceFinLinea + 1);
+            return contenidoAntesDeNombreClase + text + "\n" + contenidoDespuesDeNombreClase;
+        }
+        return content;
+    }
+
+
+
 
     @Override
     public boolean equals(Object o) {

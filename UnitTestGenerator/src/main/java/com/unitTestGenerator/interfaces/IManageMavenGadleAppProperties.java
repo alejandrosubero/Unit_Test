@@ -17,8 +17,12 @@ public interface IManageMavenGadleAppProperties extends IApplicationTestProperti
         GradleAnalyzer analyzer = new GradleAnalyzer(fileGradle);
         if(importType == 1){
             analyzer.startedMokitoDependencys();
-        }else {
-            analyzer.startedWithoutMock();
+        }
+        if (importType == 0){
+            analyzer.startedWithoutMockDatabaseH2();
+        }
+        if (importType == 2){
+            analyzer.addLombokDependency();
         }
     }
 
@@ -34,7 +38,7 @@ public interface IManageMavenGadleAppProperties extends IApplicationTestProperti
         if(project.getMaven()) {
             PomAnalyzer.getInstance().addDependencys(project.getPathProject(),2);
         } else if(project.getGradle()){
-            this.gradleAnalyzer( project.getPathProject(), 1);
+            this.gradleAnalyzer( project.getPathProject(), 2);
         }
     }
 
@@ -53,8 +57,7 @@ public interface IManageMavenGadleAppProperties extends IApplicationTestProperti
             String fileContent ="";
             String oldContent = this.fileExist(applicationTestPropertiesFile);
 
-            fileContent =
-                    oldContent != null && !oldContent.equals("") && !oldContent.contains(this.contentApplicationTestPropertiesFile()) ?
+            fileContent = oldContent != null && !oldContent.equals("") && !oldContent.contains(this.contentApplicationTestPropertiesFile()) ?
                             stringEnsamble(oldContent, "\n", this.contentApplicationTestPropertiesFile())
                             : this.contentApplicationTestPropertiesFile();
             this.writefilesI(applicationTestPropertiesFile, fileContent);

@@ -1,17 +1,19 @@
 package com.unitTestGenerator.services;
 
 import com.unitTestGenerator.builders.AddPatterBuilder;
+import com.unitTestGenerator.interfaces.IClassObject;
 import com.unitTestGenerator.interfaces.IManageMavenGadleAppProperties;
-import com.unitTestGenerator.util.IBaseModel;
 import com.unitTestGenerator.interfaces.IMethodServiceTools;
 import com.unitTestGenerator.pojos.*;
+import com.unitTestGenerator.util.IBaseModel;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 
-public class GenerateContentWithoutMockService implements IMethodServiceTools, IBaseModel, IManageMavenGadleAppProperties {
+public class GenerateContentWithoutMockService implements IMethodServiceTools, IBaseModel, IManageMavenGadleAppProperties, IClassObject {
 
     public static GenerateContentWithoutMockService instance;
     private Project project;
@@ -33,7 +35,7 @@ public class GenerateContentWithoutMockService implements IMethodServiceTools, I
 
     public String generarContenidoSinMock(Metodo metodo, Clase clase, TestFileContent fileContent) {
 
-        StringBuilder contenido = new StringBuilder();
+        StringBuilder content = new StringBuilder();
         if(metodo != null  && metodo.getNombre() != null){
             String methodName = metodo.getNombre();
 
@@ -44,16 +46,21 @@ public class GenerateContentWithoutMockService implements IMethodServiceTools, I
 
             // ver si la clases de la lista de los parametros objetos tiene el patron build **** esto se hace en el analisis de las clases.
             parametersClassList.forEach(clase1 -> {
+                Optional<ParametroMetodo> parameter = metodo.getParametros().stream().filter(parametroMetodo -> parametroMetodo.getTipo().equals(clase1.getNombre())).findFirst();
+                String parameterNameType = stringEnsamble(parameter.get().getTipo(), " ", parameter.get().getNombre());
 
-                if(!clase1.getUseLomboxBuild() && !clase1.getApplyBuildMethod()){
+                if (!clase1.getUseLomboxBuild() && !clase1.getApplyBuildMethod()) {
                     askForAddBuildPatterInClass(clase1);
                 }
 
-                if(clase1.getUseLomboxBuild() || clase1.getApplyBuildMethod()){
+                if (clase1.getUseLomboxBuild() || clase1.getApplyBuildMethod()) {
                     // ahora creamos el objeto con el patron
+                    String newParameterObjectClass = stringEnsamble(parameterNameType, " = ", xxx);
+
+                } else {
+                    String newParameterObjectClass = stringEnsamble(parameterNameType, " = ", this.generateNewClassObject(clase1));
+                    content.append(newParameterObjectClass);
                 }
-
-
             });
 
 
@@ -63,12 +70,11 @@ public class GenerateContentWithoutMockService implements IMethodServiceTools, I
 //            si es si ; preguntar si desea agregar a la clase el patter build o usar lombox (en este punto una previa evaluacion si se cuenta con la dependencia).
             // si tiene la dependencia seria para indicar puesto que ya tiene la dependency en el proyecto.
 
-                this.addLombokDependency(project);
 
-            contenido.append(generateCallMethod(methodName, metodo.getParametros()));
+            content.append(generateCallMethod(methodName, metodo.getParametros()));
         }
 
-        return contenido.toString();
+        return content.toString();
     }
 
     public String generateCallMethod(String methodName, List<ParametroMetodo> parametros) {
@@ -86,10 +92,7 @@ public class GenerateContentWithoutMockService implements IMethodServiceTools, I
         return contenido.toString();
     }
 
-    private String buildObject(Clase clase1){
-        // genera objetos atravez de new
-        return "";
-    }
+
 
 
     private void askForAddBuildPatterInClass(Clase clase1){
@@ -118,6 +121,9 @@ public class GenerateContentWithoutMockService implements IMethodServiceTools, I
             switch (opcion) {
                 case 1:
                     this.addLombokDependency(project);
+                    clase1.addClassAnotation("@Builder");
+                    clase1.setUseLomboxBuild(true);
+                    clase1.setApplyBuildMethod(false);
                     break;
                 case 2:
                     String filePath =  stringPaths(false, false,
@@ -127,6 +133,8 @@ public class GenerateContentWithoutMockService implements IMethodServiceTools, I
                     );
                     try {
                         AddPatterBuilder.getInstance().generateBuilderPatterFromClassFile(filePath);
+                        clase1.setApplyBuildMethod(true);
+                        clase1.setUseLomboxBuild(false);
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }

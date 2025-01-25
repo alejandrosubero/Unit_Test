@@ -79,34 +79,5 @@ public interface IMethodServiceTools {
         return null;
     }
 
-    default String generateClassObject(Clase clase) {
-        StringBuilder contenido = new StringBuilder();
-
-        contenido.append("new ").append(clase.getNombre()).append("(");
-
-        if(clase.getConstructores() !=null && !clase.getConstructores().isEmpty() && clase.getConstructores().stream().anyMatch(Constructor::isNoneParam)){
-
-            if(!clase.getConstructores().isEmpty()){
-                List<ParametroMetodo> parametros = new ArrayList<>();
-                for (Constructor constructor : clase.getConstructores()){
-                    if( !constructor.isEmptyParameters()){
-                        parametros.addAll(constructor.getParametros());
-                        break;
-                    }
-                }
-
-                for (int i = 0; i < parametros.size(); i++) {
-                    ParametroMetodo parametro = parametros.get(i);
-                    contenido.append(parametro.getNombre());
-
-                    if (i < parametros.size() - 1) {
-                        contenido.append(", ");
-                    }
-                }
-            }
-        }
-        contenido.append(")");
-        return contenido.toString();
-    }
 
 }

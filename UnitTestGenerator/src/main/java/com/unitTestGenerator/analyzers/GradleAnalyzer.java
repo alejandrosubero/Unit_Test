@@ -49,7 +49,7 @@ public class GradleAnalyzer implements IFileManager {
         }
     }
 
-    public void startedWithoutMock(){
+    public void startedWithoutMockDatabaseH2(){
         try {
             String contenido = FileUtils.readFileToString(archivoGradle, "UTF-8");
             List<String> contenidoList = FileUtils.readLines(archivoGradle, "UTF-8");

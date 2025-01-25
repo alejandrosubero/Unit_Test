@@ -33,12 +33,10 @@ public class MethodService {
 
             List<ParametroMetodo> parameters = new ArrayList<>();
             operationsInstanceMethodCall = new ArrayList<>();
-
             Pattern patronOperaciones = Pattern.compile("\\b" + variable + "\\.(\\w+)\\((.*?)\\)");
             Matcher matcherOperaciones = patronOperaciones.matcher(contentMethod);
 
             while (matcherOperaciones.find()) {
-//                System.out.println("Se encontró una operación: " + matcherOperaciones.group());
                 String nombreMetodo = matcherOperaciones.group(1);
                 String parametros = matcherOperaciones.group(2);
 
@@ -49,23 +47,16 @@ public class MethodService {
                 );
 
                 List<String> parametrosList = new ArrayList<>(Arrays.asList(parametros.split("\\s*,\\s*")));
-
                 for (String param : parametrosList) {
                     param = param.trim();
-//                    Pattern patterVariable = Pattern.compile("(\\w+)\\s+" + param + "\\s*=");
-
                     String regex = "(\\w+)\\s+" + Pattern.quote(param) + "\\s*=";
-//                    System.out.println("Regex final: " + regex);
                     Pattern patterVariable = Pattern.compile(regex);
-
-
                     Matcher matcherVariable = patterVariable.matcher(contentMethod);
                     if (matcherVariable.find()) {
                         String typeVariable = matcherVariable.group(1);
                         parameters.add(ParametroMetodo.builder().nombre(param).tipo(typeVariable).build());
                     }
                 }
-
                 InstanceMethodCall call =  InstanceMethodCall.builder() .variableInstace(variable).method(nombreMetodo)
                         .parametros(parameters).operation(operation) .build();
 

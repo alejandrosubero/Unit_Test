@@ -1,5 +1,6 @@
 package com.unitTestGenerator.services;
 
+import com.unitTestGenerator.interfaces.IClassObject;
 import com.unitTestGenerator.util.IBaseModel;
 import com.unitTestGenerator.interfaces.IMethodServiceTools;
 import com.unitTestGenerator.interfaces.IReturnType;
@@ -9,7 +10,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class MockitoWhen implements IReturnType, IBaseModel, IMethodServiceTools {
+public class MockitoWhen implements IReturnType, IBaseModel, IMethodServiceTools, IClassObject {
 
     public MockitoWhen() {
     }
@@ -49,19 +50,19 @@ public class MockitoWhen implements IReturnType, IBaseModel, IMethodServiceTools
     }
 
     public String generateRetrunValue (Metodo metodo, Project project) {
-        String tipoRetorno = metodo.getTipoRetorno();
-        Clase claseRetorno = null;
+        String returnType = metodo.getTipoRetorno();
+        Clase returnClass = null;
 
-        if(!isValidTypeReturn(tipoRetorno)){
-            claseRetorno = project.getClass(tipoRetorno);
+        if(!isValidTypeReturn(returnType)){
+            returnClass = project.getClass(returnType);
         }
 
-        if (claseRetorno != null) {
+        if (returnClass != null) {
             // Generate a return class
-            return generateClassObject(claseRetorno);
+            return generateNewClassObject(returnClass);
         } else {
             // return default value
-            return getValorPorDefecto(tipoRetorno);
+            return getValorPorDefecto(returnType);
         }
     }
 

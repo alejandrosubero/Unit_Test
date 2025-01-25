@@ -82,12 +82,14 @@ public class AnalyzeClassService {
         if (matcherClase.find()) {
             clase.setNombre(matcherClase.group(1));
             clase.setTypeClass("class");
+            clase.setIndexFirmaClass(matcherClase.start(1));
         } else {
             Pattern patronInterface = Pattern.compile("public interface (\\w+)");
             Matcher matcherInterface = patronInterface.matcher(contenido);
             if (matcherInterface.find()) {
                 clase.setNombre(matcherInterface.group(1));
                 clase.setTypeClass("interface");
+                clase.setIndexFirmaClass(matcherInterface.start(1));
             }
         }
     }
