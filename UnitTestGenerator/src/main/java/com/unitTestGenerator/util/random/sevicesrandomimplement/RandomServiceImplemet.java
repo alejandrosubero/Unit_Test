@@ -15,6 +15,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class RandomServiceImplemet implements RandomService {
 
+
     private AddressRandomService addressRandomService;
 
     private Map<String, String> clientesMap = new HashMap<String, String>();
@@ -40,10 +41,24 @@ public class RandomServiceImplemet implements RandomService {
         addressRandomService = new AddressRandomServiceImplement();
     }
 
-    public  long generatePositiveRandomLong() {
+    @Override
+    public Long generatePositiveRandomLong() {
         long randomNumber = new Random().nextLong();
         return Math.abs(randomNumber);
     }
+
+    @Override
+    public Long generatePositiveRandomLong(Long minNumber, Long maxNumber) {
+        if (minNumber > maxNumber) {
+            Long tempMinimo = maxNumber;
+            Long tempMaximo = minNumber;
+            minNumber = tempMinimo;
+            maxNumber = tempMaximo;
+        }
+        Long range = maxNumber - minNumber + 1;
+        return minNumber + Math.abs(new Random().nextLong() % range);
+    }
+
 
     public Double generateValues(Double value){
       return  BigDecimal.valueOf(value).setScale(4, RoundingMode.HALF_EVEN).doubleValue();
@@ -97,15 +112,14 @@ public class RandomServiceImplemet implements RandomService {
     }
 
     @Override
-    public LocalDate generateRandomDate() {
+    public Date generateRandomDate() {
         int year = this.generateRandomNumber(1980, LocalDate.now().getYear());
         int yearUp = this.generateRandomNumber(1, 23) + year;
         int yearRandom = this.generateRandomNumber(yearUp);
-
         LocalDate startDate = getRandomDate(year);
         LocalDate endDate = getRandomDate(yearRandom);
         LocalDate randomDate = generateRandomDate(startDate, endDate);
-        return randomDate;
+        return this. converteLocalDateToDate(randomDate);
     }
 
     @Override
@@ -156,12 +170,14 @@ public class RandomServiceImplemet implements RandomService {
         return address;
     }
 
+    @Override
     public Double getRandomNumeroDouble(Double valorMinimo, Double valorMaximo) {
         Random rand = new Random();
         Double valor = valorMinimo + (valorMaximo - valorMinimo) * rand.nextDouble();
         return BigDecimal.valueOf(valor).setScale(2, RoundingMode.HALF_EVEN).doubleValue();
     }
 
+    @Override
     public String generateCode() {
         String code = UUID.randomUUID().toString();
         try {
@@ -176,6 +192,18 @@ public class RandomServiceImplemet implements RandomService {
         }
         return code;
     }
+
+    @Override
+    public Boolean generateRamdonBoolean() {
+        return this.generateRandomNumber(0, 1) == 1;
+    }
+
+
+
+
+
+
+
 }
 
 

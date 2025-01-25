@@ -2,6 +2,7 @@ package com.unitTestGenerator.util.random.servicesRandom;
 
 
 import java.time.LocalDate;
+import java.util.Date;
 
 public interface RandomService {
 
@@ -11,7 +12,11 @@ public interface RandomService {
     public LocalDate generateRandomDate(LocalDate startDate, LocalDate endDate);
     public String generateRandomText(int length);
     public String generateRandomName();
-    public LocalDate generateRandomDate();
+    public Date generateRandomDate();
     public String generateRandomLastName();
-
+    public Long generatePositiveRandomLong();
+    public Long generatePositiveRandomLong(Long minNumber, Long maxNumber);
+    public Double getRandomNumeroDouble(Double valorMinimo, Double valorMaximo);
+    public String generateCode();
+    public Boolean generateRamdonBoolean();
 }

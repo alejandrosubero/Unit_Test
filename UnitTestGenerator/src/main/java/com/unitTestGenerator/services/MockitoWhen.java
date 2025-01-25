@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class MockitoWhen implements IReturnType, IBaseModel, IMethodServiceTools, IClassObject {
+public class MockitoWhen implements IBaseModel, IMethodServiceTools, IClassObject {
 
     public MockitoWhen() {
     }
@@ -62,7 +62,7 @@ public class MockitoWhen implements IReturnType, IBaseModel, IMethodServiceTools
             return generateNewClassObject(returnClass);
         } else {
             // return default value
-            return getValorPorDefecto(returnType);
+            return getDefaultValue(returnType);
         }
     }
 

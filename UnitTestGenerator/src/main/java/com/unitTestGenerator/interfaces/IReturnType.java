@@ -1,32 +1,39 @@
 package com.unitTestGenerator.interfaces;
 
+import com.unitTestGenerator.util.random.servicesRandom.RandomService;
+import com.unitTestGenerator.util.random.sevicesrandomimplement.RandomServiceImplemet;
+
 public interface IReturnType {
 
 
-    default String getValorPorDefecto(String tipoRetorno) {
+
+    default String getDefaultValue(String tipoRetorno) {
+        RandomService randomService = new RandomServiceImplemet();
+
         switch (tipoRetorno) {
             case "int":
-                return "0";
+                return this.toString(randomService.generateRandomNumber(2, 10) , " ");
             case "long":
-                return "0L";
-            case "double":
-                return "0.0";
+                return this.toString(randomService.generatePositiveRandomLong(1l, 10l) , "L");
             case "float":
-                return "0.0f";
+                return this.toString(randomService.getRandomNumeroDouble(0.0, 99.9),"f");
+            case "AtomicBoolean":
             case "boolean":
-                return "true";
-            case "String":
-                return "\"\"";
-            case "Integer":
-                return "0";
-            case "Long":
-                return "1L";
-            case "Double":
-                return "0.0";
-            case "Float":
-                return "0.0F";
             case "Boolean":
-                return "true";
+                return this.toString(randomService.generateRamdonBoolean() , "");
+            case "String":
+                return this.toString(randomService.generateRandomText(10), null);
+            case "Integer":
+                return this.toString(randomService.generateRandomNumber(8) , "");
+            case "Long":
+                return this.toString(randomService.generatePositiveRandomLong(1l, 20l), "L");
+            case "double":
+            case "Double":
+                return this.toString(randomService.getRandomNumeroDouble(0.0, 20.9) ,"");
+            case "Float":
+                return this.toString(randomService.getRandomNumeroDouble(0.0, 99.9) ,"F");
+            case "Date":
+                return this.toString(randomService.generateRandomDate(),"");
             default:
                 return "null";
         }
@@ -39,6 +46,7 @@ public interface IReturnType {
             case "double":
             case "float":
             case "boolean":
+            case "AtomicBoolean":
             case "String":
             case "Integer":
             case "Long":
@@ -80,8 +88,12 @@ public interface IReturnType {
         }
     }
 
-
-
+    default <T> String toString(T object, String type) {
+        StringBuffer buffer = new StringBuffer();
+        buffer.append(object == null? "null": buffer.append(object));
+        buffer.append(type != null && !type.equals("")?type:"");
+        return buffer.toString();
+    }
 
 }
 /*

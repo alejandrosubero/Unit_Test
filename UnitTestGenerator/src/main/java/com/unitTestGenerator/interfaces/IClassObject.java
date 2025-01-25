@@ -5,10 +5,17 @@ import com.unitTestGenerator.pojos.Constructor;
 import com.unitTestGenerator.pojos.InstanceMethodCall;
 import com.unitTestGenerator.pojos.ParametroMetodo;
 
-import java.util.ArrayList;
-import java.util.List;
 
-public interface IClassObject {
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public interface IClassObject extends IReturnType{
+
+
+    public List<String> elements = Arrays.asList("List","Set","ArrayList","LinkedList","Vector","Stack","HashSet","TreeSet","LinkedHashSet","Queue","LinkedList","PriorityQueue","Deque","ArrayDeque","LinkedList","Map","HashMap","TreeMap","LinkedHashMap","HashTable");
 
     default String generateNewClassObject(Clase clase) {
         StringBuilder contenido = new StringBuilder();
@@ -41,17 +48,25 @@ public interface IClassObject {
     }
 
     default String buildObject(Clase cClass){
-        StringBuilder contenido = new StringBuilder();
+        StringBuilder content = new StringBuilder();
+        content.append(cClass.getNombre()).append(".builder()");
+        cClass.getVariables().forEach(variable -> {
+            if(isValidTypeReturn(variable.getTipo())){
+                content.append(".").append(variable.getTipo()).append(this.getDefaultValue(variable.getTipo())).append("\n");
+            }//TODO: ANALIZE IF isValidTypeReturn IS FALSE (IS OBJECT OR List)
+            if(variable.getTipo() != null && variable.getTipo().contains("List") || variable.getTipo().contains("Set")){
 
-        cClass.getNombre()
-                ".builder()"
-                 ".build();"
+            }
+            //TODO: IN THE CASE IS A LIST WE NEED EXTRACT THE OBJECT IN THE LIST AND CREATE THE OBJECT LIAKE HERE ADD TO LIST SO ON...
+        });
+        content.append(".build();");
 
-        InstanceMethodCall.builder().build();
-
-
-        // genera objetos atravez de new
-        return "";
+        return content.toString();
     }
+
+
+
+
+
 
 }
