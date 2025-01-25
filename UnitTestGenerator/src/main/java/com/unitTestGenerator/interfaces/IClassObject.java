@@ -1,9 +1,6 @@
 package com.unitTestGenerator.interfaces;
 
-import com.unitTestGenerator.pojos.Clase;
-import com.unitTestGenerator.pojos.Constructor;
-import com.unitTestGenerator.pojos.InstanceMethodCall;
-import com.unitTestGenerator.pojos.ParametroMetodo;
+import com.unitTestGenerator.pojos.*;
 
 
 import java.util.ArrayList;
@@ -15,7 +12,8 @@ import java.util.regex.Pattern;
 public interface IClassObject extends IReturnType{
 
 
-    public List<String> elements = Arrays.asList("List","Set","ArrayList","LinkedList","Vector","Stack","HashSet","TreeSet","LinkedHashSet","Queue","LinkedList","PriorityQueue","Deque","ArrayDeque","LinkedList","Map","HashMap","TreeMap","LinkedHashMap","HashTable");
+    public List<String> collectionListTypeNames = Arrays.asList("List","Set","ArrayList","LinkedList","Vector","Stack","HashSet","TreeSet","LinkedHashSet","Queue","LinkedList","PriorityQueue","Deque","ArrayDeque","LinkedList");
+    public List<String> collectionMapTypeNames = Arrays.asList("Map","HashMap","TreeMap","LinkedHashMap","HashTable");
 
     default String generateNewClassObject(Clase clase) {
         StringBuilder contenido = new StringBuilder();
@@ -47,20 +45,46 @@ public interface IClassObject extends IReturnType{
         return contenido.toString();
     }
 
-    default String buildObject(Clase cClass){
+
+    default String generateNewClassObjectConstructoresIsEmpty(Clase clase) {
+        StringBuilder contenido = new StringBuilder();
+        if (clase.getConstructores() != null && !clase.getConstructores().isEmpty() && clase.getConstructores().stream().anyMatch(Constructor::isEmptyParameters)) {
+            contenido.append("new ").append(clase.getNombre()).append("(");
+            contenido.append(")");
+        }else {
+            contenido.append(this.generateNewClassObject(clase));
+        }
+        return contenido.toString();
+    }
+
+
+
+    default String buildObject(Clase cClass, Project project){
         StringBuilder content = new StringBuilder();
         content.append(cClass.getNombre()).append(".builder()");
+
         cClass.getVariables().forEach(variable -> {
             if(isValidTypeReturn(variable.getTipo())){
-                content.append(".").append(variable.getTipo()).append(this.getDefaultValue(variable.getTipo())).append("\n");
-            }//TODO: ANALIZE IF isValidTypeReturn IS FALSE (IS OBJECT OR List)
-            if(variable.getTipo() != null && variable.getTipo().contains("List") || variable.getTipo().contains("Set")){
-
+                content.append(".").append(variable.getNombre()).append(this.getDefaultValue(variable.getTipo())).append("\n");
             }
-            //TODO: IN THE CASE IS A LIST WE NEED EXTRACT THE OBJECT IN THE LIST AND CREATE THE OBJECT LIAKE HERE ADD TO LIST SO ON...
+            if(variable.getTipo() != null && this.collectionListTypeNames.contains(variable.getTipo()) || this.collectionMapTypeNames.contains(variable.getTipo())){
+                String objectClass = "";
+                if (this.collectionListTypeNames.contains(variable.getTipo())) {
+                    objectClass = extractListContent(variable.getTipo());
+                }
+
+                if (this.collectionMapTypeNames.contains(variable.getTipo())) {
+                    String input = extractMapContent(variable.getTipo());
+                    String key = getKey(input);
+                    String value = getValue(input);
+                    objectClass = value;
+                }
+
+                Clase classObjectVariable = project.getClass(objectClass);
+                content.append(".").append(variable.getNombre()).append(this.buildObject(classObjectVariable,project)).append("\n");
+                }
         });
         content.append(".build();");
-
         return content.toString();
     }
 

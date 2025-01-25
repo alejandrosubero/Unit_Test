@@ -18,17 +18,23 @@ public interface IValueExtractor {
     }
 
     default String extractMapContent(String input) {
-        String regex = "Map<([^,]+),([^>]+)>";
+//        String regex = "Map<([^,]+),([^>]+)>";
+        String regex = "(?:Map<([^,]+),([^>]+)>|Map\\s*\\([^)]+\\))";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(input);
-
         if (matcher.find()) {
-            String keyType = matcher.group(1).trim();
-            String valueType = matcher.group(2).trim();
-            return String.format("Key: %s, Value: %s", keyType, valueType);
-        } else {
-            return "No Map found.";
+//            String keyType = matcher.group(1).trim();
+//            String valueType = matcher.group(2).trim();
+//            return String.format("Key: %s, Value: %s", keyType, valueType);
+            String type = matcher.group(1);
+            if (type.contains(",")) {
+                String[] parts = type.split(",");
+                String keyType = parts[0].trim();
+                String valueType = parts[1].trim();
+                return String.format("Key: %s, Value: %s", keyType, valueType);
+            }
         }
+        return "null";
     }
 
     default String getKey(String input) {

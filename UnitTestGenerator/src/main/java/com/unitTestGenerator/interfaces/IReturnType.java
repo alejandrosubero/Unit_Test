@@ -3,7 +3,7 @@ package com.unitTestGenerator.interfaces;
 import com.unitTestGenerator.util.random.servicesRandom.RandomService;
 import com.unitTestGenerator.util.random.sevicesrandomimplement.RandomServiceImplemet;
 
-public interface IReturnType {
+public interface IReturnType extends IValueExtractor{
 
 
 
