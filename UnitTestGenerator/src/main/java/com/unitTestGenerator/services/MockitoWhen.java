@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class MockitoWhen implements IBaseModel, IMethodServiceTools, IClassObject {
+public class MockitoWhen implements IBaseModel, IMethodServiceTools, IClassObject, IReturnType {
 
     public MockitoWhen() {
     }

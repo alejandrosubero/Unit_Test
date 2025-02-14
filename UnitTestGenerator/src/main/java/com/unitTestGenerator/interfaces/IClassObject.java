@@ -1,6 +1,8 @@
 package com.unitTestGenerator.interfaces;
 
 import com.unitTestGenerator.pojos.*;
+import com.unitTestGenerator.util.IConstantModel;
+import com.unitTestGenerator.util.random.servicesRandom.RandomRulesServices;
 
 
 import java.util.ArrayList;
@@ -9,11 +11,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public interface IClassObject extends IReturnType{
+public interface IClassObject {
 
 
-    public List<String> collectionListTypeNames = Arrays.asList("List","Set","ArrayList","LinkedList","Vector","Stack","HashSet","TreeSet","LinkedHashSet","Queue","LinkedList","PriorityQueue","Deque","ArrayDeque","LinkedList");
-    public List<String> collectionMapTypeNames = Arrays.asList("Map","HashMap","TreeMap","LinkedHashMap","HashTable");
 
     default String generateNewClassObject(Clase clase) {
         StringBuilder contenido = new StringBuilder();
@@ -58,37 +58,34 @@ public interface IClassObject extends IReturnType{
     }
 
 
-
-    default String buildObject(Clase cClass, Project project){
+    default String buildObject(Clase cClass, Project project) {
         StringBuilder content = new StringBuilder();
-        content.append(cClass.getNombre()).append(".builder()");
+        List<String> variablesList = new ArrayList<>();
+        variablesList.add("");
+        content.append(cClass.getNombre()).append(".builder()").append("\n");
 
+//        for (Variable variable : cClass.getVariables()) {
         cClass.getVariables().forEach(variable -> {
-            if(isValidTypeReturn(variable.getTipo())){
-                content.append(".").append(variable.getNombre()).append(this.getDefaultValue(variable.getTipo())).append("\n");
+            String variableName = variable.getNombre();
+
+            if (!variablesList.contains(variableName)) {
+                String contentBody =  RandomRulesServices.getInstance().buildObjectSetValues(variable);
+                content.append("\t\t").append(".").append(variableName).append("(").append(contentBody).append(")").append("\n");
+                variablesList.add(variableName);
             }
-            if(variable.getTipo() != null && this.collectionListTypeNames.contains(variable.getTipo()) || this.collectionMapTypeNames.contains(variable.getTipo())){
-                String objectClass = "";
-                if (this.collectionListTypeNames.contains(variable.getTipo())) {
-                    objectClass = extractListContent(variable.getTipo());
-                }
 
-                if (this.collectionMapTypeNames.contains(variable.getTipo())) {
-                    String input = extractMapContent(variable.getTipo());
-                    String key = getKey(input);
-                    String value = getValue(input);
-                    objectClass = value;
-                }
-
+            if (RandomRulesServices.containTypeNamesMapList(variable.getTipo())) {
+                String objectClass = RandomRulesServices.getInstance().buildObjectSetContainTypeNames(variable);
                 Clase classObjectVariable = project.getClass(objectClass);
-                content.append(".").append(variable.getNombre()).append(this.buildObject(classObjectVariable,project)).append("\n");
-                }
-        });
-        content.append(".build();");
+                String contentBody = this.buildObject(classObjectVariable, project);
+                content.append("\t\t").append(".").append(variableName).append("(").append(contentBody).append(")").append("\n");
+            }
+
+        }
+        );
+        content.append("\t\t").append(".build();");
         return content.toString();
     }
-
-
 
 
 

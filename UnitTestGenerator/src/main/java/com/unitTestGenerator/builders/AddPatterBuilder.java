@@ -26,34 +26,43 @@ public class AddPatterBuilder implements IFileManager {
         generateBuilderFromClass(classContent, classfileOriginal);
     }
 
+
+    private String[] splitClassContent(String classContent) {
+
+        if (classContent == null || classContent.isEmpty()) {
+            return new String[]{"", ""};
+        }
+        int lastIndex = classContent.lastIndexOf('}');
+        if (lastIndex == -1) {
+            return new String[]{classContent, ""};
+        }
+        String before = classContent.substring(0, lastIndex).trim();
+        String after = classContent.substring(lastIndex + 1).trim();
+        return new String[]{before, after};
+    }
+
+
+
     public void generateBuilderFromClass(String classContent,  File fileToWrite) throws IOException {
 
         String className = extractClassName(classContent);
         List<String> fields = extractFields(classContent, className);
-
         if (className == null || fields.isEmpty()) {
             System.out.println("Can't process class; it does not contain fields.");
             return;
         }
-
         String builderClassName = className + "Builder";
         String builderClass = "Builder";
-        String regex = "\\}$";
-        String correctedCode = classContent.replaceAll(regex, "");
+        String[] correctedCode =this.splitClassContent(classContent);
 
-        StringBuilder builderCode = new StringBuilder(correctedCode);
-
+        StringBuilder builderCode = new StringBuilder(correctedCode[0]);
         builderCode.append("\n").append("\n\n");
-        // add Builder Static Method
         builderCode.append(this.addBuilderStaticMethod(builderClass));
-        // add Builder Interfaces
         builderCode.append(this.addBuilderInterfaces(builderClass, builderClassName, className,  fields));
-//        add Class Builder
         builderCode.append(this.addClassBuilder(builderClass,fields,builderClassName));
-//        add Setter Methods To Class Builder
-        builderCode.append(this.addSetterMethodsToClassBuilder(fields,builderClassName));
-//        add Build Method
-        builderCode.append(this.addBuildMethod(builderClass,fields, className));
+        builderCode.append(this.addSetterMethodsToClassBuilder(fields,builderClass));
+        builderCode.append(this.addBuildMethod(fields, className));
+        builderCode.append(correctedCode[1]);
         this.writefilesI(fileToWrite, builderCode.toString());
     }
 
@@ -147,6 +156,7 @@ public class AddPatterBuilder implements IFileManager {
         for (String field : fields) {
             String fieldType = field.split(" ")[0];
             String fieldName = field.split(" ")[1];
+
             addSettersToBuilder.append("\n\t@Override\n")
                     .append("\tpublic ").append(builderClassName).append(" ").append(fieldName).append("(")
                     .append(fieldType).append(" ").append(fieldName).append(") {\n")
@@ -156,12 +166,12 @@ public class AddPatterBuilder implements IFileManager {
         return addSettersToBuilder.toString();
     }
 
-    private String addBuildMethod( String builderClass, List<String> fields, String className){
+    private String addBuildMethod(List<String> fields, String className){
         StringBuilder addBuildMethod = new StringBuilder();
 
         addBuildMethod.append("\n\t@Override\n")
                 .append("\tpublic ")
-                .append(builderClass)
+                .append(className)
                 .append(" build() {\n")
                 .append("\t\t")
                 .append(className)

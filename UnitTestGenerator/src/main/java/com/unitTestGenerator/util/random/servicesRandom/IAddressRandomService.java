@@ -1,7 +1,7 @@
 package com.unitTestGenerator.util.random.servicesRandom;
 
 
-public interface AddressRandomService {
+public interface IAddressRandomService {
 
 
     //https://www.britannica.com/topic/list-of-cities-and-towns-in-the-United-States-2023068#ref326635

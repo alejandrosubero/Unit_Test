@@ -2,13 +2,13 @@ package com.unitTestGenerator.util.random.sevicesrandomimplement;
 
 
 
-import com.unitTestGenerator.util.random.servicesRandom.AddressRandomService;
+import com.unitTestGenerator.util.random.servicesRandom.IAddressRandomService;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
 
-public class AddressRandomServiceImplement implements AddressRandomService {
+public class IAddressRandomServiceImplement implements IAddressRandomService {
     private Map<String, String[]> statesCityMap = new HashMap<String, String[]>();
     private Map<String, String[]> statesCountyMap = new HashMap<String, String[]>();
     private Random random = new Random();

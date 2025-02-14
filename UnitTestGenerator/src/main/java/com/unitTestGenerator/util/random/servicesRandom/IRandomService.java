@@ -4,7 +4,7 @@ package com.unitTestGenerator.util.random.servicesRandom;
 import java.time.LocalDate;
 import java.util.Date;
 
-public interface RandomService {
+public interface IRandomService {
 
     public static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     public Integer generateRandomNumber(Integer maxNumber);
@@ -19,4 +19,5 @@ public interface RandomService {
     public Double getRandomNumeroDouble(Double valorMinimo, Double valorMaximo);
     public String generateCode();
     public Boolean generateRamdonBoolean();
+    public String generateRandomRealWordText(Integer wordNumbers);
 }

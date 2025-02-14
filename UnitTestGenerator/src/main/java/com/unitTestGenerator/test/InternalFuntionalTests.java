@@ -23,8 +23,10 @@ public class InternalFuntionalTests {
         Boolean useMock = false;
 //        String pathProject = "/Users/alejandrosubero/Documents/TESTREPOSITORY/Employee1";
         String pathProject = "/Users/user/Documents/TEST_REPOSITORY/Employee1";
-        String nombreClase = "EmpleadoServiceImplement";
-        String method = "updateEmpleado";
+//        String nombreClase = "EmpleadoServiceImplement";
+//        String method = "updateEmpleado";
+        String nombreClase = "CargoServiceImplement";
+        String method = "updateCargo";
 //        String method ="findById";
 //        String method ="findByFechaEgreso";
 //        String method = "findByTotalHorasFeriadoYear";

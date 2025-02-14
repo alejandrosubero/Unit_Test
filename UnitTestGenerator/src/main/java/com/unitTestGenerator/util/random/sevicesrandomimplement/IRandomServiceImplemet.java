@@ -1,8 +1,8 @@
 package com.unitTestGenerator.util.random.sevicesrandomimplement;
 
 
-import com.unitTestGenerator.util.random.servicesRandom.AddressRandomService;
-import com.unitTestGenerator.util.random.servicesRandom.RandomService;
+import com.unitTestGenerator.util.random.servicesRandom.IAddressRandomService;
+import com.unitTestGenerator.util.random.servicesRandom.IRandomService;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -13,10 +13,10 @@ import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 
-public class RandomServiceImplemet implements RandomService {
+public class IRandomServiceImplemet implements IRandomService {
 
 
-    private AddressRandomService addressRandomService;
+    private IAddressRandomService IAddressRandomService;
 
     private Map<String, String> clientesMap = new HashMap<String, String>();
 
@@ -37,8 +37,8 @@ public class RandomServiceImplemet implements RandomService {
     private String[] accountType = {"Savings Account", "Checking Account", "Money Market Account", "Certificate of Deposit Account", "Individual Retirement Account"};
 
 
-    public RandomServiceImplemet() {
-        addressRandomService = new AddressRandomServiceImplement();
+    public IRandomServiceImplemet() {
+        IAddressRandomService = new IAddressRandomServiceImplement();
     }
 
     @Override
@@ -166,7 +166,7 @@ public class RandomServiceImplemet implements RandomService {
     }
 
     public String generateAddress() {
-        String address = addressRandomService.generateAddress();
+        String address = IAddressRandomService.generateAddress();
         return address;
     }
 
@@ -198,10 +198,10 @@ public class RandomServiceImplemet implements RandomService {
         return this.generateRandomNumber(0, 1) == 1;
     }
 
-
-
-
-
+    @Override
+    public String generateRandomRealWordText(Integer wordNumbers) {
+        return RealWordTextRandom.generateMeaningfulText(wordNumbers);
+    }
 
 
 }

@@ -15,7 +15,7 @@ public interface IConstantModel {
     public static final String PRIVATE = "private";
     public static final String LISTAS = "List<";
     public static final String ARRAY = "[]";
-
+    public static final String JAVA_BASE_PAHT = pathSeparator + "src"+pathSeparator+"main"+pathSeparator+"java";
     public final String DOUBLEBREAK_LINE = "\r\n"+"\r\n";
     public final String TAB = "\t";
     public final String DOUBLETAB = "\t\t";
@@ -45,6 +45,9 @@ public interface IConstantModel {
     public static final String NOT_NULL =" != null";
     public static final String IF_STAMENT ="if";
     public static final String ELSE_STAMENT="else";
+    public static final String CODE = "code";
+    public static final String NAME = "name";
+    public static final String DESCRIPTION= "description";
 
 
     public final String GSON_IMPORT 										= "import com.google.gson.Gson;"+ BREAK_LINE;

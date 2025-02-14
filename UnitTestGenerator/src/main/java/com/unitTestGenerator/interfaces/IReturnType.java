@@ -1,43 +1,59 @@
 package com.unitTestGenerator.interfaces;
 
-import com.unitTestGenerator.util.random.servicesRandom.RandomService;
-import com.unitTestGenerator.util.random.sevicesrandomimplement.RandomServiceImplemet;
+import com.unitTestGenerator.util.random.servicesRandom.IRandomService;
+import com.unitTestGenerator.util.random.sevicesrandomimplement.IRandomServiceImplemet;
 
 public interface IReturnType extends IValueExtractor{
 
+    IRandomService IRandomService = new IRandomServiceImplemet();
 
+    default String getDefaultValueName(){
+        return "\""+ IRandomService.generateRandomName()+"\"";
+    }
+
+    default String getDefaultValueCode(){
+        return "\""+ IRandomService.generateCode()+"\"";
+    }
+
+    default String getDefaultValueDescription(Integer number){
+        return  "\""+ IRandomService.generateRandomRealWordText(number)+"\"";
+    }
 
     default String getDefaultValue(String tipoRetorno) {
-        RandomService randomService = new RandomServiceImplemet();
 
         switch (tipoRetorno) {
             case "int":
-                return this.toString(randomService.generateRandomNumber(2, 10) , " ");
+                return this.toString(IRandomService.generateRandomNumber(2, 10) , " ");
             case "long":
-                return this.toString(randomService.generatePositiveRandomLong(1l, 10l) , "L");
+                return this.toString(IRandomService.generatePositiveRandomLong(1l, 10l) , "L");
             case "float":
-                return this.toString(randomService.getRandomNumeroDouble(0.0, 99.9),"f");
+                return this.toString(IRandomService.getRandomNumeroDouble(0.0, 99.9),"f");
             case "AtomicBoolean":
             case "boolean":
             case "Boolean":
-                return this.toString(randomService.generateRamdonBoolean() , "");
+                return this.toString(IRandomService.generateRamdonBoolean() , "");
             case "String":
-                return this.toString(randomService.generateRandomText(10), null);
+                return "\""+ this.toString(IRandomService.generateRandomText(10), null)+"\"";
             case "Integer":
-                return this.toString(randomService.generateRandomNumber(8) , "");
+                return this.toString(IRandomService.generateRandomNumber(8) , "");
             case "Long":
-                return this.toString(randomService.generatePositiveRandomLong(1l, 20l), "L");
+                return this.toString(IRandomService.generatePositiveRandomLong(1l, 20l), "L");
             case "double":
             case "Double":
-                return this.toString(randomService.getRandomNumeroDouble(0.0, 20.9) ,"");
+                return this.toString(IRandomService.getRandomNumeroDouble(0.0, 20.9) ,"");
             case "Float":
-                return this.toString(randomService.getRandomNumeroDouble(0.0, 99.9) ,"F");
+                return this.toString(IRandomService.getRandomNumeroDouble(0.0, 99.9) ,"F");
             case "Date":
-                return this.toString(randomService.generateRandomDate(),"");
+                return this.toString(IRandomService.generateRandomDate(),"");
             default:
                 return "null";
         }
     }
+
+
+
+
+
 
     default boolean isValidTypeReturn(String typeReturn) {
         switch (typeReturn) {

@@ -97,6 +97,7 @@ public class GenerateContentWithoutMockService implements IMethodServiceTools, I
                 case 2:
                     String filePath =  stringPaths(false, false,
                             this.project.getPathProject(),
+                            "src","main","java",
                             packageToPaths(clase1.getPaquete()),
                             stringEnsamble( clase1.getNombre(),".java")
                     );
@@ -140,7 +141,7 @@ public class GenerateContentWithoutMockService implements IMethodServiceTools, I
                 askForAddBuildPatterInClass(clase1);
             }
             if (clase1.getUseLomboxBuild() || clase1.getApplyBuildMethod()) {
-                String newParameterObjectClass = stringEnsamble(parameterNameType, " = ", this.buildObject(clase1,this.project));
+                String newParameterObjectClass = stringEnsamble("\t",parameterNameType, " = ", this.buildObject(clase1,this.project));
                 content.append(newParameterObjectClass).append("\n");
             } else {
                 content.append(generateNewObject(parameterNameType, parameter.get().getNombre(), clase1) );
