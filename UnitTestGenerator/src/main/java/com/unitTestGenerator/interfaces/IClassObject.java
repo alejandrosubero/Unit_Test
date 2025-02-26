@@ -1,15 +1,13 @@
 package com.unitTestGenerator.interfaces;
 
-import com.unitTestGenerator.pojos.*;
-import com.unitTestGenerator.util.IConstantModel;
+import com.unitTestGenerator.pojos.Clase;
+import com.unitTestGenerator.pojos.Constructor;
+import com.unitTestGenerator.pojos.ParametroMetodo;
+import com.unitTestGenerator.pojos.Project;
 import com.unitTestGenerator.util.random.servicesRandom.RandomRulesServices;
 
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public interface IClassObject {
 

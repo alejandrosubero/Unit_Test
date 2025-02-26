@@ -4,6 +4,7 @@ import com.unitTestGenerator.builders.AddPatterBuilder;
 import com.unitTestGenerator.interfaces.IClassObject;
 import com.unitTestGenerator.interfaces.IManageMavenGadleAppProperties;
 import com.unitTestGenerator.interfaces.IMethodServiceTools;
+import com.unitTestGenerator.interfaces.IReturnType;
 import com.unitTestGenerator.pojos.*;
 import com.unitTestGenerator.util.IBaseModel;
 
@@ -13,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
-public class GenerateContentWithoutMockService implements IMethodServiceTools, IBaseModel, IManageMavenGadleAppProperties, IClassObject {
+public class GenerateContentWithoutMockService implements IReturnType, IMethodServiceTools, IManageMavenGadleAppProperties, IClassObject {
 
     public static GenerateContentWithoutMockService instance;
     private Project project;
@@ -46,19 +47,26 @@ public class GenerateContentWithoutMockService implements IMethodServiceTools, I
             }
             content.append(this.generateParameterObjects(metodo,parametersClassList));
             content.append("\n");
-            content.append(this.generateClassMethodCall(metodo,clase));
+            String responseVariableName = "response";
+            content.append(this.generateClassMethodCall(metodo,clase, responseVariableName));
+
+           //TODO: NEED TESTING
+            this.getAssertType(metodo.getTipoRetorno(), responseVariableName, "true");
+
+
         }
         return content.toString();
     }
 
 
-    private String generateClassMethodCall(Metodo metodo, Clase clase){
+    private String generateClassMethodCall(Metodo metodo, Clase clase, String responseVariableName){
         StringBuffer buffer = new StringBuffer();
         String methodName = metodo.getNombre();
         String classNameCamelCase = stringEnsamble(clase.getNombre().substring(0, 1).toLowerCase(), clase.getNombre().substring(1));
         buffer.append("\t")
                 .append(metodo.getTipoRetorno())
-                .append(" response = ")
+                .append(" ")
+                .append(responseVariableName).append(" = ")
                 .append(classNameCamelCase)
                 .append(".")
                 .append(generateCallMethod(methodName, metodo.getParametros()));
