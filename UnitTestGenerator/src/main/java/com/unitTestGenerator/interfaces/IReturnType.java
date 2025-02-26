@@ -76,6 +76,7 @@ public interface IReturnType extends IValueExtractor{
         }
     }
 
+
     default String getAssertType(String tipoRetorno, String valorDeRetorno, String result) {
 
         switch (tipoRetorno) {
@@ -102,6 +103,15 @@ public interface IReturnType extends IValueExtractor{
                     return "Assertions.assertThat("+result+").isNotNull();";
                 }
         }
+    }
+
+
+    default String getAssertTypeNull(String valorDeRetorno, String result) {
+                if (valorDeRetorno == null) {
+                    return "Assertions.assertThat("+result+").isNull();";
+                } else {
+                    return "Assertions.assertThat("+result+").isNotNull();";
+                }
     }
 
     default <T> String toString(T object, String type) {
