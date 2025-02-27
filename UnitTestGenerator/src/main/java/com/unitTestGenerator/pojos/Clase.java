@@ -19,6 +19,8 @@ public class Clase {
     private Boolean useLomboxBuild;
     private Boolean applyBuildMethod;
     private Integer indexFirmaClass;
+    private String classSignatureLine;
+    private ClassRelations classRelations;
 
     public Clase() {
         this.metodos = new ArrayList<>();
@@ -44,6 +46,14 @@ public class Clase {
 
     public void setUseLomboxBuild(Boolean useLomboxBuild) {
         this.useLomboxBuild = useLomboxBuild;
+    }
+
+    public ClassRelations getClassRelations() {
+        return classRelations;
+    }
+
+    public void setClassRelations(ClassRelations classRelations) {
+        this.classRelations = classRelations;
     }
 
     public String getRawClass() {
@@ -162,7 +172,13 @@ public class Clase {
     }
 
 
+    public String getClassSignatureLine() {
+        return classSignatureLine;
+    }
 
+    public void setClassSignatureLine(String classSignatureLine) {
+        this.classSignatureLine = classSignatureLine;
+    }
 
     @Override
     public boolean equals(Object o) {

@@ -92,7 +92,49 @@ public class AnalyzeClassService {
                 clase.setIndexFirmaClass(matcherInterface.start(1));
             }
         }
+
+        this.getClassSignatureLine( contenido, clase);
+
     }
+
+    private void getClassSignatureLine(String contenido, Clase clase){
+
+        Pattern patronClase =  Pattern.compile("public class (\\w+)(?:\\s+extends\\s+[^{]+)?(?:\\s+implements\\s+[^{]+)?\\s*\\{");
+        Matcher matcherClase = patronClase.matcher(contenido);
+
+        if (matcherClase.find()) {
+            clase.setClassSignatureLine(matcherClase.group(0));
+        } else {
+            Pattern patronInterface = Pattern.compile("public interface (\\w+)(?:\\s+extends\\s+[^{]+)?(?:\\s+implements\\s+[^{]+)?\\s*\\{");
+            Matcher matcherInterface = patronInterface.matcher(contenido);
+            if (matcherInterface.find()) {
+                clase.setClassSignatureLine(matcherInterface.group(0));
+            }
+        }
+
+        String firmaClase = clase.getClassSignatureLine();
+
+        // Patrón para extraer el valor después de "extends"
+        Pattern patronExtends = Pattern.compile("extends\\s+([\\w\\s,]+)");
+        Matcher matcherExtends = patronExtends.matcher(firmaClase);
+
+        // Patrón para extraer los valores después de "implements"
+        Pattern patronImplements = Pattern.compile("implements\\s+([\\w\\s,]+)");
+        Matcher matcherImplements = patronImplements.matcher(firmaClase);
+
+        if (matcherExtends.find()) {
+            System.out.println("Valor después de 'extends': " + matcherExtends.group(1));
+        }
+
+        if (matcherImplements.find()) {
+            System.out.println("Valores después de 'implements': " + matcherImplements.group(1));
+        }
+
+
+
+    }
+
+
 
     private void analyzeConstructors(String contenido, Clase clase) {
         Pattern patronConstructor = Pattern.compile("public (\\w+)\\((.*?)\\)\\s*\\{(.*?)\\}", Pattern.DOTALL);
