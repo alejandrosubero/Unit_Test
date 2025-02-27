@@ -29,7 +29,9 @@ public class ClassRelations {
     }
 
     public void setImplementsList(List<String> implementsList) {
-        this.implementsList = implementsList;
+        if(implementsList != null && !implementsList.isEmpty()){
+            this.implementsList = implementsList;
+        }
     }
 
     public String getClassExtends() {
@@ -37,7 +39,9 @@ public class ClassRelations {
     }
 
     public void setClassExtends(String classExtends) {
-        this.classExtends = classExtends;
+        if(classExtends != null){
+            this.classExtends = classExtends;
+        }
     }
 
     public String getClassType() {

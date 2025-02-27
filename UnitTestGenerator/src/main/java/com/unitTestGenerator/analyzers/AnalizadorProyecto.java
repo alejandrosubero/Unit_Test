@@ -1,9 +1,7 @@
 package com.unitTestGenerator.analyzers;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 
 import com.unitTestGenerator.analyzers.services.AnalyzeClassService;
@@ -26,33 +24,41 @@ public class AnalizadorProyecto {
     }
 
 
-    public  List<Clase> analizarProyecto(String rutaProyecto) {
+    public List<Clase> analizarProyecto(String rutaProyecto, Project project) {
         List<Clase> clases = new ArrayList<>();
+        Map<String, Clase> mapClass = new HashMap<>();
         File carpetaProyecto = new File(rutaProyecto);
-        analizarProyectoRecursivo(carpetaProyecto, clases);
+        this.analizarProyectoRecursivo(carpetaProyecto, clases, mapClass);
+        project.setMapClass(mapClass);
         return clases;
     }
 
 
-    private  void analizarProyectoRecursivo(File carpeta, List<Clase> clases) {
+    private  void analizarProyectoRecursivo(File carpeta, List<Clase> classList, Map<String, Clase> mapClass) {
         if (carpeta.isDirectory()) {
             String nombreCarpeta = carpeta.getName();
 
             if (!Arrays.asList(IGNORAR).contains(nombreCarpeta)) {
                 for (File archivo : carpeta.listFiles()) {
                     if (archivo.isDirectory()) {
-                        analizarProyectoRecursivo(archivo, clases);
+                        analizarProyectoRecursivo(archivo, classList, mapClass);
                     } else if (archivo.getName().endsWith(".java")) {
                         Clase clase = AnalyzeClassService.getInstance().analyzeClase(archivo);
-                        if(clase !=null) {
-                            clases.add(clase);
-                        }
+                        this.setContainers(clase, classList, mapClass);
                     }
                 }
             }
         }
     }
 
+    private void setContainers(Clase clase, List<Clase> classList, Map<String, Clase> mapClass){
+        if(classList != null && clase !=null){
+            classList.add(clase);
+        }
+        if(mapClass !=null && clase!=null){
+            mapClass.put(clase.getNombre(), clase);
+        }
+    }
 
 
 

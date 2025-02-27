@@ -6,9 +6,11 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class AnalyzeClassService {
 
@@ -94,7 +96,7 @@ public class AnalyzeClassService {
         }
 
         this.getClassSignatureLine( contenido, clase);
-
+        this.getClassRelationsInClassSignatureLine(clase);
     }
 
     private void getClassSignatureLine(String contenido, Clase clase){
@@ -111,29 +113,37 @@ public class AnalyzeClassService {
                 clase.setClassSignatureLine(matcherInterface.group(0));
             }
         }
+    }
 
+    private void getClassRelationsInClassSignatureLine(Clase clase){
+        String classExtends ="";
+        List<String> classImplements = new ArrayList<>();
         String firmaClase = clase.getClassSignatureLine();
 
-        // Patrón para extraer el valor después de "extends"
         Pattern patronExtends = Pattern.compile("extends\\s+([\\w\\s,]+)");
         Matcher matcherExtends = patronExtends.matcher(firmaClase);
 
-        // Patrón para extraer los valores después de "implements"
         Pattern patronImplements = Pattern.compile("implements\\s+([\\w\\s,]+)");
         Matcher matcherImplements = patronImplements.matcher(firmaClase);
 
         if (matcherExtends.find()) {
-            System.out.println("Valor después de 'extends': " + matcherExtends.group(1));
+            classExtends = matcherExtends.group(1);
         }
 
         if (matcherImplements.find()) {
-            System.out.println("Valores después de 'implements': " + matcherImplements.group(1));
+            String temp = matcherImplements.group(1);
+            String[] arreglo =  temp.trim().split(",");
+            classImplements = Arrays.stream(arreglo).collect(Collectors.toList());
         }
 
-
+        if((classExtends != null && !classExtends.equals("")) || (classImplements != null && !classImplements.isEmpty())){
+            ClassRelations relations = ClassRelations.builder().className(clase.getNombre()).classType(clase.getTypeClass()).build();
+            relations.setClassExtends(classExtends);
+            relations.setImplementsList(classImplements);
+            clase.setClassRelations(relations);
+        }
 
     }
-
 
 
     private void analyzeConstructors(String contenido, Clase clase) {

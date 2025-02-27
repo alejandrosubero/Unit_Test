@@ -89,10 +89,12 @@ public class AppProjectStarted implements IInternalTest {
         }
 
         if(this.pathProject != null){
-            this.clases = AnalizadorProyecto.getInstance().analizarProyecto(pathProject);
+
+            this.project = new Project(pathProject);
+            this.clases = AnalizadorProyecto.getInstance().analizarProyecto(pathProject, this.project);
 
             if(this.clases != null){
-                this.project = new Project(this.clases, pathProject);
+                this.project.setClaseList(this.clases);
             }
             this.projectAnalyzerType();
 

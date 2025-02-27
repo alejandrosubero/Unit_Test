@@ -1,12 +1,12 @@
 package com.unitTestGenerator.pojos;
 
 import java.io.File;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class Project {
 
-    private List<Clase> claseList;
+    private List<Clase> claseList = new ArrayList<>();
+    private Map<String, Clase> mapClass = new HashMap<>();;
     private Boolean isMaven;
     private Boolean isGradle;
     private String pathProject;
@@ -16,6 +16,16 @@ public class Project {
 
     public Project(List<Clase> claseList) {
         this.claseList = claseList;
+    }
+
+    public Project(String pathProject) {
+        this.projectAnalyzerType(pathProject);
+    }
+
+    public Project(Map<String, Clase> mapClass, String pathProject) {
+        this.mapClass = mapClass;
+        this.pathProject = pathProject;
+        this.projectAnalyzerType(pathProject);
     }
 
     public Project(List<Clase> claseList, String pathProject) {
@@ -44,16 +54,29 @@ public class Project {
 
     private Clase getClass(String className, Project project){
         Clase foundClass = null;
-        if(project.getClaseList() != null && !project.getClaseList().isEmpty() && className !=null && !className.equals("")){
-            for(Clase clasS : project.getClaseList()){
-                if(clasS.getNombre() !=null && clasS.getNombre().toLowerCase().equals(className.toLowerCase())){
-                    foundClass = clasS;
-                }
+//        if(project.getClaseList() != null && !project.getClaseList().isEmpty() && className !=null && !className.equals("")){
+//            for(Clase clasS : project.getClaseList()){
+//                if(clasS.getNombre() !=null && clasS.getNombre().toLowerCase().equals(className.toLowerCase())){
+//                    foundClass = clasS;
+//                }
+//            }
+//        }
+        if(project.getMapClass() != null && !project.getMapClass().isEmpty() && className !=null && !className.equals("")){
+            if(project.getMapClass().containsKey(className)){
+                foundClass = project.getMapClass().get(className);
             }
         }
         return foundClass;
     }
 
+
+    public Map<String, Clase> getMapClass() {
+        return mapClass;
+    }
+
+    public void setMapClass(Map<String, Clase> mapClass) {
+        this.mapClass = mapClass;
+    }
 
     public String getPathProject() {
         return pathProject;
@@ -82,8 +105,7 @@ public class Project {
     private void projectAnalyzerType(String pathProject) {
         File proyecto = new File(pathProject);
         boolean isMaven = new File(proyecto, "pom.xml").exists();
-        this.isGradle = new File(proyecto, "build.gradle").exists() ||
-                new File(proyecto, "build.gradle.kts").exists();
+        this.isGradle = new File(proyecto, "build.gradle").exists() || new File(proyecto, "build.gradle.kts").exists();
         this.isMaven = isMaven;
     }
 
