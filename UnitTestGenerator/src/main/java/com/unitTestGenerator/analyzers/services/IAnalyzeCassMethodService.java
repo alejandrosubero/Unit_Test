@@ -43,6 +43,7 @@ public interface IAnalyzeCassMethodService {
            String Clase = matcherNewObject.group(1);
            String parametros = matcherNewObject.group(2);
            // XXXXXXXXX
+           ...
        }
 
        Pattern patternBuild = Pattern.compile("\\b([A-Z][a-zA-Z0-9_]*)\\.builder\\(\\)(?:\\.\\w+\\([^)]*\\))*\\.build\\(\\)");
@@ -51,6 +52,7 @@ public interface IAnalyzeCassMethodService {
        while (matcherBuild.find()) {
            String Clase = matcherBuild.group(1);
            //xxxxxxxxxxx
+           ...
        }
 
     }
