@@ -17,7 +17,7 @@ public interface IAnalyzeCassMethodService {
        while (matcher.find()) {
            String clase = matcher.group(1);
            String metodoEstatico = matcher.group(2);
-           String Parametros = matcher.group(3);
+           String parametros = matcher.group(3);
            if(!classs.getClassRelations().getIdentifieresRelatedClasses().contains(clase)){
                classs.getClassRelations().addIdentifieres(clase);
            }
@@ -29,13 +29,29 @@ public interface IAnalyzeCassMethodService {
        while (matcherSingleton.find()) {
            String clase = matcherSingleton.group(1);
            String metodoEstatico = matcherSingleton.group(2);
-           String Parametros = matcherSingleton.group(3);
+           String parametros = matcherSingleton.group(3);
            if(!classs.getClassRelations().getIdentifieresRelatedClasses().contains(clase)){
                classs.getClassRelations().addIdentifieres(clase);
            }
        }
 
+     // Strong Dependency Association with direct instantiation
+       Pattern patternNewObject = Pattern.compile("\\bnew\\s+([A-Z][a-zA-Z0-9_]*)\\s*\\(([^)]*)\\)");
+       Matcher matcherNewObject = patternNewObject.matcher(content);
 
+       while (matcherNewObject.find()) {
+           String Clase = matcherNewObject.group(1);
+           String parametros = matcherNewObject.group(2);
+           // XXXXXXXXX
+       }
+
+       Pattern patternBuild = Pattern.compile("\\b([A-Z][a-zA-Z0-9_]*)\\.builder\\(\\)(?:\\.\\w+\\([^)]*\\))*\\.build\\(\\)");
+       Matcher matcherBuild = patternBuild.matcher(content);
+
+       while (matcherBuild.find()) {
+           String Clase = matcherBuild.group(1);
+           //xxxxxxxxxxx
+       }
 
     }
 
