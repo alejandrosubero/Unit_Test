@@ -6,13 +6,11 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
-public class AnalyzeClassService {
+public class AnalyzeClassService implements IAnalyzeCassMethodService, IAnalyzeClassRelations {
 
     public static AnalyzeClassService instance;
 
@@ -65,6 +63,8 @@ public class AnalyzeClassService {
         analyzeControlStructure(content, clase);
         containPatterBuild(content, clase);
         containLomboxAnotacionBuild(content,clase);
+        this.getRelationsInClass(clase);
+
         return postClassMethodAnalysis(clase);
     }
 
@@ -99,51 +99,6 @@ public class AnalyzeClassService {
         this.getClassRelationsInClassSignatureLine(clase);
     }
 
-    private void getClassSignatureLine(String contenido, Clase clase){
-
-        Pattern patronClase =  Pattern.compile("public class (\\w+)(?:\\s+extends\\s+[^{]+)?(?:\\s+implements\\s+[^{]+)?\\s*\\{");
-        Matcher matcherClase = patronClase.matcher(contenido);
-
-        if (matcherClase.find()) {
-            clase.setClassSignatureLine(matcherClase.group(0));
-        } else {
-            Pattern patronInterface = Pattern.compile("public interface (\\w+)(?:\\s+extends\\s+[^{]+)?(?:\\s+implements\\s+[^{]+)?\\s*\\{");
-            Matcher matcherInterface = patronInterface.matcher(contenido);
-            if (matcherInterface.find()) {
-                clase.setClassSignatureLine(matcherInterface.group(0));
-            }
-        }
-    }
-
-    private void getClassRelationsInClassSignatureLine(Clase clase){
-        String classExtends ="";
-        List<String> classImplements = new ArrayList<>();
-        String firmaClase = clase.getClassSignatureLine();
-
-        Pattern patronExtends = Pattern.compile("extends\\s+([\\w\\s,]+)");
-        Matcher matcherExtends = patronExtends.matcher(firmaClase);
-
-        Pattern patronImplements = Pattern.compile("implements\\s+([\\w\\s,]+)");
-        Matcher matcherImplements = patronImplements.matcher(firmaClase);
-
-        if (matcherExtends.find()) {
-            classExtends = matcherExtends.group(1);
-        }
-
-        if (matcherImplements.find()) {
-            String temp = matcherImplements.group(1);
-            String[] arreglo =  temp.trim().split(",");
-            classImplements = Arrays.stream(arreglo).collect(Collectors.toList());
-        }
-
-        if((classExtends != null && !classExtends.equals("")) || (classImplements != null && !classImplements.isEmpty())){
-            ClassRelations relations = ClassRelations.builder().className(clase.getNombre()).classType(clase.getTypeClass()).build();
-            relations.setClassExtends(classExtends);
-            relations.setImplementsList(classImplements);
-            clase.setClassRelations(relations);
-        }
-
-    }
 
 
     private void analyzeConstructors(String contenido, Clase clase) {
@@ -190,6 +145,7 @@ public class AnalyzeClassService {
                 metodo.setMethodSignature(matcherMetodo.group(0).trim());
                 this.analyzeMethodAnotations(contenido,metodo, metodo.getMethodSignature());
                 clase.addMetodo(metodo);
+                this.analyzeMethod(metodo.getContenido(), clase); // ***
             }
         }
 
@@ -206,7 +162,10 @@ public class AnalyzeClassService {
                 clase.addMetodo(metodo);
             }
         }
+
     }
+
+
 }
 
     private void analyzeMethodBasic(Metodo metodo, Matcher matcherMetodo) {

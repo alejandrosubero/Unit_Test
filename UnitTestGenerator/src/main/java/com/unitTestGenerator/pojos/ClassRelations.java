@@ -7,13 +7,12 @@ import java.util.Objects;
 public class ClassRelations {
 
     private String className;
-    private List<String> implementsList;
+    private List<String> implementsList  = new ArrayList<>();
     private String classExtends;
     private String classType;
-
+    private List<String> identifieresRelatedClasses = new ArrayList<>();
 
     public ClassRelations() {
-        this.implementsList = new ArrayList<>();
     }
 
     public String getClassName() {
@@ -51,6 +50,19 @@ public class ClassRelations {
     public void setClassType(String classType) {
         this.classType = classType;
     }
+
+    public List<String> getIdentifieresRelatedClasses() {
+        return identifieresRelatedClasses;
+    }
+
+    public void setIdentifieresRelatedClasses(List<String> identifieresRelatedClasses) {
+        this.identifieresRelatedClasses = identifieresRelatedClasses;
+    }
+
+    public void addIdentifieres(String identifiere) {
+        this.identifieresRelatedClasses.add(identifiere);
+    }
+
 
     @Override
     public boolean equals(Object o) {
