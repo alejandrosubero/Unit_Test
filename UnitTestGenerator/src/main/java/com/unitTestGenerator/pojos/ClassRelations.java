@@ -7,7 +7,6 @@ import java.util.Objects;
 public class ClassRelations {
 
     private String className;
-
     private String classExtends;
     private String classType;
     private List<String> implementsList  = new ArrayList<>();
