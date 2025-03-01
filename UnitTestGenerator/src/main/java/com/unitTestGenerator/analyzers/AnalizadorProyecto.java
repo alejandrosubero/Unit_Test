@@ -6,10 +6,11 @@ import java.util.*;
 
 import com.unitTestGenerator.analyzers.print.DirectoryTreeBuilder;
 import com.unitTestGenerator.analyzers.services.AnalyzeClassService;
+import com.unitTestGenerator.analyzers.services.ITodoDetector;
 import com.unitTestGenerator.pojos.*;
 
 
-public class AnalizadorProyecto {
+public class AnalizadorProyecto implements ITodoDetector {
 
     private  final String[] IGNORAR = {"target", "node_modules", ".git"};
     private static AnalizadorProyecto instance;
@@ -36,6 +37,7 @@ public class AnalizadorProyecto {
         this.analizarProyectoRecursivo(carpetaProyecto, clases, mapClass);
         project.setMapClass(mapClass);
         project.setProjectDirectoryTree(treeBuilder.getTreeString());
+        project.setProjectClassTree(project.getProjectDirectoryTree().replace(".java", " "));
         return clases;
     }
 
@@ -50,7 +52,9 @@ public class AnalizadorProyecto {
                         analizarProyectoRecursivo(archivo, classList, mapClass);
                     } else if (archivo.getName().endsWith(".java")) {
                         Clase clase = AnalyzeClassService.getInstance().analyzeClase(archivo);
+
                         if(clase !=null){
+                            clase.setTodoNoteInClass(this.getTodo(clase.getRawClass()));
                             treeBuilder.addPath(clase.getClassPath());
                         }
                         this.setContainers(clase, classList, mapClass);

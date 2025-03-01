@@ -22,6 +22,8 @@ public class Clase {
     private String classSignatureLine;
     private ClassRelations classRelations = new ClassRelations();
     private String classPath;
+    private String todoNoteInClass;
+
 
     public Clase() {
         this.metodos = new ArrayList<>();
@@ -63,6 +65,14 @@ public class Clase {
 
     public void setClassPath(String classPath) {
         this.classPath = classPath;
+    }
+
+    public String getTodoNoteInClass() {
+        return todoNoteInClass;
+    }
+
+    public void setTodoNoteInClass(String todoNoteInClass) {
+        this.todoNoteInClass = todoNoteInClass;
     }
 
     public String getRawClass() {

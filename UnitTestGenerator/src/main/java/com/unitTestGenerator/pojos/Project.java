@@ -11,6 +11,7 @@ public class Project {
     private Boolean isGradle;
     private String pathProject;
     private String projectDirectoryTree;
+    private String projectClassTree;
 
     public Project() {
     }
@@ -79,6 +80,13 @@ public class Project {
         return foundClass;
     }
 
+    public String getProjectClassTree() {
+        return projectClassTree;
+    }
+
+    public void setProjectClassTree(String projectClassTree) {
+        this.projectClassTree = projectClassTree;
+    }
 
     public Map<String, Clase> getMapClass() {
         return mapClass;

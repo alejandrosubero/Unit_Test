@@ -29,7 +29,7 @@ public class GeneradorPruebasUnitarias implements IManageMavenGadleAppProperties
         this.project = project;
     }
 
-    public void generarPruebas(Clase clase, String pathProject) {
+    public void generateTest(Clase clase, String pathProject) {
        this.projectTypeDependencesAnalizer(pathProject, this.project);
         TestFileContent fileContent = generateTestFileBody(clase);
         String pathOfTest = this.getPathOfTest(clase,pathProject);
