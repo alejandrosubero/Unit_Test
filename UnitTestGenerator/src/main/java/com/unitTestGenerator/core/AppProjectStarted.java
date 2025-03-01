@@ -89,7 +89,6 @@ public class AppProjectStarted implements IInternalTest {
         }
 
         if(this.pathProject != null){
-
             this.project = new Project(pathProject);
             this.clases = AnalizadorProyecto.getInstance().analizarProyecto(pathProject, this.project);
 
@@ -156,7 +155,6 @@ public class AppProjectStarted implements IInternalTest {
         String respuesta ="n";
         System.out.println("Do you want to use Mock in test Class?.(y/n)");
         respuesta = scanner.next().toLowerCase();
-
         while (!respuesta.equals("y") && !respuesta.equals("n")) {
             System.out.println("Invalid response. Please enter 'y' for yes or 'n' for no.");
             respuesta = scanner.next().toLowerCase();
@@ -187,17 +185,7 @@ public class AppProjectStarted implements IInternalTest {
         }
     }
 
-    public List<Clase> getClases() {
-        return clases;
-    }
 
-    public Project getProject() {
-        return this.project;
-    }
-
-    public  String getRutaProyecto() {
-        return pathProject;
-    }
 
     private Integer getNumber(Scanner scanner){
         System.out.println("What method do you want to test?");
@@ -261,4 +249,17 @@ public class AppProjectStarted implements IInternalTest {
     public void analizedTest(String pathProject, boolean isAnalisis, String nombreClase, String method, Boolean useMock) {
         this.projectAnalize( pathProject,  isAnalisis );
     }
+
+    public List<Clase> getClases() {
+        return clases;
+    }
+
+    public Project getProject() {
+        return this.project;
+    }
+
+    public  String getRutaProyecto() {
+        return pathProject;
+    }
+
 }
