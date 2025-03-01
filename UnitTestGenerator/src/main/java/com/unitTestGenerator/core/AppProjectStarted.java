@@ -1,6 +1,7 @@
 package com.unitTestGenerator.core;
 
 import com.unitTestGenerator.analyzers.AnalizadorProyecto;
+import com.unitTestGenerator.core.interfaces.IProjectAnalizeCore;
 import com.unitTestGenerator.test.interfaces.IInternalTest;
 import com.unitTestGenerator.pojos.Clase;
 import com.unitTestGenerator.pojos.Metodo;
@@ -10,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class AppProjectStarted implements IInternalTest {
+public class AppProjectStarted implements IProjectAnalizeCore, IInternalTest {
 
     private String pathProject;
     private static AppProjectStarted instance;
@@ -91,7 +92,6 @@ public class AppProjectStarted implements IInternalTest {
         if(this.pathProject != null){
             this.project = new Project(pathProject);
             this.clases = AnalizadorProyecto.getInstance().analizarProyecto(pathProject, this.project);
-
             if(this.clases != null){
                 this.project.setClaseList(this.clases);
             }
@@ -100,31 +100,31 @@ public class AppProjectStarted implements IInternalTest {
         }
     }
 
-    private void printProjectAnalize(Project projectP,  boolean isAnalisis){
-
-        if(isAnalisis && projectP.getClaseList() != null) {
-            System.out.println("Classes found:...");
-            for (Clase clase : projectP.getClaseList()) {
-                if(clase.getMetodos() != null && !clase.getMetodos().isEmpty()){
-                    System.out.println(clase.getNombre() + "  package: " + clase.getPaquete());
-                    for(Metodo metod : clase.getMetodos()){
-                        if(metod.getInstanceMethodCalls() != null && !metod.getInstanceMethodCalls().isEmpty() ){
-                            metod.getInstanceMethodCalls().forEach(instanceMethodCall -> {
-                                System.out.println(  "CALL: -> Method: "+ metod.getNombre() + "| Call: "+instanceMethodCall.getOperation()+" |.");
-                            });
-                        }
-                    }
-                }
-            }
-        }
-
-        if(isAnalisis && projectP.getClaseList() != null) {
-            System.out.println("Classes found:");
-            for (Clase clase : projectP.getClaseList()) {
-                System.out.println(clase.getNombre() + "  package: " + clase.getPaquete());
-            }
-        }
-    }
+//    private void printProjectAnalize(Project projectP,  boolean isAnalisis){
+//
+//        if(isAnalisis && projectP.getClaseList() != null) {
+//            System.out.println("Classes found:...");
+//            for (Clase clase : projectP.getClaseList()) {
+//                if(clase.getMetodos() != null && !clase.getMetodos().isEmpty()){
+//                    System.out.println(clase.getNombre() + "  package: " + clase.getPaquete());
+//                    for(Metodo metod : clase.getMetodos()){
+//                        if(metod.getInstanceMethodCalls() != null && !metod.getInstanceMethodCalls().isEmpty() ){
+//                            metod.getInstanceMethodCalls().forEach(instanceMethodCall -> {
+//                                System.out.println(  "CALL: -> Method: "+ metod.getNombre() + "| Call: "+instanceMethodCall.getOperation()+" |.");
+//                            });
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//
+//        if(isAnalisis && projectP.getClaseList() != null) {
+//            System.out.println("Classes found:");
+//            for (Clase clase : projectP.getClaseList()) {
+//                System.out.println(clase.getNombre() + "  package: " + clase.getPaquete());
+//            }
+//        }
+//    }
 
 
 

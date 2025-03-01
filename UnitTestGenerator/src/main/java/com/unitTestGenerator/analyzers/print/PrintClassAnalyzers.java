@@ -1,8 +1,23 @@
 package com.unitTestGenerator.analyzers.print;
 
+import com.unitTestGenerator.core.AppProjectStarted;
+
 public class PrintClassAnalyzers {
 
-    //TODO: this class is for print the class information
+    private static PrintClassAnalyzers instance;
 
-    //TODO: se va a crear otra clase para mostrar la estructura de paquetes del project.
+    public static PrintClassAnalyzers getInstance(){
+        if(instance == null){
+            instance = new PrintClassAnalyzers();
+        }
+        return instance;
+    }
+
+    private  PrintClassAnalyzers() {
+    }
+
+
+
+
+
 }
