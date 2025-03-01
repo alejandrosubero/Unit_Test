@@ -20,7 +20,8 @@ public class Clase {
     private Boolean applyBuildMethod;
     private Integer indexFirmaClass;
     private String classSignatureLine;
-    private ClassRelations classRelations;
+    private ClassRelations classRelations = new ClassRelations();
+    private String classPath;
 
     public Clase() {
         this.metodos = new ArrayList<>();
@@ -54,6 +55,14 @@ public class Clase {
 
     public void setClassRelations(ClassRelations classRelations) {
         this.classRelations = classRelations;
+    }
+
+    public String getClassPath() {
+        return classPath;
+    }
+
+    public void setClassPath(String classPath) {
+        this.classPath = classPath;
     }
 
     public String getRawClass() {

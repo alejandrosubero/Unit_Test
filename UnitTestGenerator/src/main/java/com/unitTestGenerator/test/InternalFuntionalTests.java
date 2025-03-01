@@ -30,8 +30,9 @@ public class InternalFuntionalTests {
 //        String method ="findById";
 //        String method ="findByFechaEgreso";
 //        String method = "findByTotalHorasFeriadoYear";
-        AppProjectStarted.getInstance().executeTest(pathProject, isAnalisis, nombreClase, method, useMock);
-//        InstanceMethodCall d = InstanceMethodCall.builder().build();
+//        AppProjectStarted.getInstance().executeTest(pathProject, isAnalisis, nombreClase, method, useMock);
+        AppProjectStarted.getInstance().analizedTest(pathProject, isAnalisis, nombreClase, method, useMock);
+
 
     }
 

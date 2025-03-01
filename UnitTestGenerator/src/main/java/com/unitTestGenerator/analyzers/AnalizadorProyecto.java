@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.*;
 
 
+import com.unitTestGenerator.analyzers.print.DirectoryTreeBuilder;
 import com.unitTestGenerator.analyzers.services.AnalyzeClassService;
 import com.unitTestGenerator.pojos.*;
 
@@ -12,6 +13,7 @@ public class AnalizadorProyecto {
 
     private  final String[] IGNORAR = {"target", "node_modules", ".git"};
     private static AnalizadorProyecto instance;
+    private DirectoryTreeBuilder treeBuilder;
 
     private AnalizadorProyecto() {
     }
@@ -25,11 +27,15 @@ public class AnalizadorProyecto {
 
 
     public List<Clase> analizarProyecto(String rutaProyecto, Project project) {
+
+        treeBuilder = DirectoryTreeBuilder.getInstance();
+        treeBuilder.setProjetName(rutaProyecto);
         List<Clase> clases = new ArrayList<>();
         Map<String, Clase> mapClass = new HashMap<>();
         File carpetaProyecto = new File(rutaProyecto);
         this.analizarProyectoRecursivo(carpetaProyecto, clases, mapClass);
         project.setMapClass(mapClass);
+        project.setProjectDirectoryTree(treeBuilder.getTreeString());
         return clases;
     }
 
@@ -44,6 +50,9 @@ public class AnalizadorProyecto {
                         analizarProyectoRecursivo(archivo, classList, mapClass);
                     } else if (archivo.getName().endsWith(".java")) {
                         Clase clase = AnalyzeClassService.getInstance().analyzeClase(archivo);
+                        if(clase !=null){
+                            treeBuilder.addPath(clase.getClassPath());
+                        }
                         this.setContainers(clase, classList, mapClass);
                     }
                 }

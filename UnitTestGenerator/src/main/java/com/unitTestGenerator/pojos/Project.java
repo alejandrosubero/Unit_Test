@@ -10,6 +10,7 @@ public class Project {
     private Boolean isMaven;
     private Boolean isGradle;
     private String pathProject;
+    private String projectDirectoryTree;
 
     public Project() {
     }
@@ -19,6 +20,7 @@ public class Project {
     }
 
     public Project(String pathProject) {
+        this.pathProject = pathProject;
         this.projectAnalyzerType(pathProject);
     }
 
@@ -38,6 +40,14 @@ public class Project {
         this.claseList = claseList;
         this.isMaven = isMaven;
         this.isGradle = isGradle;
+    }
+
+    public String getProjectDirectoryTree() {
+        return projectDirectoryTree;
+    }
+
+    public void setProjectDirectoryTree(String projectDirectoryTree) {
+        this.projectDirectoryTree = projectDirectoryTree;
     }
 
     public List<Clase> getClaseList() {

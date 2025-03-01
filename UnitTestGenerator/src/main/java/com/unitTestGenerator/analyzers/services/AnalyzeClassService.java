@@ -43,7 +43,12 @@ public class AnalyzeClassService implements IAnalyzeCassMethodService, IAnalyzeC
     public Clase analyzeClase(File archivo) {
         try {
             String content = FileUtils.readFileToString(archivo, "UTF-8");
-            return analyzeClaseContentString(content);
+            Clase classs = analyzeClaseContentString(content);
+           if(archivo != null && classs != null){
+               String path = archivo.getAbsolutePath();
+               classs.setClassPath(path);
+           }
+            return classs;
 
         } catch (Exception e) {
             System.out.println("Error al analizar archivo: " + archivo.getName());
@@ -54,6 +59,7 @@ public class AnalyzeClassService implements IAnalyzeCassMethodService, IAnalyzeC
 
     private  Clase analyzeClaseContentString( String content) throws Exception {
         Clase clase = new Clase();
+
         clase.setRawClass(content);
         analyzePackage(content, clase);
         analyzeNamesAndTypeOfClass(content, clase);
@@ -164,8 +170,6 @@ public class AnalyzeClassService implements IAnalyzeCassMethodService, IAnalyzeC
         }
 
     }
-
-
 }
 
     private void analyzeMethodBasic(Metodo metodo, Matcher matcherMetodo) {
@@ -269,7 +273,6 @@ public class AnalyzeClassService implements IAnalyzeCassMethodService, IAnalyzeC
 
 
     private void containPatterBuild(String contenido, Clase clase){
-
         Pattern patronMetodoBuilder = Pattern.compile("public static \\w+ builder\\(\\)");
         Pattern patronMetodoBuild = Pattern.compile("public \\w+ build\\(\\)");
 

@@ -7,10 +7,13 @@ import java.util.Objects;
 public class ClassRelations {
 
     private String className;
-    private List<String> implementsList  = new ArrayList<>();
+
     private String classExtends;
     private String classType;
+    private List<String> implementsList  = new ArrayList<>();
     private List<String> identifieresRelatedClasses = new ArrayList<>();
+    private List<String> dependencyInjectionIoC = new ArrayList<>();
+    private List<String> strongDependencyAssociation = new ArrayList<>();
 
     public ClassRelations() {
     }
@@ -31,6 +34,14 @@ public class ClassRelations {
         if(implementsList != null && !implementsList.isEmpty()){
             this.implementsList = implementsList;
         }
+    }
+
+    public List<String> getDependencyInjectionIoC() {
+        return dependencyInjectionIoC;
+    }
+
+    public void setDependencyInjectionIoC(List<String> dependencyInjectionIoC) {
+        this.dependencyInjectionIoC = dependencyInjectionIoC;
     }
 
     public String getClassExtends() {
@@ -59,22 +70,34 @@ public class ClassRelations {
         this.identifieresRelatedClasses = identifieresRelatedClasses;
     }
 
+    public List<String> getStrongDependencyAssociation() {
+        return strongDependencyAssociation;
+    }
+
+    public void setStrongDependencyAssociation(List<String> strongDependencyAssociation) {
+        this.strongDependencyAssociation = strongDependencyAssociation;
+    }
+
     public void addIdentifieres(String identifiere) {
         this.identifieresRelatedClasses.add(identifiere);
     }
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ClassRelations that = (ClassRelations) o;
-        return Objects.equals(className, that.className) && Objects.equals(implementsList, that.implementsList) && Objects.equals(classExtends, that.classExtends) && Objects.equals(classType, that.classType);
+    public void addAllIdentifieres(List<String>  identifieres) {
+        this.identifieresRelatedClasses.addAll(identifieres);
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(className, implementsList, classExtends, classType);
+    public void addDependencyInjectionIoC(String iDIoC ) {
+        this.dependencyInjectionIoC.add(iDIoC);
+    }
+    public void addAllDependencyInjectionIoC(List<String>  iDIoCs ) {
+        this.dependencyInjectionIoC.addAll(iDIoCs);
+    }
+
+    public void addStrongDependencyAssociation(String strongDependency) {
+        this.strongDependencyAssociation.add(strongDependency);
+    }
+
+    public void addAllStrongDependencyAssociation(List<String> strongDependencys) {
+        this.strongDependencyAssociation.addAll(strongDependencys);
     }
 
     public static Builder builder() {

@@ -97,30 +97,37 @@ public class AppProjectStarted implements IInternalTest {
                 this.project.setClaseList(this.clases);
             }
             this.projectAnalyzerType();
+            this.printProjectAnalize(this.project,   isAnalisis);
+        }
+    }
 
-            if(isAnalisis && this.clases != null) {
-                System.out.println("Classes found:...");
-                for (Clase clase : this.clases) {
-                    if(clase.getMetodos() != null && !clase.getMetodos().isEmpty()){
-                        System.out.println(clase.getNombre() + "  package: " + clase.getPaquete());
-                        for(Metodo metod : clase.getMetodos()){
-                            if(metod.getInstanceMethodCalls() != null && !metod.getInstanceMethodCalls().isEmpty() ){
-                                metod.getInstanceMethodCalls().forEach(instanceMethodCall -> {
-                                    System.out.println(  "CALL: -> Method: "+ metod.getNombre() + "| Call: "+instanceMethodCall.getOperation()+" |.");
-                                });
-                            }
+    private void printProjectAnalize(Project projectP,  boolean isAnalisis){
+
+        if(isAnalisis && projectP.getClaseList() != null) {
+            System.out.println("Classes found:...");
+            for (Clase clase : projectP.getClaseList()) {
+                if(clase.getMetodos() != null && !clase.getMetodos().isEmpty()){
+                    System.out.println(clase.getNombre() + "  package: " + clase.getPaquete());
+                    for(Metodo metod : clase.getMetodos()){
+                        if(metod.getInstanceMethodCalls() != null && !metod.getInstanceMethodCalls().isEmpty() ){
+                            metod.getInstanceMethodCalls().forEach(instanceMethodCall -> {
+                                System.out.println(  "CALL: -> Method: "+ metod.getNombre() + "| Call: "+instanceMethodCall.getOperation()+" |.");
+                            });
                         }
                     }
                 }
             }
-            if(isAnalisis && this.clases != null) {
-                System.out.println("Classes found:");
-                for (Clase clase : this.clases) {
-                    System.out.println(clase.getNombre() + "  package: " + clase.getPaquete());
-                }
+        }
+
+        if(isAnalisis && projectP.getClaseList() != null) {
+            System.out.println("Classes found:");
+            for (Clase clase : projectP.getClaseList()) {
+                System.out.println(clase.getNombre() + "  package: " + clase.getPaquete());
             }
         }
     }
+
+
 
     private void generateUnitTest( String nombreClase,String method,Boolean useMock){
         List<Clase> clasesTemporal = new ArrayList<>();
@@ -248,5 +255,10 @@ public class AppProjectStarted implements IInternalTest {
             }
             this.generateUnitTest( nombreClase, method, useMock);
         }
+    }
+
+    @Override
+    public void analizedTest(String pathProject, boolean isAnalisis, String nombreClase, String method, Boolean useMock) {
+        this.projectAnalize( pathProject,  isAnalisis );
     }
 }

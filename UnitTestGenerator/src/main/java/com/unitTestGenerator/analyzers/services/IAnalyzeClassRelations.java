@@ -60,11 +60,10 @@ public interface IAnalyzeClassRelations extends IReturnType {
 
     default void getRelationsInClass(Clase xclass){
         if(xclass.getVariables() != null && !xclass.getVariables().isEmpty()){
-
             xclass.getVariables().stream().forEach(variable -> {
                 if(!this.isValidTypeReturn(variable.getTipo()) && variable.getAnotation().equals("@Autowired")){
-                    if(!xclass.getClassRelations().getIdentifieresRelatedClasses().contains(variable.getTipo())){
-                        xclass.getClassRelations().addIdentifieres(variable.getTipo());
+                    if(!xclass.getClassRelations().getDependencyInjectionIoC().contains(variable.getTipo())){
+                        xclass.getClassRelations().addDependencyInjectionIoC(variable.getTipo());
                     }
 
                 }
