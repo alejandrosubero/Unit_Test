@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.*;
 
 
+import com.unitTestGenerator.analyzers.services.ImportAnalize;
 import com.unitTestGenerator.printers.DirectoryTreeBuilder;
 import com.unitTestGenerator.analyzers.services.AnalyzeClassService;
 import com.unitTestGenerator.analyzers.services.ITodoDetector;
@@ -56,6 +57,7 @@ public class AnalizadorProyecto implements ITodoDetector {
                         if(clase !=null){
                             clase.setTodoNoteInClass(this.getTodo(clase.getRawClass()));
                             treeBuilder.addPath(clase.getClassPath());
+                            ImportAnalize.importAnalize(clase, treeBuilder.getProjetName());
                         }
                         this.setContainers(clase, classList, mapClass);
                     }

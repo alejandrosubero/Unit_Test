@@ -23,6 +23,7 @@ public class Clase {
     private ClassRelations classRelations = new ClassRelations();
     private String classPath;
     private String todoNoteInClass;
+    private ImportAnalizePojo imports;
 
 
     public Clase() {
@@ -33,6 +34,14 @@ public class Clase {
         this.constructores = new ArrayList<>();
         this.useLomboxBuild = false;
         this.applyBuildMethod = false;
+    }
+
+    public ImportAnalizePojo getImports() {
+        return imports;
+    }
+
+    public void setImports(ImportAnalizePojo imports) {
+        this.imports = imports;
     }
 
     public Boolean getApplyBuildMethod() {

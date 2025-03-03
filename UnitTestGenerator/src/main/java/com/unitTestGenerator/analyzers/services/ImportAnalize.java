@@ -1,6 +1,7 @@
 package com.unitTestGenerator.analyzers.services;
 
 
+import com.unitTestGenerator.pojos.Clase;
 import com.unitTestGenerator.pojos.ImportAnalizePojo;
 
 import java.util.regex.Matcher;
@@ -8,44 +9,43 @@ import java.util.regex.Pattern;
 
 
 public class ImportAnalize {
+//    ImportAnalize.importAnalize(String filePath, String projectName, String javaCode);
 
 
+    public static ImportAnalizePojo importAnalize(Clase clase, String projectNamx) {
 
-    public static ImportAnalizePojo importAnalize(String filePath, String projectName, String javaCode) {
+        ImportAnalizePojo importAnalizePojo = null;
 
+//        String packageBaseName = DynamicPackageRootFinder.getName(clase);
+        String packageBaseName = projectNamx;
         try {
+            if(packageBaseName != null && !packageBaseName.equals("")){
+                Pattern importPattern = Pattern.compile("import\\s+([\\w.]+);");
+                Matcher matcher = importPattern.matcher(clase.getRawClass());
 
-            // Extraer imports con regex
-            Pattern importPattern = Pattern.compile("import\\s+([\\w.]+);");
-            Matcher matcher = importPattern.matcher(javaCode);
+                String projectBasePackage = extractBasePackage(clase.getClassPath(), packageBaseName);
+                StringBuilder projectImports = new StringBuilder();
+                StringBuilder externalImports = new StringBuilder();
 
-            String projectBasePackage = extractBasePackage(filePath, projectName);
-            StringBuilder projectImports = new StringBuilder();
-            StringBuilder externalImports = new StringBuilder();
-
-            while (matcher.find()) {
-                String importStatement = matcher.group(1);
-                if (importStatement.startsWith(projectBasePackage)) {
-                    projectImports.append("import ").append(importStatement).append(";\n");
-                } else {
-                    externalImports.append("import ").append(importStatement).append(";\n");
+                while (matcher.find()) {
+                    String importStatement = matcher.group(1);
+                    if (importStatement.startsWith(projectBasePackage)) {
+                        projectImports.append("import ").append(importStatement).append(";\n");
+                    } else {
+                        externalImports.append("import ").append(importStatement).append(";\n");
+                    }
                 }
+                String reconstructedCode = externalImports.toString() + "\n" + projectImports.toString() + "\n" + clase.getClassPath();
+
+                importAnalizePojo = ImportAnalizePojo.builder().externalImports(externalImports.toString()).projectImports(projectImports.toString()).build();
+                clase.setRawClass(reconstructedCode);
+                clase.setImports(importAnalizePojo);
             }
-
-            // Reconstrucción del código sin modificarlo
-            String reconstructedCode = externalImports.toString() + "\n" + projectImports.toString() + "\n" + javaCode;
-
-            System.out.println("===== EXTERNAL IMPORTS =====");
-            System.out.println(externalImports);
-            System.out.println("===== PROJECT IMPORTS =====");
-            System.out.println(projectImports);
-            System.out.println("===== FULL RECONSTRUCTED CODE =====");
-            System.out.println(reconstructedCode);
-
-            ImportAnalizePojo importAnalizePojo = new  ImportAnalizePojo( externalImports.toString(), projectImports.toString());
             return importAnalizePojo;
+
         } catch (Exception e) {
             e.printStackTrace();
+            return importAnalizePojo;
         }
     }
 

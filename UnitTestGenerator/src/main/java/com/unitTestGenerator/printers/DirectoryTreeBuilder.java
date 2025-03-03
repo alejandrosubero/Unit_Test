@@ -30,6 +30,15 @@ public class DirectoryTreeBuilder implements IBaseModel {
         }
     }
 
+    public String getProjetName(){
+        if(this.projetName  != null && !this.projetName.equals("")){
+            return this.projetName;
+        }else {
+            return "";
+        }
+
+    }
+
     private String pathImproved(String path){
         String[] parts = path.split(this.projetName);
         return parts[parts.length-1];

@@ -4,8 +4,8 @@ import java.util.Objects;
 
 public class ImportAnalizePojo {
 
-    String externalImports;
-    String projectImports;
+    private String externalImports;
+    private String projectImports;
 
 
     public ImportAnalizePojo() {
@@ -48,4 +48,41 @@ public class ImportAnalizePojo {
     public int hashCode() {
         return Objects.hash(externalImports, projectImports);
     }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public interface ImportAnalizePojoBuilder {
+        public Builder externalImports(String externalImports);
+        public Builder projectImports(String projectImports);
+
+        public ImportAnalizePojo build();
+    }
+
+    public static class Builder implements ImportAnalizePojoBuilder {
+        private String externalImports;
+        private String projectImports;
+
+        @Override
+        public Builder externalImports(String externalImports) {
+            this.externalImports = externalImports;
+            return this;
+        }
+
+        @Override
+        public Builder projectImports(String projectImports) {
+            this.projectImports = projectImports;
+            return this;
+        }
+
+        @Override
+        public ImportAnalizePojo build() {
+            ImportAnalizePojo importanalizepojo = new ImportAnalizePojo();
+            importanalizepojo.setExternalImports(this.externalImports);
+            importanalizepojo.setProjectImports(this.projectImports);
+            return importanalizepojo;
+        }
+    }
+
 }
