@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.*;
 
 
-import com.unitTestGenerator.analyzers.print.DirectoryTreeBuilder;
+import com.unitTestGenerator.printers.DirectoryTreeBuilder;
 import com.unitTestGenerator.analyzers.services.AnalyzeClassService;
 import com.unitTestGenerator.analyzers.services.ITodoDetector;
 import com.unitTestGenerator.pojos.*;

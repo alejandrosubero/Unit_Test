@@ -1,11 +1,7 @@
-package com.unitTestGenerator.analyzers.print;
+package com.unitTestGenerator.printers;
 
-import com.unitTestGenerator.analyzers.services.AnalyzeClassService;
-import com.unitTestGenerator.pojos.Project;
 import com.unitTestGenerator.util.IBaseModel;
 
-import javax.swing.tree.TreeNode;
-import java.io.File;
 import java.util.*;
 
 public class DirectoryTreeBuilder implements IBaseModel {

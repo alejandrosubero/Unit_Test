@@ -1,11 +1,10 @@
 package com.unitTestGenerator.core;
 
-import com.unitTestGenerator.analyzers.AnalizadorProyecto;
+
 import com.unitTestGenerator.core.interfaces.IProjectAnalizeCore;
 import com.unitTestGenerator.core.interfaces.IterminalMenueCore;
 import com.unitTestGenerator.test.interfaces.IInternalTest;
 import com.unitTestGenerator.pojos.Clase;
-import com.unitTestGenerator.pojos.Metodo;
 import com.unitTestGenerator.pojos.Project;
 
 import java.util.ArrayList;

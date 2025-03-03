@@ -1,14 +1,12 @@
 package com.unitTestGenerator.analyzers.services;
 
-import com.unitTestGenerator.analyzers.print.DirectoryTreeBuilder;
-import com.unitTestGenerator.analyzers.print.PrintClassAnalyzers;
+
 import com.unitTestGenerator.pojos.Clase;
 import com.unitTestGenerator.pojos.ClassRelations;
 import com.unitTestGenerator.pojos.Project;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 
 public class AnalizeExtendsInInterfaces {
@@ -80,3 +78,6 @@ public class AnalizeExtendsInInterfaces {
     }
 
 }
+
+
+

@@ -1,6 +1,5 @@
-package com.unitTestGenerator.analyzers.print;
+package com.unitTestGenerator.printers;
 
-import com.unitTestGenerator.core.AppProjectStarted;
 import com.unitTestGenerator.pojos.Clase;
 import com.unitTestGenerator.pojos.Metodo;
 import com.unitTestGenerator.pojos.Project;
