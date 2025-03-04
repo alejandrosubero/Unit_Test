@@ -153,4 +153,17 @@ public class ClassRelations {
         }
     }
 
+
+    @Override
+    public String toString() {
+        return "ClassRelations{" +
+                "className='" + className + '\'' +
+                ", classExtends='" + classExtends + '\'' +
+                ", classType='" + classType + '\'' +
+                ", implementsList=" + implementsList +
+                ", identifieresRelatedClasses=" + identifieresRelatedClasses +
+                ", dependencyInjectionIoC=" + dependencyInjectionIoC +
+                ", strongDependencyAssociation=" + strongDependencyAssociation +
+                '}';
+    }
 }
