@@ -9,9 +9,10 @@ import com.unitTestGenerator.printers.DirectoryTreeBuilder;
 import com.unitTestGenerator.analyzers.services.AnalyzeClassService;
 import com.unitTestGenerator.analyzers.services.ITodoDetector;
 import com.unitTestGenerator.pojos.*;
+import com.unitTestGenerator.printers.IPrintProjectStructure;
 
 
-public class AnalizadorProyecto implements ITodoDetector {
+public class AnalizadorProyecto implements ITodoDetector, IPrintProjectStructure {
 
     private  final String[] IGNORAR = {"target", "node_modules", ".git"};
     private static AnalizadorProyecto instance;
@@ -37,8 +38,10 @@ public class AnalizadorProyecto implements ITodoDetector {
         File carpetaProyecto = new File(rutaProyecto);
         this.analizarProyectoRecursivo(carpetaProyecto, clases, mapClass);
         project.setMapClass(mapClass);
-        project.setProjectDirectoryTree(treeBuilder.getTreeString());
-        project.setProjectClassTree(project.getProjectDirectoryTree().replace(".java", " "));
+        String  classDirectoryTree = treeBuilder.getTreeString();
+        project.setProjectClassTree(classDirectoryTree.replace(".java", " "));
+        String projectDirectoryTree = getStructure(project.getPathProject());
+        project.setProjectDirectoryTree(projectDirectoryTree);
         return clases;
     }
 
