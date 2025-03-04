@@ -4,40 +4,44 @@ package com.unitTestGenerator.analyzers.services;
 import com.unitTestGenerator.pojos.Clase;
 import com.unitTestGenerator.pojos.ImportAnalizePojo;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
 public class ImportAnalize {
-//    ImportAnalize.importAnalize(String filePath, String projectName, String javaCode);
 
-
-    public static ImportAnalizePojo importAnalize(Clase clase, String projectNamx) {
+    public static ImportAnalizePojo importAnalize(Clase clase) {
 
         ImportAnalizePojo importAnalizePojo = null;
+        String[] parts = clase.getPaquete().split("\\.");
+        String packageBaseName = "";
 
-//        String packageBaseName = DynamicPackageRootFinder.getName(clase);
-        String packageBaseName = projectNamx;
+        if (parts != null && parts.length > 0) {
+            packageBaseName = parts[0] + "." +parts[1];
+        }
         try {
             if(packageBaseName != null && !packageBaseName.equals("")){
                 Pattern importPattern = Pattern.compile("import\\s+([\\w.]+);");
                 Matcher matcher = importPattern.matcher(clase.getRawClass());
 
-                String projectBasePackage = extractBasePackage(clase.getClassPath(), packageBaseName);
                 StringBuilder projectImports = new StringBuilder();
                 StringBuilder externalImports = new StringBuilder();
+                List<String> projectImportsList = new ArrayList<>();
+                List<String> externalImportsList = new ArrayList<>();
 
                 while (matcher.find()) {
                     String importStatement = matcher.group(1);
-                    if (importStatement.startsWith(projectBasePackage)) {
-                        projectImports.append("import ").append(importStatement).append(";\n");
+                    if (importStatement.contains(packageBaseName)) {
+                        projectImportsList.add(projectImports.append("import ").append(importStatement).append(";\n").toString());
                     } else {
-                        externalImports.append("import ").append(importStatement).append(";\n");
+                        externalImportsList.add(externalImports.append("import ").append(importStatement).append(";\n").toString());
                     }
                 }
                 String reconstructedCode = externalImports.toString() + "\n" + projectImports.toString() + "\n" + clase.getClassPath();
 
-                importAnalizePojo = ImportAnalizePojo.builder().externalImports(externalImports.toString()).projectImports(projectImports.toString()).build();
+                importAnalizePojo = ImportAnalizePojo.builder().externalImports(externalImportsList).projectImports(projectImportsList).build();
                 clase.setRawClass(reconstructedCode);
                 clase.setImports(importAnalizePojo);
             }
@@ -48,6 +52,10 @@ public class ImportAnalize {
             return importAnalizePojo;
         }
     }
+
+
+
+
 
     private static String extractBasePackage(String filePath, String projectName) {
         String normalizedPath = filePath.replace("\\", "/");

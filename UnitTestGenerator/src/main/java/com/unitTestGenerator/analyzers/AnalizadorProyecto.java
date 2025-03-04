@@ -57,7 +57,7 @@ public class AnalizadorProyecto implements ITodoDetector {
                         if(clase !=null){
                             clase.setTodoNoteInClass(this.getTodo(clase.getRawClass()));
                             treeBuilder.addPath(clase.getClassPath());
-                            ImportAnalize.importAnalize(clase, treeBuilder.getProjetName());
+                            ImportAnalize.importAnalize(clase);
                         }
                         this.setContainers(clase, classList, mapClass);
                     }
