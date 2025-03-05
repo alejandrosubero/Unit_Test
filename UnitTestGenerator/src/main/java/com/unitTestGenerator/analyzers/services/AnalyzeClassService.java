@@ -198,14 +198,26 @@ public class AnalyzeClassService implements IAnalyzeCassMethodService, IAnalyzeC
     }
 
     private void analyzeMethodParameters(Metodo metodo, Matcher matcherMetodo) {
-        String[] parametros = matcherMetodo.group(4).split(",");
-        for (String parametro : parametros) {
-            if (!parametro.trim().isEmpty()) {
-                String[] partes = parametro.trim().split("\\s+");
-                ParametroMetodo parametroMetodo = new ParametroMetodo(partes[1], partes[0]);
-                metodo.agregarParametro(parametroMetodo);
+        try {
+            String[] parametersList = matcherMetodo.group(4).split(",");
+            if(parametersList !=null && parametersList.length > 0){
+                for (String parametro : parametersList) {
+                    if (!parametro.trim().isEmpty()) {
+                        String[] partes = parametro.trim().split("\\s+");
+                        int index = 1;
+                        if (index >= 0 && index < partes.length) {
+                            if (partes[0] != null && partes[1] != null) {
+                                ParametroMetodo parametroMetodo = new ParametroMetodo(partes[1], partes[0]);
+                                metodo.agregarParametro(parametroMetodo);
+                            }
+                        }
+                    }
+                }
             }
+        }catch (Exception e){
+            e.printStackTrace();
         }
+
     }
 
     private void analyzeVariables(String content, Clase clase) {

@@ -32,8 +32,11 @@ public class AnalizeExtendsInInterfaces {
                     clase.getClassRelations().getImplementsList().forEach(Implementation -> {
                         buffer.append("- ").append(Implementation.trim()).append("\n");
                         Clase implementClass = project.getClass(Implementation.trim());
-                        this.extendsLoop(project, implementClass);
-
+                        String treeString = this.extendsLoop(project, implementClass);
+                        if (!treeString.isEmpty()) {
+                            String indentedTree = treeString.replaceAll("(?m)^", "   ");
+                            buffer.append(indentedTree);
+                        }
                     });
                     clase.setStructureInterface(buffer.toString());
                 }
@@ -46,6 +49,7 @@ public class AnalizeExtendsInInterfaces {
 
     private String extendsLoop(Project project, Clase classRelation) {
         List<String> tree = new ArrayList<>();
+
         if(isExtents(classRelation)){
             Clase loop = classRelation;
 
@@ -77,57 +81,6 @@ public class AnalizeExtendsInInterfaces {
     private Boolean isExtents(Clase loop){
         return loop != null && loop.getClassRelations() != null && loop.getClassRelations().getClassExtends() != null && !loop.getClassRelations().getClassExtends().equals("");
     }
-
-
-
-
-    public String analizeImplement( Project project, Character key){
-
-        if(project != null &&  key != null && project.getClaseList() != null && !project.getClaseList().isEmpty()){
-            List<Clase> list =  project.getClaseList();
-            for (Clase clase : list){
-//                CrudRepository, JpaRepository
-                if(clase.getClassRelations() != null ){
-                    StringBuilder sb = new StringBuilder();
-
-                    if (key.equals('I') && !clase.getClassRelations().getImplementsList().isEmpty()){
-                        for (String interfaceI : clase.getClassRelations().getImplementsList()){
-                            String structure = analizeExtendsofClassImplements(project, interfaceI);
-                            sb.append(structure);
-                        }
-                        clase.setStructureInterface(sb.toString());
-                        return sb.toString();
-
-                    }else {
-                        if(clase.getClassRelations().getClassExtends() != null && !clase.getClassRelations().getClassExtends().equals("") && !clase.getClassRelations().getClassExtends().equals(" ")){
-                                String structure = analizeExtendsofClassImplements(project, clase.getClassRelations().getClassExtends());
-                                sb.append(structure);
-                                 clase.setStructureInterface(sb.toString());
-                            }
-                            return sb.toString();
-                        }
-                    }
-                }
-            }
-        return "";
-    }
-
-
-    private String analizeExtendsofClassImplements( Project project, String element){
-        StringBuilder sb = new StringBuilder();
-        sb.append("- ").append(element).append("\n");
-        Clase classToAnalizeMaterial = project.getClass(element);
-        String elementloop = classToAnalizeMaterial != null ? extendsLoop(project, classToAnalizeMaterial) : "";
-        sb.append(elementloop).append("\n");
-        return sb.toString();
-    }
-
-
-
-
-
-
-
 
 }
 

@@ -63,9 +63,6 @@ public class AnalizadorProyecto implements ITodoDetector, IPrintProjectStructure
                       analizarProyectoRecursivo(file, classList, mapClass, project);
                   }else {
                       if(file.getName().trim().contains(".java")) {
-                         if(file.getName().trim().contains("IAssigned") ){
-                             String ak = file.getName().trim();
-                         }
                           Clase clase = AnalyzeClassService.getInstance().analyzeClase(file);
                           if (clase != null) {
                               clase.setTodoNoteInClass(this.getTodo(clase.getRawClass()));

@@ -70,7 +70,6 @@ public class AppProjectStarted implements IProjectAnalizeCore, IterminalMenueCor
         if(pathProject != null){
             this.project = this.executeProjectAnalize(pathProject, isAnalisis );
             this.getInterfaceStructure(project);
-            this.getInterfaceStructure(project);
             this.projectAnalyzerType(this.project);
             String uml = printUMLClass(this.project);
             this.printProjectAnalize(this.project,isAnalisis);
