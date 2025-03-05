@@ -46,6 +46,26 @@ public class AnalizeExtendsInInterfaces {
         return project;
     }
 
+    public Project analizeExtens( Project project){
+        if(project != null && project.getClaseList() != null && !project.getClaseList().isEmpty()){
+            project.getClaseList().forEach(clase -> {
+                if(clase.getClassRelations() != null && isExtents(clase)){
+                    StringBuffer buffer = new StringBuffer();
+                    String nameClass = clase.getClassRelations().getClassExtends().trim();
+                        buffer.append("- ").append(nameClass).append("\n");
+                        Clase implementClass = project.getClass(nameClass);
+                        String treeString = this.extendsLoop(project, implementClass);
+                        if (!treeString.isEmpty()) {
+                            String indentedTree = treeString.replaceAll("(?m)^", "   ");
+                            buffer.append(indentedTree);
+                        }
+                    clase.setStructureInterface(buffer.toString());
+                }
+            });
+        }
+        return project;
+    }
+
 
     private String extendsLoop(Project project, Clase classRelation) {
         List<String> tree = new ArrayList<>();
