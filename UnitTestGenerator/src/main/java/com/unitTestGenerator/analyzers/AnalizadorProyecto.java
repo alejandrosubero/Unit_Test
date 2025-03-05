@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.*;
 
 
+import com.unitTestGenerator.analyzers.services.ExtendsInInterfacesService;
 import com.unitTestGenerator.analyzers.services.ImportAnalize;
 import com.unitTestGenerator.printers.DirectoryTreeBuilder;
 import com.unitTestGenerator.analyzers.services.AnalyzeClassService;
@@ -36,7 +37,7 @@ public class AnalizadorProyecto implements ITodoDetector, IPrintProjectStructure
         List<Clase> clases = new ArrayList<>();
         Map<String, Clase> mapClass = new HashMap<>();
         File carpetaProyecto = new File(rutaProyecto);
-        this.analizarProyectoRecursivo(carpetaProyecto, clases, mapClass);
+        this.analizarProyectoRecursivo(carpetaProyecto, clases, mapClass, project);
         project.setMapClass(mapClass);
         String  classDirectoryTree = treeBuilder.getTreeString();
         project.setProjectClassTree(classDirectoryTree.replace(".java", " "));
@@ -46,14 +47,14 @@ public class AnalizadorProyecto implements ITodoDetector, IPrintProjectStructure
     }
 
 
-    private  void analizarProyectoRecursivo(File carpeta, List<Clase> classList, Map<String, Clase> mapClass) {
+    private  void analizarProyectoRecursivo(File carpeta, List<Clase> classList, Map<String, Clase> mapClass, Project project) {
         if (carpeta.isDirectory()) {
             String nombreCarpeta = carpeta.getName();
 
             if (!Arrays.asList(IGNORAR).contains(nombreCarpeta)) {
                 for (File archivo : carpeta.listFiles()) {
                     if (archivo.isDirectory()) {
-                        analizarProyectoRecursivo(archivo, classList, mapClass);
+                        analizarProyectoRecursivo(archivo, classList, mapClass, project);
                     } else if (archivo.getName().endsWith(".java")) {
                         Clase clase = AnalyzeClassService.getInstance().analyzeClase(archivo);
 

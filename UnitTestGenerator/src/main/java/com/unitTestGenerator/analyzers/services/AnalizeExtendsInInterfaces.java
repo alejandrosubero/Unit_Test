@@ -25,21 +25,24 @@ public class AnalizeExtendsInInterfaces {
 
     public String analizeImplements( Project project, Character key){
         StringBuilder sb = new StringBuilder();
-
-
-            project.getClaseList().forEach(clase ->{
+        for (Clase clase :  project.getClaseList()){
+            //            project.getClaseList().forEach(clase ->{
+            if(!clase.getClassRelations().getImplementsList().isEmpty()){
                 if (key.equals('I')){
                     sb.append(analizeExtendsofClassImplements(project, clase.getClassRelations().getImplementsList()));
+                    clase.setStructureInterface(sb.toString());
                 }else{
                     if(clase.getClassRelations().getClassExtends() != null
                             && !clase.getClassRelations().getClassExtends().equals("")
                             && !clase.getClassRelations().getClassExtends().equals(" ")){
                         List<String> elementsList = Arrays.asList(clase.getClassRelations().getClassExtends());
                         sb.append(analizeExtendsofClassImplements(project,elementsList));
+                        clase.setStructureInterface(sb.toString());
                     }
                 }
-
-            });
+            }
+            }
+//        );
 
         return sb.toString();
     }
@@ -55,15 +58,23 @@ public class AnalizeExtendsInInterfaces {
 
     private String analizeExtendsInInterfaces(Project project, String classToAnalize){
         List<String> tree = new ArrayList<>();
-        Clase classToAnalizeMaterial = project.getClass(classToAnalize);
-        ClassRelations relationsClassToAnalize = classToAnalizeMaterial.getClassRelations();
 
-        while (relationsClassToAnalize.getClassExtends() != null && !relationsClassToAnalize.getClassExtends().equals("") && !relationsClassToAnalize.getClassExtends().isEmpty()){
-            tree.add(relationsClassToAnalize.getClassExtends());
-            relationsClassToAnalize = project.getClass(relationsClassToAnalize.getClassExtends()).getClassRelations();
+        if(project != null &&  classToAnalize != null && !classToAnalize.equals("")){
+            Clase classToAnalizeMaterial = project.getClass(classToAnalize);
+            ClassRelations relationsClassToAnalize = null;
+            if(classToAnalizeMaterial != null){
+                relationsClassToAnalize = classToAnalizeMaterial.getClassRelations();
+                while (relationsClassToAnalize.getClassExtends() != null && !relationsClassToAnalize.getClassExtends().equals("") && !relationsClassToAnalize.getClassExtends().isEmpty()){
+                    tree.add(relationsClassToAnalize.getClassExtends());
+                    relationsClassToAnalize = project.getClass(relationsClassToAnalize.getClassExtends()).getClassRelations();
+                }
+            }
         }
         return getTreeString(tree, classToAnalize);
     }
+
+
+
 
 
     private String getTreeString(List<String> tree,  String classToAnalize) {

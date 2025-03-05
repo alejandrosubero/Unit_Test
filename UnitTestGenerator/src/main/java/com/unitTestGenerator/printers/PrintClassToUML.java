@@ -44,9 +44,10 @@ public class PrintClassToUML {
 
         // Relaciones
         if (relations != null) {
-            diagrama.append("Relaciones:\n");
-            //TODO: HAY QUE COLOCAR EL LISTADO DE LAS RELACIONES PERO 
-            diagrama.append("| - " + this.relations.toString() + " |\n");
+            diagrama.append("Relations:\n");
+            diagrama.append(border);
+            //TODO: HAY QUE COLOCAR EL LISTADO DE LAS RELACIONES PERO
+            diagrama.append("" + this.relations.toString() + "\n");
             diagrama.append(border);
         }
 
@@ -63,6 +64,9 @@ public class PrintClassToUML {
         for (Metodo metodo : metodos) {
             maxLength = Math.max(maxLength, ("+ " + metodo.getMethodSignature()).length());
         }
+
+
+            maxLength = Math.max(maxLength, ("+ " + this.relations.toString()).length());
 
         return maxLength;
     }

@@ -1,6 +1,7 @@
 package com.unitTestGenerator.core;
 
 
+import com.unitTestGenerator.analyzers.services.ExtendsInInterfacesService;
 import com.unitTestGenerator.core.interfaces.IProjectAnalizeCore;
 import com.unitTestGenerator.core.interfaces.IterminalMenueCore;
 import com.unitTestGenerator.test.interfaces.IInternalTest;
@@ -11,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class AppProjectStarted implements IProjectAnalizeCore, IterminalMenueCore,IInternalTest {
+public class AppProjectStarted implements IProjectAnalizeCore, IterminalMenueCore,IInternalTest, ExtendsInInterfacesService {
 
 
     private static AppProjectStarted instance;
@@ -67,6 +68,7 @@ public class AppProjectStarted implements IProjectAnalizeCore, IterminalMenueCor
 
         if(pathProject != null){
             this.project = this.executeProjectAnalize(pathProject, isAnalisis );
+            this.getInterfaceStructure(project);
             this.projectAnalyzerType(this.project);
             String uml = printUMLClass(this.project);
             this.printProjectAnalize(this.project,isAnalisis);

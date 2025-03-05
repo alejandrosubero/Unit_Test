@@ -156,14 +156,47 @@ public class ClassRelations {
 
     @Override
     public String toString() {
-        return "ClassRelations{" +
-                "className='" + className + '\'' +
-                ", classExtends='" + classExtends + '\'' +
-                ", classType='" + classType + '\'' +
-                ", implementsList=" + implementsList +
-                ", identifieresRelatedClasses=" + identifieresRelatedClasses +
-                ", dependencyInjectionIoC=" + dependencyInjectionIoC +
-                ", strongDependencyAssociation=" + strongDependencyAssociation +
-                '}';
+        StringBuffer buffer = new StringBuffer();
+
+        if (this.classExtends != null && !this.classExtends.isEmpty()) {
+            buffer.append("Extends: ").append(" \n");
+            buffer.append("- " + this.classExtends + "\n");
+        }
+
+        if (this.implementsList != null && !this.implementsList.isEmpty()) {
+            buffer.append("Implements: ").append(" \n");
+            for (String classImplement : this.implementsList) {
+                buffer.append("- " + classImplement + " \n");
+            }
+        }
+
+        if (this.dependencyInjectionIoC != null && !this.dependencyInjectionIoC.isEmpty()) {
+            buffer.append("Dependency Injection (IoC): ").append(" \n");
+            for (String element : this.dependencyInjectionIoC) {
+                buffer.append("- " + element + " \n");
+            }
+        }
+
+        if (this.strongDependencyAssociation != null && !this.strongDependencyAssociation.isEmpty()) {
+            buffer.append("Strong Dependency Association Class: ").append(" \n");
+            for (String element : this.strongDependencyAssociation) {
+                buffer.append("- " + element + "\n");
+            }
+        }
+
+        if (this.strongDependencyAssociation != null && !this.strongDependencyAssociation.isEmpty()) {
+            buffer.append("Strong Dependency Association Class (Composition): ").append(" \n");
+            for (String element : this.strongDependencyAssociation) {
+                buffer.append("- " + element + "\n");
+            }
+        }
+
+        if (this.identifieresRelatedClasses != null && !this.identifieresRelatedClasses.isEmpty()) {
+            buffer.append("Association Class (static or Sigleton): ").append(" \n");
+            for (String element : this.identifieresRelatedClasses) {
+                buffer.append("- " + element + "\n");
+            }
+        }
+        return buffer.toString();
     }
 }

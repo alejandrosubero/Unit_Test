@@ -1,6 +1,7 @@
 package com.unitTestGenerator.core.interfaces;
 
 import com.unitTestGenerator.analyzers.AnalizadorProyecto;
+import com.unitTestGenerator.analyzers.services.ExtendsInInterfacesService;
 import com.unitTestGenerator.pojos.Clase;
 import com.unitTestGenerator.pojos.Metodo;
 import com.unitTestGenerator.pojos.Project;
@@ -8,7 +9,7 @@ import com.unitTestGenerator.printers.PrintClassToUML;
 
 import java.util.List;
 
-public interface IProjectAnalizeCore {
+public interface IProjectAnalizeCore   {
 
 
     default Project executeProjectAnalize(String pathProject, boolean isAnalisis) {

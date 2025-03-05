@@ -24,6 +24,7 @@ public class Clase {
     private String classPath;
     private String todoNoteInClass;
     private ImportAnalizePojo imports;
+    private String structureInterface;
 
 
     public Clase() {
@@ -42,6 +43,14 @@ public class Clase {
 
     public void setImports(ImportAnalizePojo imports) {
         this.imports = imports;
+    }
+
+    public String getStructureInterface() {
+        return structureInterface;
+    }
+
+    public void setStructureInterface(String structureInterface) {
+        this.structureInterface = structureInterface;
     }
 
     public Boolean getApplyBuildMethod() {
