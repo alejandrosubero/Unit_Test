@@ -156,7 +156,7 @@ public class AnalyzeClassService implements IAnalyzeCassMethodService, IAnalyzeC
         }
 
         if ("interface".equals(clase.getTypeClass())) {
-            Pattern patronMetodoInterface = Pattern.compile("(?:@[^\\n]*)*(public|protected|private) (\\w+(?:<.*?>)?) (\\w+)\\s*\\((.*?)\\)\\s*;", Pattern.DOTALL);
+            Pattern patronMetodoInterface = Pattern.compile("(?:@[^\\n]*)*(public|protected|private|default) (\\w+(?:<.*?>)?) (\\w+)\\s*\\((.*?)\\)\\s*;", Pattern.DOTALL);
             Matcher matcherMetodoInterface = patronMetodoInterface.matcher(contenido);
 
             while (matcherMetodoInterface.find()) {

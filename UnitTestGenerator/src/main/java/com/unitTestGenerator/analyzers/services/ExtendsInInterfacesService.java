@@ -4,12 +4,12 @@ import com.unitTestGenerator.pojos.Project;
 
 public interface ExtendsInInterfacesService {
 
-    default String getInterfaceStructure(Project project){
+    default Project getInterfaceStructure(Project project){
       return   AnalizeExtendsInInterfaces.getInstance().analizeImplements(project,'I');
     }
 
 
-    default String getExtendsStructure(Project project){
+    default Project getExtendsStructure(Project project){
         return   AnalizeExtendsInInterfaces.getInstance().analizeImplements(project,'E');
     }
 }

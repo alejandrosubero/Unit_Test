@@ -47,7 +47,41 @@ public class AnalizadorProyecto implements ITodoDetector, IPrintProjectStructure
     }
 
 
-    private  void analizarProyectoRecursivo(File carpeta, List<Clase> classList, Map<String, Clase> mapClass, Project project) {
+
+      private void analizarProyectoRecursivo(File dir, List<Clase> classList, Map<String, Clase> mapClass, Project project) {
+
+        List<String> IGNORED_FOLDERS = Arrays.asList("target", ".idea", ".git");
+          StringBuilder tree = new StringBuilder();
+          File[] files = dir.listFiles();
+          if (files != null) {
+              for (File file : files) {
+                  if (IGNORED_FOLDERS.contains(file.getName())) {
+                      continue;
+                  }
+
+                  if (file.isDirectory()) {
+                      analizarProyectoRecursivo(file, classList, mapClass, project);
+                  }else {
+                      if(file.getName().trim().contains(".java")) {
+                         if(file.getName().trim().contains("IAssigned") ){
+                             String ak = file.getName().trim();
+                         }
+                          Clase clase = AnalyzeClassService.getInstance().analyzeClase(file);
+                          if (clase != null) {
+                              clase.setTodoNoteInClass(this.getTodo(clase.getRawClass()));
+                              treeBuilder.addPath(clase.getClassPath());
+                              ImportAnalize.importAnalize(clase);
+                          }
+                          this.setContainers(clase, classList, mapClass);
+                      }
+                  }
+              }
+          }
+    }
+
+
+    private  void analizarProyectoRecursivo2(File carpeta, List<Clase> classList, Map<String, Clase> mapClass, Project project) {
+
         if (carpeta.isDirectory()) {
             String nombreCarpeta = carpeta.getName();
 
@@ -55,15 +89,16 @@ public class AnalizadorProyecto implements ITodoDetector, IPrintProjectStructure
                 for (File archivo : carpeta.listFiles()) {
                     if (archivo.isDirectory()) {
                         analizarProyectoRecursivo(archivo, classList, mapClass, project);
-                    } else if (archivo.getName().endsWith(".java")) {
-                        Clase clase = AnalyzeClassService.getInstance().analyzeClase(archivo);
-
-                        if(clase !=null){
-                            clase.setTodoNoteInClass(this.getTodo(clase.getRawClass()));
-                            treeBuilder.addPath(clase.getClassPath());
-                            ImportAnalize.importAnalize(clase);
+                    } else {
+                        if(archivo.getName().trim().endsWith(".java")) {
+                            Clase clase = AnalyzeClassService.getInstance().analyzeClase(archivo);
+                            if (clase != null) {
+                                clase.setTodoNoteInClass(this.getTodo(clase.getRawClass()));
+                                treeBuilder.addPath(clase.getClassPath());
+                                ImportAnalize.importAnalize(clase);
+                            }
+                            this.setContainers(clase, classList, mapClass);
                         }
-                        this.setContainers(clase, classList, mapClass);
                     }
                 }
             }

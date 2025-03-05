@@ -8,6 +8,7 @@ import com.unitTestGenerator.pojos.Project;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 public class AnalizeExtendsInInterfaces {
 
@@ -23,7 +24,64 @@ public class AnalizeExtendsInInterfaces {
     private  AnalizeExtendsInInterfaces() {
     }
 
-    public String analizeImplements( Project project, Character key){
+    public Project analizeImplements( Project project, Character key){
+        if(project != null &&  key != null && project.getClaseList() != null && !project.getClaseList().isEmpty()){
+            project.getClaseList().forEach(clase -> {
+                if(clase.getClassRelations() != null && !clase.getClassRelations().getImplementsList().isEmpty()){
+                    StringBuffer buffer = new StringBuffer();
+                    clase.getClassRelations().getImplementsList().forEach(Implementation -> {
+                        buffer.append("- ").append(Implementation.trim()).append("\n");
+                        Clase implementClass = project.getClass(Implementation.trim());
+                        this.extendsLoop(project, implementClass);
+
+                    });
+                    clase.setStructureInterface(buffer.toString());
+                }
+            });
+
+        }
+        return project;
+    }
+
+
+    private String extendsLoop(Project project, Clase classRelation) {
+        List<String> tree = new ArrayList<>();
+        if(isExtents(classRelation)){
+            Clase loop = classRelation;
+
+            while (isExtents(loop)) {
+                String extTemp = loop.getClassRelations().getClassExtends().trim();
+                tree.add(extTemp);
+               Optional<Clase> c = project.getClaseList().stream().filter(clase -> clase.getNombre().equals(extTemp)).findFirst();
+
+                loop = project.getClass(extTemp);
+            }
+        }
+        String structure = this.getTreeString(tree);
+        return structure;
+    }
+
+
+    private String getTreeString(List<String> tree) {
+        StringBuilder sb = new StringBuilder();
+        if(!tree.isEmpty()){
+            for(String leaf : tree){
+                sb.append("|__ ").append(leaf).append("\n");
+            }
+            return sb.toString();
+        }
+        return "";
+    }
+
+
+    private Boolean isExtents(Clase loop){
+        return loop != null && loop.getClassRelations() != null && loop.getClassRelations().getClassExtends() != null && !loop.getClassRelations().getClassExtends().equals("");
+    }
+
+
+
+
+    public String analizeImplement( Project project, Character key){
 
         if(project != null &&  key != null && project.getClaseList() != null && !project.getClaseList().isEmpty()){
             List<Clase> list =  project.getClaseList();
@@ -65,30 +123,11 @@ public class AnalizeExtendsInInterfaces {
     }
 
 
-    private String extendsLoop(Project project, Clase classRelation) {
-        List<String> tree = new ArrayList<>();
-        if(classRelation.getClassRelations() != null){
-            Clase loop = classRelation;
-            while (loop != null && loop.getClassRelations().getClassExtends() != null && !loop.getClassRelations().getClassExtends().equals("")) {
-                tree.add(loop.getClassRelations().getClassExtends());
-                loop = project.getClass(loop.getClassRelations().getClassExtends());
-            }
-        }
-        return getTreeString(tree);
-    }
 
 
 
-    private String getTreeString(List<String> tree) {
-        StringBuilder sb = new StringBuilder();
-        if(!tree.isEmpty()){
-            for(String leaf : tree){
-                sb.append("|__ ").append(leaf).append("\n");
-            }
-            return sb.toString();
-        }
-       return "";
-    }
+
+
 
 }
 
