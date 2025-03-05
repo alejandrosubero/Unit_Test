@@ -25,7 +25,7 @@ public class Clase {
     private String todoNoteInClass;
     private ImportAnalizePojo imports;
     private String structureInterface;
-
+    private String structureExtends;
 
     public Clase() {
         this.metodos = new ArrayList<>();
@@ -35,6 +35,14 @@ public class Clase {
         this.constructores = new ArrayList<>();
         this.useLomboxBuild = false;
         this.applyBuildMethod = false;
+    }
+
+    public String getStructureExtends() {
+        return structureExtends;
+    }
+
+    public void setStructureExtends(String structureExtends) {
+        this.structureExtends = structureExtends;
     }
 
     public ImportAnalizePojo getImports() {

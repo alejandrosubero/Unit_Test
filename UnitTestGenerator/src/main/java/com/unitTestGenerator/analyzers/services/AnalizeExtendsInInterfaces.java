@@ -59,7 +59,7 @@ public class AnalizeExtendsInInterfaces {
                             String indentedTree = treeString.replaceAll("(?m)^", "   ");
                             buffer.append(indentedTree);
                         }
-                    clase.setStructureInterface(buffer.toString());
+                    clase.setStructureExtends(buffer.toString());
                 }
             });
         }
