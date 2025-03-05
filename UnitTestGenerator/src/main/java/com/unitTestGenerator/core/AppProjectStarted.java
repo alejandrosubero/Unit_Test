@@ -1,6 +1,7 @@
 package com.unitTestGenerator.core;
 
 
+import com.unitTestGenerator.analyzers.services.AnalizeExtendsInInterfaces;
 import com.unitTestGenerator.analyzers.services.ExtendsInInterfacesService;
 import com.unitTestGenerator.core.interfaces.IProjectAnalizeCore;
 import com.unitTestGenerator.core.interfaces.IterminalMenueCore;
@@ -69,6 +70,7 @@ public class AppProjectStarted implements IProjectAnalizeCore, IterminalMenueCor
         if(pathProject != null){
             this.project = this.executeProjectAnalize(pathProject, isAnalisis );
             this.getInterfaceStructure(project);
+            AnalizeExtendsInInterfaces.getInstance().analizeImplements(project,'I');
             this.projectAnalyzerType(this.project);
             String uml = printUMLClass(this.project);
             this.printProjectAnalize(this.project,isAnalisis);
