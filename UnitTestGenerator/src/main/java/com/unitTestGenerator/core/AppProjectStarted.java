@@ -5,6 +5,7 @@ import com.unitTestGenerator.analyzers.services.AnalizeExtendsInInterfaces;
 import com.unitTestGenerator.analyzers.services.ExtendsInInterfacesService;
 import com.unitTestGenerator.core.interfaces.IProjectAnalizeCore;
 import com.unitTestGenerator.core.interfaces.IterminalMenueCore;
+import com.unitTestGenerator.printers.PrintAnalizeImports;
 import com.unitTestGenerator.test.interfaces.IInternalTest;
 import com.unitTestGenerator.pojos.Clase;
 import com.unitTestGenerator.pojos.Project;
@@ -13,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class AppProjectStarted implements IProjectAnalizeCore, IterminalMenueCore,IInternalTest, ExtendsInInterfacesService {
+public class AppProjectStarted implements IProjectAnalizeCore, IterminalMenueCore,IInternalTest, ExtendsInInterfacesService, PrintAnalizeImports {
 
 
     private static AppProjectStarted instance;
@@ -73,6 +74,7 @@ public class AppProjectStarted implements IProjectAnalizeCore, IterminalMenueCor
             this.getExtendsStructure(project);
             this.projectAnalyzerType(this.project);
             String uml = printUMLClass(this.project);
+            this.generateImportsMap(project);
             this.printProjectAnalize(this.project,isAnalisis);
 
 

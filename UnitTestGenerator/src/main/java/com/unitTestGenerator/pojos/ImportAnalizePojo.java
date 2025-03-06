@@ -8,6 +8,7 @@ public class ImportAnalizePojo {
 
     private List<String> externalImports = new ArrayList<>();
     private List<String>  projectImports = new ArrayList<>();
+    private String projectImportsMap;
 
 
     public ImportAnalizePojo() {
@@ -27,12 +28,12 @@ public class ImportAnalizePojo {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ImportAnalizePojo that = (ImportAnalizePojo) o;
-        return Objects.equals(externalImports, that.externalImports) && Objects.equals(projectImports, that.projectImports);
+        return Objects.equals(externalImports, that.externalImports) && Objects.equals(projectImports, that.projectImports) && Objects.equals(projectImportsMap, that.projectImportsMap);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(externalImports, projectImports);
+        return Objects.hash(externalImports, projectImports, projectImportsMap);
     }
 
     public List<String> getExternalImports() {
@@ -55,16 +56,25 @@ public class ImportAnalizePojo {
         return new Builder();
     }
 
+    public String getProjectImportsMap() {
+        return projectImportsMap;
+    }
+
+    public void setProjectImportsMap(String projectImportsMap) {
+        this.projectImportsMap = projectImportsMap;
+    }
+
     public interface ImportAnalizePojoBuilder {
         public Builder externalImports(List<String> externalImports);
         public Builder projectImports(List<String> projectImports);
-
+        public Builder projectImportsMap(String imports);
         public ImportAnalizePojo build();
     }
 
     public static class Builder implements ImportAnalizePojoBuilder {
         private List<String> externalImports;
         private List<String> projectImports;
+        private String projectImportsMap;
 
         @Override
         public Builder externalImports(List<String> externalImports) {
@@ -79,10 +89,17 @@ public class ImportAnalizePojo {
         }
 
         @Override
+        public Builder projectImportsMap(String imports) {
+            this.projectImportsMap = imports;
+            return this;
+        }
+
+        @Override
         public ImportAnalizePojo build() {
             ImportAnalizePojo importanalizepojo = new ImportAnalizePojo();
             importanalizepojo.setExternalImports(this.externalImports);
             importanalizepojo.setProjectImports(this.projectImports);
+            importanalizepojo.setProjectImportsMap(this.projectImportsMap);
             return importanalizepojo;
         }
     }

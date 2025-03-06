@@ -1,81 +1,86 @@
 package com.unitTestGenerator.printers;
 
-import com.unitTestGenerator.analyzers.services.ImportAnalize;
 import com.unitTestGenerator.pojos.Clase;
 import com.unitTestGenerator.pojos.Project;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-public class PrintAnalizeImports  {
+public interface PrintAnalizeImports {
 
-
-   public String getClassOfImport(String importText){
-        //import com.bpm.employee.pojo.EmpleadoPojo
-        int lastDotIndex = importText.lastIndexOf('.');
-        // Obtener el valor después del último punto
-        String valueAfterLastDot = importText.substring(lastDotIndex + 1);
-        return valueAfterLastDot;
-    }
-
-
-    // a trabajar metodos modificarlos para usarlos:
-
-    public Project analizeExtens(Project project){
-        if(project != null && project.getClaseList() != null && !project.getClaseList().isEmpty()){
-            project.getClaseList().forEach(clase -> {
-                if(clase.getClassRelations() != null && isExtents(clase)){
-                    StringBuffer buffer = new StringBuffer();
-                    String nameClass = clase.getClassRelations().getClassExtends().trim();
-                    buffer.append("- ").append(nameClass).append("\n");
-                    Clase implementClass = project.getClass(nameClass);
-                    String treeString = this.extendsLoop(project, implementClass);
-                    if (!treeString.isEmpty()) {
-                        String indentedTree = treeString.replaceAll("(?m)^", "   ");
-                        buffer.append(indentedTree);
+    default Project generateImportsMap(Project project) {
+        Optional.ofNullable(project)
+                .map(Project::getClaseList)
+                .ifPresent(clases -> clases.forEach(clase -> {
+                    if (importsExits(clase)) {
+                        StringBuilder buffer = new StringBuilder();
+                        buffer.append("- ").append(clase.getNombre()).append("\n");
+                        String treeString = this.extendsLoop(project, clase);
+                        if (!treeString.isEmpty()) {
+                            String indentedTree = treeString.replaceAll("(?m)^", "   ");
+                            buffer.append(indentedTree);
+                        }
+                        clase.getImports().setProjectImportsMap(buffer.toString());
                     }
-                    clase.setStructureExtends(buffer.toString());
-                }
-            });
-        }
+                }));
         return project;
     }
 
-
-    private Boolean isExtents(Clase loop){
-        return loop != null && loop.getClassRelations() != null && loop.getClassRelations().getClassExtends() != null && !loop.getClassRelations().getClassExtends().equals("");
+    default Boolean importsExits(Clase loop) {
+        return loop != null && loop.getImports() != null && loop.getImports().getProjectImports() != null && !loop.getImports().getProjectImports().isEmpty();
     }
 
-    private String extendsLoop(Project project, Clase classRelation) {
+    default String extendsLoop(Project project, Clase classFather) {
         List<String> tree = new ArrayList<>();
 
-        if(isExtents(classRelation)){
-            Clase loop = classRelation;
+        if (importsExits(classFather)) {
+            classFather.getImports().getProjectImports().forEach(importOfClass -> {
+                StringBuilder buffer = new StringBuilder();
+                StringBuilder bufferClass = new StringBuilder();
 
-            while (isExtents(loop)) {
-                String extTemp = loop.getClassRelations().getClassExtends().trim();
-                tree.add(extTemp);
-                Optional<Clase> c = project.getClaseList().stream().filter(clase -> clase.getNombre().equals(extTemp)).findFirst();
+                buffer.append(importOfClass).append("\n");
+                String classImport = getClassOfImport(importOfClass).trim();
+                bufferClass.append("|__ ").append(classImport).append(" ");
+                String replaceBuffer = stringSpace(importOfClass.length());
+                String indentedTree = bufferClass.toString().replaceAll("(?m)^", replaceBuffer);
+                buffer.append(indentedTree).append("\n");
 
-                loop = project.getClass(extTemp);
-            }
+                Optional.ofNullable(project.getClass(classImport))
+                        .filter(this::importsExits)
+                        .ifPresent(importTree -> {
+                            String structure = this.getTreeString(importTree.getImports().getProjectImports());
+                            int space = importOfClass.length() + classImport.length();
+                            String replaceBuffer2 = stringSpace(space);
+                            String structureTree = structure.replaceAll("(?m)^", replaceBuffer2);
+                            buffer.append(structureTree).append("\n");
+                            tree.add(buffer.toString());
+                        });
+            });
         }
-        String structure = this.getTreeString(tree);
-        return structure;
+        return this.getTreeString(tree);
     }
 
-
-    private String getTreeString(List<String> tree) {
-        StringBuilder sb = new StringBuilder();
-        if(!tree.isEmpty()){
-            for(String leaf : tree){
-                sb.append("|__ ").append(leaf).append("\n");
-            }
-            return sb.toString();
-        }
-        return "";
+    default String getTreeString(List<String> tree) {
+        return tree.stream()
+                .map(leaf -> "|__ " + leaf + "\n")
+                .collect(Collectors.joining());
     }
 
+    default String stringSpace(int number) {
+        StringBuilder bufferSpace = new StringBuilder();
+        for (int i = 0; i < number; i++) {
+            bufferSpace.append(" ");
+        }
+        return bufferSpace.toString();
+    }
 
+    default String getClassOfImport(String importText) {
+        int lastDotIndex = importText.lastIndexOf('.');
+        return importText.substring(lastDotIndex + 1);
+    }
 }
+
+
+
