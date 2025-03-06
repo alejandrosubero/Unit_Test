@@ -10,6 +10,6 @@ public interface ExtendsInInterfacesService {
 
 
     default Project getExtendsStructure(Project project){
-        return   AnalizeExtendsInInterfaces.getInstance().analizeImplements(project,'E');
+        return   AnalizeExtendsInInterfaces.getInstance().analizeExtens(project);
     }
 }
