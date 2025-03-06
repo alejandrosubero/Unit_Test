@@ -3,6 +3,7 @@ package com.unitTestGenerator.analyzers.services;
 
 import com.unitTestGenerator.pojos.Clase;
 import com.unitTestGenerator.pojos.ImportAnalizePojo;
+import com.unitTestGenerator.util.IBaseModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-public class ImportAnalize {
+public class ImportAnalize implements IBaseModel {
 
     public static ImportAnalizePojo importAnalize(Clase clase) {
 
@@ -34,9 +35,9 @@ public class ImportAnalize {
                 while (matcher.find()) {
                     String importStatement = matcher.group(1);
                     if (importStatement.contains(packageBaseName)) {
-                        projectImportsList.add(projectImports.append("import ").append(importStatement).append(";\n").toString());
+                        projectImportsList.add(IBaseModel.stringEnsamble2("import ", importStatement));
                     } else {
-                        externalImportsList.add(externalImports.append("import ").append(importStatement).append(";\n").toString());
+                        externalImportsList.add(IBaseModel.stringEnsamble2("import ", importStatement));
                     }
                 }
                 String reconstructedCode = externalImports.toString() + "\n" + projectImports.toString() + "\n" + clase.getClassPath();
@@ -83,4 +84,8 @@ public class ImportAnalize {
         System.arraycopy(pathParts, srcIndex + 2, packageParts, 0, packageParts.length);
         return String.join(".", packageParts);
     }
+
+
+
+
 }

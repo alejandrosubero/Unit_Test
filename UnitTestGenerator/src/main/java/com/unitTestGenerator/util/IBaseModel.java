@@ -46,6 +46,19 @@ public interface IBaseModel extends IConstantModel {
 		return newString.toString();
 	}
 
+
+	public static String stringEnsamble2(String... stringPaths) {
+		StringBuffer newString = new StringBuffer();
+		String[] var3 = stringPaths;
+		int var4 = stringPaths.length;
+
+		for(int var5 = 0; var5 < var4; ++var5) {
+			String path = var3[var5];
+			newString.append(path);
+		}
+		return newString.toString();
+	}
+
 	default List<String> toList(String... StringPaths) {
 		List<String> stringList = new ArrayList(Arrays.asList(StringPaths));
 		return stringList;
