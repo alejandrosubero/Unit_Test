@@ -22,7 +22,8 @@ public class InternalFuntionalTests {
         Boolean isAnalisis = false;
         Boolean useMock = false;
 //        String pathProject = "/Users/alejandrosubero/Documents/TESTREPOSITORY/Employee1";
-        String pathProject = "/Users/user/Documents/TEST_REPOSITORY/Employee1";
+//        String pathProject = "/Users/user/Documents/TEST_REPOSITORY/Employee1";
+        String pathProject ="D:\\TEST_REPOSITORIES\\Employee1";
 //        String nombreClase = "EmpleadoServiceImplement";
 //        String method = "updateEmpleado";
         String nombreClase = "CargoServiceImplement";
@@ -41,6 +42,10 @@ public class InternalFuntionalTests {
     }
 }
 
+// https://mvnrepository.com/artifact/commons-io/commons-io
+
+// https://github.com/vinayakbagal7/HibernateSqlite/blob/master/HibernateHelloWorld/src/main/java/com/srccodes/example/hibernate/App.java
+// https://github.com/xerial/sqlite-jdbc?tab=readme-ov-file
 
 // path in imac = /Users/user/Documents/TEST_REPOSITORY/Employee1
 // path in macbook  = /Users/alejandrosubero/Documents/TESTREPOSITORY/Employee1
