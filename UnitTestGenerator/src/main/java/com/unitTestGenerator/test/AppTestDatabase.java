@@ -1,23 +1,15 @@
 package com.unitTestGenerator.test;
 
 import java.util.List;
-import java.util.Properties;
-
-import com.unitTestGenerator.persistence.DataDAO;
+import com.unitTestGenerator.persistence.repositories.DataDAOServicesImplement;
 import com.unitTestGenerator.persistence.model.Data;
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
-import org.hibernate.service.ServiceRegistry;
-//import org.hibernate.service.ServiceRegistryBuilder;
+import com.unitTestGenerator.persistence.repositories.IDaoService;
 
 
 public class AppTestDatabase {
 
     public static void main(String[] args) {
-        DataDAO dao = new DataDAO();
+        IDaoService dao = new DataDAOServicesImplement();
         List<Data> all = dao.findAll();
 
         for (Data contact : all) {
@@ -48,64 +40,4 @@ public class AppTestDatabase {
         Data id3 = dao.findById(2l);
         System.out.println("id object = Id: " + id3.getId() + " | Name:" + id3.getName() + " | datos:" + id3.getDatos());
     }
-
-
-//        private static SessionFactory sessionFactory = null;
-//        private static ServiceRegistry serviceRegistry = null;
-//
-//        private static SessionFactory configureSessionFactory() throws HibernateException {
-//            Configuration configuration = new Configuration();
-//            configuration.configure();
-//
-//            Properties properties = configuration.getProperties();
-//
-//            serviceRegistry = new ServiceRegistryBuilder().applySettings(properties).buildServiceRegistry();
-//            sessionFactory = configuration.buildSessionFactory(serviceRegistry);
-//
-//            return sessionFactory;
-//        }
-//
-//        public static void main(String[] args) {
-//            // Configure the session factory
-//            configureSessionFactory();
-//
-//            Session session = null;
-//            Transaction tx = null;
-//
-//            try {
-//                session = sessionFactory.openSession();
-//                tx = session.beginTransaction();
-//
-//                // Creating Contact entity that will be save to the sqlite database
-//                Data myContact = new Data(1l, "Vinayak", "vinayak@sqs.com", "public");
-//                Data yourContact = new Data(2l, "Likhit", "likhit@email.com", "private");
-//                Data myContactpx = new Data( "Vinayak", "vinayak@sqs.com", "public");
-//                // Saving to the database
-////                session.update(myContact);
-////                session.save(myContact);
-////                session.save(yourContact);
-//                session.save(myContactpx);
-//
-//                // Committing the change in the database.
-//                session.flush();
-//                tx.commit();
-//
-//                // Fetching saved data
-//                List<Data> contactList = session.createQuery("from Data").list();
-//
-//                for (Data contact : contactList) {
-//                    System.out.println("Id: " + contact.getId() + " | Name:"  + contact.getName() + " | datos:" + contact.getDatos());
-//                }
-//
-//            } catch (Exception ex) {
-//                ex.printStackTrace();
-//                // Rolling back the changes to make the data consistent in case of any failure
-//                // in between multiple database write operations.
-//                tx.rollback();
-//            } finally{
-//                if(session != null) {
-//                    session.close();
-//                }
-//            }
-//        }
 }

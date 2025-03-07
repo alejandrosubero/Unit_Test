@@ -77,7 +77,6 @@ public class AppProjectStarted implements IProjectAnalizeCore, IterminalMenueCor
             this.generateImportsMap(project);
             this.printProjectAnalize(this.project,isAnalisis);
 
-
         }
     }
 
