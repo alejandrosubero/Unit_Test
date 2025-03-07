@@ -11,7 +11,7 @@ public interface IConstantModel {
 
     public final static String BREAK_LINE = System.lineSeparator();
     public final static String pathSeparator = java.nio.file.FileSystems.getDefault().getSeparator();
-    public final static String Separator = File.separator;
+    public final static String Separator = DetectSO.os().equals("win")? "\\\\":File.separator;
     public static final String PRIVATE = "private";
     public static final String LISTAS = "List<";
     public static final String ARRAY = "[]";

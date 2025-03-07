@@ -6,7 +6,6 @@ import javax.persistence.*;
 @Entity
 @Table(name = "data")
 public class Data {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,6 +20,13 @@ public class Data {
     private String datos;
 
     public Data() {}
+
+    public Data(Long id, String name, String descripcion, String datos) {
+        this.id = id;
+        this.name = name;
+        this.descripcion = descripcion;
+        this.datos = datos;
+    }
 
     public Data(String name, String descripcion, String datos) {
         this.name = name;

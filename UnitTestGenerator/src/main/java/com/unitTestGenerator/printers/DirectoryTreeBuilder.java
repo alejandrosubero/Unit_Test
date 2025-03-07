@@ -1,5 +1,6 @@
 package com.unitTestGenerator.printers;
 
+import com.unitTestGenerator.util.DetectSO;
 import com.unitTestGenerator.util.IBaseModel;
 
 import java.util.*;
@@ -22,6 +23,7 @@ public class DirectoryTreeBuilder implements IBaseModel {
 
     public void setProjetName(String projetPath){
         if(projetPath != null && !projetPath.equals("")){
+//            String separador = DetectSO.os().equals("win")? "\\\\":this.Separator;
             String[] parts = projetPath.split(this.Separator);
             String lastElement = parts[parts.length - 1];
             if(lastElement != null && !lastElement.isEmpty()){
