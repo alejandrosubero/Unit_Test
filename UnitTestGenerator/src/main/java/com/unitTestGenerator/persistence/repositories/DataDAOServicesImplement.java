@@ -1,7 +1,9 @@
 package com.unitTestGenerator.persistence.repositories;
 
+import com.unitTestGenerator.persistence.mapper.DataDaoMapper;
 import com.unitTestGenerator.persistence.model.Data;
 
+import com.unitTestGenerator.persistence.model.DataPojo;
 import org.hibernate.*;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
@@ -12,12 +14,14 @@ import java.util.Properties;
 
 public class DataDAOServicesImplement implements IDaoService {
 
+    private static SessionFactory sessionFactory = null;
+    private static ServiceRegistry serviceRegistry = null;
+    private static DataDaoMapper mapper = new DataDaoMapper();
+
     public DataDAOServicesImplement() {
         configureSessionFactory();
     }
 
-    private static SessionFactory sessionFactory = null;
-    private static ServiceRegistry serviceRegistry = null;
 
     private static SessionFactory configureSessionFactory() throws HibernateException {
         Configuration configuration = new Configuration();
@@ -29,14 +33,38 @@ public class DataDAOServicesImplement implements IDaoService {
     }
 
     @Override
-    public void update(Data data) {
+    public void update(DataPojo dataPojo) {
+        Session session = null;
+        Transaction tx = null;
+        try {
+            session = sessionFactory.openSession();
+            tx = session.beginTransaction();
+            if(dataPojo != null){
+                session.update(mapper.pojoToEntity(dataPojo));
+            }
+            session.flush();
+            tx.commit();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            tx.rollback();
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+    }
+
+    @Override
+    public void save(DataPojo dataPojo) {
         Session session = null;
         Transaction tx = null;
 
         try {
             session = sessionFactory.openSession();
             tx = session.beginTransaction();
-            session.update(data);
+            if(dataPojo != null) {
+                session.save(mapper.pojoToEntity(dataPojo));
+            }
             // Committing the change in the database.
             session.flush();
             tx.commit();
@@ -53,31 +81,7 @@ public class DataDAOServicesImplement implements IDaoService {
     }
 
     @Override
-    public void save(Data data) {
-        Session session = null;
-        Transaction tx = null;
-
-        try {
-            session = sessionFactory.openSession();
-            tx = session.beginTransaction();
-            session.save(data);
-            // Committing the change in the database.
-            session.flush();
-            tx.commit();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            // Rolling back the changes to make the data consistent in case of any failure
-            // in between multiple database write operations.
-            tx.rollback();
-        } finally {
-            if (session != null) {
-                session.close();
-            }
-        }
-    }
-
-    @Override
-    public List<Data> findAll() {
+    public List<DataPojo> findAll() {
         Session session = null;
         Transaction tx = null;
         List<Data> list = null;
@@ -87,19 +91,17 @@ public class DataDAOServicesImplement implements IDaoService {
             list = session.createQuery("from Data").list();
         } catch (Exception ex) {
             ex.printStackTrace();
-            // Rolling back the changes to make the data consistent in case of any failure
-            // in between multiple database write operations.
             tx.rollback();
         } finally {
             if (session != null) {
                 session.close();
             }
         }
-        return list;
+        return mapper.listEntityToListPojo(list);
     }
 
     @Override
-    public Data findById(Long id) {
+    public DataPojo findById(Long id) {
         Session session = null;
         Transaction tx = null;
         Data data = null;
@@ -108,82 +110,70 @@ public class DataDAOServicesImplement implements IDaoService {
             tx = session.beginTransaction();
             String idS = String.valueOf(id);
             data = (Data) session.get(Data.class, id);
-            // Commit de la transacción
             tx.commit();
         } catch (Exception ex) {
             ex.printStackTrace();
-            // Rolling back the changes to make the data consistent in case of any failure
-            // in between multiple database write operations.
             tx.rollback();
         } finally {
             if (session != null) {
                 session.close();
             }
         }
-        return data;
+        return mapper.entityToPojo(data);
     }
 
     @Override
-    public List<Data> findById2(Long id) {
+    public List<DataPojo> findById2(Long id) {
         Session session = null;
         Transaction tx = null;
         List<Data> data = null;
         try {
             session = sessionFactory.openSession();
             tx = session.beginTransaction();
-
-            // Realizar una consulta HQL
             String hql = "FROM Data WHERE id = :id";
             Query query = session.createQuery(hql);
             query.setParameter("id", id);
-            data = query.list();  // Asigna el resultado a la variable 'data'
-
-            // Commit de la transacción
+            data = query.list();
             tx.commit();
         } catch (Exception ex) {
             ex.printStackTrace();
             if (tx != null) {
-                tx.rollback();  // Asegúrate de que tx no sea null antes de hacer rollback
+                tx.rollback();
             }
         } finally {
             if (session != null) {
                 session.close();
             }
         }
-        return data;  // Retorna 'data' que ahora contiene el resultado de la consulta
+        return mapper.listEntityToListPojo(data);
     }
 
     @Override
-    public List<Data> findByName(String name) {
+    public List<DataPojo> findByName(String name) {
         Session session = null;
         Transaction tx = null;
         List<Data> data = null;
         try {
             session = sessionFactory.openSession();
             tx = session.beginTransaction();
-
-            // Realizar una consulta HQL
             String hql = "FROM Data WHERE name = :name";
             Query query = session.createQuery(hql);
             query.setParameter("name", name);
             data = query.list();
-            // Commit de la transacción
             tx.commit();
         } catch (Exception ex) {
             ex.printStackTrace();
-            // Rolling back the changes to make the data consistent in case of any failure
-            // in between multiple database write operations.
             tx.rollback();
         } finally {
             if (session != null) {
                 session.close();
             }
         }
-        return data;
+        return mapper.listEntityToListPojo(data);
     }
 
     @Override
-    public void delete(Data data) {
+    public void delete(DataPojo data) {
 
     }
 }

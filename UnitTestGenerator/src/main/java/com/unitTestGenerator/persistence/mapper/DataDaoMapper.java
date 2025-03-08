@@ -2,37 +2,45 @@ package com.unitTestGenerator.persistence.mapper;
 
 import com.unitTestGenerator.persistence.model.Data;
 import com.unitTestGenerator.persistence.model.DataPojo;
+import org.modelmapper.ModelMapper;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.Optional;
 
 public class DataDaoMapper {
 
+    private static final ModelMapper modelMapper = new ModelMapper();
 
-    public List<Data> listPojoToListEntity(List<DataPojo> pojos) {
-        List<Data> entitys = new ArrayList<>();
-        if (pojos != null && pojos.size() > 0) {
-            pojos.forEach(pojo -> entitys.add(this.pojoToEntity(pojo)));
-        }
-        return entitys;
+    public DataDaoMapper() {
     }
 
-    public Data pojoToEntity(EmpleadoPojo pojo) {
-//        ModelMapper modelMapper = new ModelMapper();
-        Data entity = null;
-        if (pojo != null) {
-            entity = new ModelMapper().map(pojo, Empleado.class);
-        }
-        return entity;
+    public List<Data> listPojoToListEntity(List<DataPojo> pojos) {
+        return (pojos == null || pojos.isEmpty())
+                ? Collections.emptyList()
+                : pojos.stream().map(this::pojoToEntity).collect(Collectors.toList());
+    }
+
+
+    public List<DataPojo> listEntityToListPojo(List<Data> entities) {
+        return (entities == null || entities.isEmpty())
+                ? Collections.emptyList()
+                : entities.stream().map(this::entityToPojo).collect(Collectors.toList());
+    }
+
+
+    public Data pojoToEntity(DataPojo pojo) {
+        return Optional.ofNullable(pojo)
+                .map(p -> modelMapper.map(p, Data.class))
+                .orElse(null);
     }
 
     public DataPojo entityToPojo(Data entity) {
-//        ModelMapper modelMapper = new ModelMapper();
-        DataPojo pojo = null;
-        if (entity != null) {
-            pojo = new ModelMapper().map(entity, EmpleadoPojo.class);
-        }
-        return pojo;
+        return Optional.ofNullable(entity)
+                .map(e -> modelMapper.map(e, DataPojo.class))
+                .orElse(null);
     }
 
 }
