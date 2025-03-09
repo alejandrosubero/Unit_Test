@@ -11,7 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-public class ImportAnalize implements IBaseModel {
+public class IImportAnalizeService implements IBaseModel {
 
     public static ImportAnalizePojo importAnalize(Clase clase) {
 

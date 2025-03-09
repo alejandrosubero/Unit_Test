@@ -4,16 +4,15 @@ import java.io.File;
 import java.util.*;
 
 
-import com.unitTestGenerator.analyzers.services.ExtendsInInterfacesService;
-import com.unitTestGenerator.analyzers.services.ImportAnalize;
+import com.unitTestGenerator.analyzers.services.IImportAnalizeService;
 import com.unitTestGenerator.printers.DirectoryTreeBuilder;
-import com.unitTestGenerator.analyzers.services.AnalyzeClassService;
-import com.unitTestGenerator.analyzers.services.ITodoDetector;
+import com.unitTestGenerator.analyzers.services.AnalyzeClassServiceService;
+import com.unitTestGenerator.analyzers.services.ITodoDetectorService;
 import com.unitTestGenerator.pojos.*;
 import com.unitTestGenerator.printers.IPrintProjectStructure;
 
 
-public class AnalizadorProyecto implements ITodoDetector, IPrintProjectStructure {
+public class AnalizadorProyecto implements ITodoDetectorService, IPrintProjectStructure {
 
     private  final String[] IGNORAR = {"target", "node_modules", ".git"};
     private static AnalizadorProyecto instance;
@@ -63,11 +62,11 @@ public class AnalizadorProyecto implements ITodoDetector, IPrintProjectStructure
                       analizarProyectoRecursivo(file, classList, mapClass, project);
                   }else {
                       if(file.getName().trim().contains(".java")) {
-                          Clase clase = AnalyzeClassService.getInstance().analyzeClase(file);
+                          Clase clase = AnalyzeClassServiceService.getInstance().analyzeClase(file);
                           if (clase != null) {
                               clase.setTodoNoteInClass(this.getTodo(clase.getRawClass()));
                               treeBuilder.addPath(clase.getClassPath());
-                              ImportAnalize.importAnalize(clase);
+                              IImportAnalizeService.importAnalize(clase);
                           }
                           this.setContainers(clase, classList, mapClass);
                       }
@@ -88,11 +87,11 @@ public class AnalizadorProyecto implements ITodoDetector, IPrintProjectStructure
                         analizarProyectoRecursivo(archivo, classList, mapClass, project);
                     } else {
                         if(archivo.getName().trim().endsWith(".java")) {
-                            Clase clase = AnalyzeClassService.getInstance().analyzeClase(archivo);
+                            Clase clase = AnalyzeClassServiceService.getInstance().analyzeClase(archivo);
                             if (clase != null) {
                                 clase.setTodoNoteInClass(this.getTodo(clase.getRawClass()));
                                 treeBuilder.addPath(clase.getClassPath());
-                                ImportAnalize.importAnalize(clase);
+                                IImportAnalizeService.importAnalize(clase);
                             }
                             this.setContainers(clase, classList, mapClass);
                         }

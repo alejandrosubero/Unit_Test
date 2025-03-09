@@ -10,18 +10,18 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class AnalyzeClassService implements IAnalyzeCassMethodService, IAnalyzeClassRelations {
+public class AnalyzeClassServiceService implements IAnalyzeCassMethodService, IAnalyzeClassRelationsService {
 
-    public static AnalyzeClassService instance;
+    public static AnalyzeClassServiceService instance;
 
-    public static AnalyzeClassService getInstance() {
+    public static AnalyzeClassServiceService getInstance() {
         if (instance == null){
-            instance = new AnalyzeClassService();
+            instance = new AnalyzeClassServiceService();
         }
         return instance;
     }
 
-    private AnalyzeClassService() {
+    private AnalyzeClassServiceService() {
     }
 
     public Clase getAnalisisOfVariables(String content){

@@ -2,7 +2,7 @@ package com.unitTestGenerator.analyzers.services;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class SingletonDetector {
+public class ISingletonDetectorService {
 
     public static boolean isSingleton(String classContent) {
         // 1. Verificar si hay un campo estático privado de la misma clase

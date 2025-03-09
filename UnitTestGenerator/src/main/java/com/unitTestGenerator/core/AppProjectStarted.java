@@ -1,11 +1,9 @@
 package com.unitTestGenerator.core;
 
 
-import com.unitTestGenerator.analyzers.services.AnalizeExtendsInInterfaces;
-import com.unitTestGenerator.analyzers.services.ExtendsInInterfacesService;
-import com.unitTestGenerator.core.interfaces.IProjectAnalizeCore;
-import com.unitTestGenerator.core.interfaces.IterminalMenueCore;
-import com.unitTestGenerator.printers.PrintAnalizeImports;
+import com.unitTestGenerator.analyzers.services.AnalizerProjectServiceI;
+import com.unitTestGenerator.analyzers.services.IProjectAnalizeService;
+import com.unitTestGenerator.menus.MainMenue;
 import com.unitTestGenerator.test.interfaces.IInternalTest;
 import com.unitTestGenerator.pojos.Clase;
 import com.unitTestGenerator.pojos.Project;
@@ -14,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class AppProjectStarted implements IProjectAnalizeCore, IterminalMenueCore,IInternalTest, ExtendsInInterfacesService, PrintAnalizeImports {
+public class AppProjectStarted implements IProjectAnalizeService, MainMenue,IInternalTest {
 
 
     private static AppProjectStarted instance;
@@ -60,30 +58,13 @@ public class AppProjectStarted implements IProjectAnalizeCore, IterminalMenueCor
         }
     }
 
-    private void analizarProyecto(Scanner scanner,  boolean isAnalisis ) {
-        System.out.println("Enter the project path:");
-        String pathProject = scanner.next();
-        projectAnalize(pathProject, isAnalisis);
-    }
 
-    private void projectAnalize(String pathProject,  boolean isAnalisis ){
-
-        if(pathProject != null){
-            this.project = this.executeProjectAnalize(pathProject, isAnalisis );
-            this.getInterfaceStructure(project);
-            this.getExtendsStructure(project);
-            this.projectAnalyzerType(this.project);
-            String uml = printUMLClass(this.project);
-            this.generateImportsMap(project);
-            this.printProjectAnalize(this.project,isAnalisis);
-
-        }
-    }
 
     private  void generateUnitsTest(Scanner scanner) {
 
         if(this.project.getClaseList().isEmpty()){
-            analizarProyecto(scanner, false);
+            AnalizerProjectServiceI.getInstance().analizerProject(scanner, false,this.project);
+//            this.project = analizarProyecto(scanner, false);
         }
         System.out.println("Enter the class name to test to generate the unit tests:");
         String nombreClase = scanner.next();
@@ -135,7 +116,9 @@ public class AppProjectStarted implements IProjectAnalizeCore, IterminalMenueCor
 
     @Override
     public void executeTest(String pathProject, boolean isAnalisis, String nombreClase, String method, Boolean useMock) {
-        this.projectAnalize( pathProject,  isAnalisis );
+
+        AnalizerProjectServiceI.getInstance().projectAnalize (pathProject,isAnalisis, this.project);
+//        this.projectAnalize( pathProject,  isAnalisis );
         if(!isAnalisis){
             if(method == null || method.equals("")){
                 method = "all";
@@ -146,7 +129,8 @@ public class AppProjectStarted implements IProjectAnalizeCore, IterminalMenueCor
 
     @Override
     public void analizedTest(String pathProject, boolean isAnalisis, String nombreClase, String method, Boolean useMock) {
-        this.projectAnalize( pathProject,  isAnalisis );
+        AnalizerProjectServiceI.getInstance().projectAnalize (pathProject,isAnalisis, this.project);
+//        this.projectAnalize( pathProject,  isAnalisis );
     }
 
 

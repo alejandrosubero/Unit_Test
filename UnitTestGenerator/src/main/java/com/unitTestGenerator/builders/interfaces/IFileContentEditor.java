@@ -4,7 +4,7 @@ import com.unitTestGenerator.pojos.Clase;
 import com.unitTestGenerator.pojos.Metodo;
 import com.unitTestGenerator.pojos.TestFileContent;
 import com.unitTestGenerator.pojos.Variable;
-import com.unitTestGenerator.analyzers.services.AnalyzeClassService;
+import com.unitTestGenerator.analyzers.services.AnalyzeClassServiceService;
 
 public interface IFileContentEditor {
 
@@ -20,8 +20,8 @@ public interface IFileContentEditor {
             Integer firstBraceIndex = oldContentValue.indexOf("{")+2;
             String contentWithVariables = "";
             String updatedContent = "";
-            Clase newClassContent = AnalyzeClassService.getInstance().getAnalisisOfVariables(newfileContent.toString());
-            Clase oldClassContent = AnalyzeClassService.getInstance().getAnalisisOfVariables(oldContentValue);
+            Clase newClassContent = AnalyzeClassServiceService.getInstance().getAnalisisOfVariables(newfileContent.toString());
+            Clase oldClassContent = AnalyzeClassServiceService.getInstance().getAnalisisOfVariables(oldContentValue);
 
             if (newfileContent != null && newfileContent.getTestsClassVariables() != null) {
 

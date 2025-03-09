@@ -1,6 +1,8 @@
 package com.unitTestGenerator.test;
 
 import java.util.List;
+
+import com.unitTestGenerator.persistence.model.DataPojo;
 import com.unitTestGenerator.persistence.repositories.DataDAOServicesImplement;
 import com.unitTestGenerator.persistence.model.Data;
 import com.unitTestGenerator.persistence.repositories.IDaoService;
@@ -10,9 +12,9 @@ public class AppTestDatabase {
 
     public static void main(String[] args) {
         IDaoService dao = new DataDAOServicesImplement();
-        List<Data> all = dao.findAll();
+        List<DataPojo> all = dao.findAll();
 
-        for (Data contact : all) {
+        for (DataPojo contact : all) {
             System.out.println("all = Id: " + contact.getId() + " | Name:" + contact.getName() + " | datos:" + contact.getDatos());
         }
 
@@ -29,7 +31,7 @@ public class AppTestDatabase {
 //        }
 
 //        List<Data> id2 = dao.findById2(2l);
-        Data id = dao.findById(2l);
+        DataPojo id = dao.findById(2l);
 
 //        for (Data contact : id2) {
 //            System.out.println("id2 object = Id: " + contact.getId() + " | Name:" + contact.getName() + " | datos:" + contact.getDatos());
@@ -37,7 +39,7 @@ public class AppTestDatabase {
         System.out.println("id object = Id: " + id.getId() + " | Name:" + id.getName() + " | datos:" + id.getDatos());
         id.setName("SUPERCALIFRAJILISTICO");
         dao.update(id);
-        Data id3 = dao.findById(2l);
+        DataPojo id3 = dao.findById(2l);
         System.out.println("id object = Id: " + id3.getId() + " | Name:" + id3.getName() + " | datos:" + id3.getDatos());
     }
 }

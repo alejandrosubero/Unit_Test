@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public interface PrintAnalizeImports {
+public interface IPrintAnalizeImports {
 
     default Project generateImportsMap(Project project) {
         Optional.ofNullable(project)

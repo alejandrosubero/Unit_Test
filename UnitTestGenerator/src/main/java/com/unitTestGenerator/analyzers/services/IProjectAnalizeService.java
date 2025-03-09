@@ -1,7 +1,6 @@
-package com.unitTestGenerator.core.interfaces;
+package com.unitTestGenerator.analyzers.services;
 
 import com.unitTestGenerator.analyzers.AnalizadorProyecto;
-import com.unitTestGenerator.analyzers.services.ExtendsInInterfacesService;
 import com.unitTestGenerator.pojos.Clase;
 import com.unitTestGenerator.pojos.Metodo;
 import com.unitTestGenerator.pojos.Project;
@@ -9,7 +8,7 @@ import com.unitTestGenerator.printers.PrintClassToUML;
 
 import java.util.List;
 
-public interface IProjectAnalizeCore   {
+public interface IProjectAnalizeService {
 
 
     default Project executeProjectAnalize(String pathProject, boolean isAnalisis) {
@@ -23,6 +22,15 @@ public interface IProjectAnalizeCore   {
             return project;
         }
         return null;
+    }
+
+    default String printUMLClass(Project projectP) {
+        StringBuilder buffer = new StringBuilder();
+        for (Clase classs : projectP.getClaseList()) {
+            PrintClassToUML umlClass = new PrintClassToUML(classs.getNombre(), classs.getVariables(), classs.getMetodos(), classs.getClassRelations());
+            buffer.append(umlClass.generarDiagrama()).append("\n").append("\n");
+        }
+        return buffer.toString();
     }
 
 
@@ -52,18 +60,7 @@ public interface IProjectAnalizeCore   {
         }
     }
 
-    default String printUMLClass(Project projectP) {
 
-        StringBuilder buffer = new StringBuilder();
-
-        for (Clase classs : projectP.getClaseList()) {
-            PrintClassToUML umlClass = new PrintClassToUML(classs.getNombre(), classs.getVariables(), classs.getMetodos(), classs.getClassRelations());
-            buffer.append(umlClass.generarDiagrama()).append("\n").append("\n");
-        }
-
-        return buffer.toString();
-
-    }
 
 
 }

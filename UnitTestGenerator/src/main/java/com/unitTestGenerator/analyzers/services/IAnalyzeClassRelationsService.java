@@ -11,7 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public interface IAnalyzeClassRelations extends IReturnType {
+public interface IAnalyzeClassRelationsService extends IReturnType {
 
     default void getClassSignatureLine(String contenido, Clase clase){
         Pattern patronClase =  Pattern.compile("public class (\\w+)(?:\\s+extends\\s+[^{]+)?(?:\\s+implements\\s+[^{]+)?\\s*\\{");

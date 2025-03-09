@@ -1,17 +1,18 @@
-package com.unitTestGenerator.core.interfaces;
+package com.unitTestGenerator.menus;
 
-import com.unitTestGenerator.pojos.Project;
 
 import java.util.Scanner;
 
-public interface IterminalMenueCore {
+public interface MainMenue {
 
     default void welcomeMenue(){
-        System.out.println("Welcome to the unit test creation tool");
-        System.out.println("Choose an option:");
-        System.out.println("1. Analyze project");
-        System.out.println("2. Generate unit tests");
-        System.out.println("3. Exit");
+        StringBuffer buffer = new StringBuffer();
+        buffer.append("Welcome to the unit test creation tool").append("\n");
+        buffer.append("Choose an option:").append("\n");
+        buffer.append("1. Analyze project").append("\n");
+        buffer.append("2. Generate unit tests").append("\n");
+        buffer.append("3. Exit").append("\n");
+        System.out.println(buffer.toString());
     }
 
     default boolean questionAboutUseMock(Scanner scanner) {
@@ -29,7 +30,6 @@ public interface IterminalMenueCore {
     default boolean askContinue(Scanner scanner) {
         System.out.println("Return to main menu? (y/n)");
         String response = scanner.next().toLowerCase();
-
         while (!response.equals("y") && !response.equals("n")) {
             System.out.println("Invalid response. Please enter 'y' for yes or 'n' for no.");
             response = scanner.next().toLowerCase();
@@ -37,17 +37,6 @@ public interface IterminalMenueCore {
         return response.equals("y");
     }
 
-    default void projectAnalyzerType(Project project){
-        if (project.getMaven()) {
-            System.out.println("Project Maven");
-        } else if (project.getGradle()) {
-            System.out.println("Project Gradle");
-        } else if (project.getGradle() && project.getMaven()) {
-            System.out.println("Project Gradle and Maven");
-        }else {
-            System.out.println("Unknown project type");
-        }
-    }
 
     default Integer getNumber(Scanner scanner){
         System.out.println("What method do you want to test?");

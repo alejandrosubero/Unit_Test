@@ -1,7 +1,7 @@
 package com.unitTestGenerator.analyzers.services;
 import java.util.regex.*;
 
-public interface ITodoDetector {
+public interface ITodoDetectorService {
 
     default String getTodo(String text) {
         StringBuffer buffer = new StringBuffer();
