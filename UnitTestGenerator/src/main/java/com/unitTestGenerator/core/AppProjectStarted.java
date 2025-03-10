@@ -40,7 +40,7 @@ public class AppProjectStarted implements IProjectAnalizeService, MainMenue,IInt
 
             switch (opcion) {
                 case 1:
-                    analizarProyecto(scanner, true);
+//                    analizarProyecto(scanner, true);
                     continuar = this.askContinue(scanner);
                     break;
                 case 2:
