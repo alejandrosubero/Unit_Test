@@ -1,9 +1,12 @@
-package com.unitTestGenerator.util;
+package com.unitTestGenerator.analyzers;
 
-import jdk.internal.org.xml.sax.InputSource;
+import com.unitTestGenerator.ioc.anotations.Componente;
+import com.unitTestGenerator.ioc.anotations.Singleton;
+import com.unitTestGenerator.pojos.Dependency;
+import com.unitTestGenerator.util.Dependencies;
+import com.unitTestGenerator.util.IConstantModel;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
@@ -17,28 +20,68 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.io.IOException;
-import java.io.StringReader;
 
-public class PomAnalyzer {
+@Componente
+@Singleton
+public class PomAnalyzer implements IConstantModel {
 
 
-    private static final String JUNIT_DEPENDENCY =
-            "<dependency>\n" +
-                    "    <groupId>org.junit.jupiter</groupId>\n" +
-                    "    <artifactId>junit-jupiter-api</artifactId>\n" +
-                    "    <version>5.8.2</version>\n" +
-                    "    <scope>test</scope>\n" +
-                    "</dependency>";
+    public PomAnalyzer(){
+    }
 
-    private static final String MOCK_DEPENDENCY =
-            "<dependency>\n" +
-                    "    <groupId>org.mockito</groupId>\n" +
-                    "    <artifactId>mockito-junit-jupiter</artifactId>\n" +
-                    "    <version>4.11.0</version>\n" +
-                    "    <scope>test</scope>\n" +
-                    "</dependency>";
 
-    public static void agregarDependencias(String rutaProyecto) {
+    private Boolean addTestDependency(Document documento) {
+        Boolean existDependency = false;
+        try {
+            if (!existeDependencia(documento, this.JUNIT_DEPENDENCY)) {
+                agregarDependencia(documento, Dependencies.JUNIT_DEPENDENCY);
+                existDependency = true;
+            }
+            if (!existeDependencia(documento, this.MOCK_DEPENDENCY)) {
+                existDependency = true;
+                agregarDependencia(documento, Dependencies.MOCK_DEPENDENCY);
+            }
+            if (!existeDependencia(documento, this.MOCK_DEPENDENCY_core)) {
+                existDependency = true;
+                agregarDependencia(documento, Dependencies.MOCK_DEPENDENCY_core);
+            }
+            return existDependency;
+        } catch (Exception e) {
+            System.out.println("Error add Test Dependency pom.xml: " + e.getMessage());
+            return false;
+        }
+    }
+
+    private Boolean addTestingDatabaseDependency(Document documento) {
+        Boolean existDependency = false;
+        try {
+            if (!existeDependencia(documento, this.H2_DEPENDENCY_TEST)) {
+                agregarDependencia(documento, Dependencies.H2_DEPENDENCY_TEST);
+                existDependency = true;
+            }
+            return existDependency;
+        } catch (Exception e) {
+            System.out.println("Error add testing database Dependency pom.xml: " + e.getMessage());
+            return false;
+        }
+    }
+
+    private Boolean addLombokDependency(Document documento) {
+        Boolean existDependency = false;
+        try {
+            if (!existeDependencia(documento, this.LOMBOK_DEPENDENCY)) {
+                agregarDependencia(documento, Dependencies.LOMBOK_DEPENDENCY);
+                existDependency = true;
+            }
+            return existDependency;
+        } catch (Exception e) {
+            System.out.println("Error add testing database Dependency pom.xml: " + e.getMessage());
+            return false;
+        }
+    }
+
+
+    public void addDependencys(String rutaProyecto, Integer typeDependency) {
 
         boolean existeDependency = false;
         try {
@@ -54,54 +97,31 @@ public class PomAnalyzer {
                 raiz.appendChild(dependenciesElement);
             }
 
-            if (!existeDependencia(documento, JUNIT_DEPENDENCY)) {
-                existeDependency = true;
-                agregarDependencia(documento,
-                        "org.junit.jupiter",
-                        "junit-jupiter-api",
-                        "5.8.2",
-                        "test");
-
-                agregarDependencia(documento,
-                        "junit",
-                        "junit",
-                        "4.13.2",
-                        "test");
-            }
-
-            if (!existeDependencia(documento, MOCK_DEPENDENCY)) {
-                existeDependency = true;
-                agregarDependencia(documento,
-                        "org.mockito",
-                        "mockito-junit-jupiter",
-                        "4.11.0",
-                        "test");
-            }
+            existeDependency = typeDependency == 1? addTestDependency(documento): typeDependency == 0? addTestingDatabaseDependency(documento):addLombokDependency(documento) ;
 
             if (existeDependency) {
-                guardarCambios(documento, rutaProyecto);
+                saveChanges(documento, rutaProyecto);
             }
         } catch (ParserConfigurationException | SAXException | IOException e) {
             System.out.println("Error al analizar el archivo pom.xml: " + e.getMessage());
         }
     }
-    private static boolean existeDependencia(Document documento, String dependencia) {
+
+    public Boolean existeDependencia(Document documento, String dependencia) {
         NodeList dependencies = documento.getElementsByTagName("dependency");
 
         for (int i = 0; i < dependencies.getLength(); i++) {
             Element dependency = (Element) dependencies.item(i);
 
-            // Verificar si dependency es null
             if (dependency != null) {
                 NodeList groupIdElements = dependency.getElementsByTagName("groupId");
                 NodeList artifactIdElements = dependency.getElementsByTagName("artifactId");
 
-                // Verificar si groupId y artifactId existen
+                // groupId y artifactId existen
                 if (groupIdElements.getLength() > 0 && artifactIdElements.getLength() > 0) {
                     String groupId = groupIdElements.item(0).getTextContent();
                     String artifactId = artifactIdElements.item(0).getTextContent();
 
-                    // Verificar si groupId y artifactId no son null
                     if (groupId != null && artifactId != null) {
                         if (groupId.equals(dependencia.split("<groupId>")[1].split("</groupId>")[0]) &&
                                 artifactId.equals(dependencia.split("<artifactId>")[1].split("</artifactId>")[0])) {
@@ -114,44 +134,38 @@ public class PomAnalyzer {
         return false;
     }
 
-    private static void agregarDependencia(Document documento, String groupId, String artifactId, String version, String scope) {
+    private  void agregarDependencia(Document documento, Dependency dependency) {
+
         Element dependencies = (Element) documento.getElementsByTagName("dependencies").item(0);
         Element nuevaDependencia = documento.createElement("dependency");
 
         Element grupoId = documento.createElement("groupId");
-        grupoId.setTextContent(groupId);
+        grupoId.setTextContent(dependency.getGroupId());
         nuevaDependencia.appendChild(grupoId);
 
         Element artifactIdElement = documento.createElement("artifactId");
-        artifactIdElement.setTextContent(artifactId);
+        artifactIdElement.setTextContent(dependency.getArtifactId());
         nuevaDependencia.appendChild(artifactIdElement);
 
         Element versionElement = documento.createElement("version");
-        versionElement.setTextContent(version);
+        versionElement.setTextContent(dependency.getVersion());
         nuevaDependencia.appendChild(versionElement);
 
         Element scopeElement = documento.createElement("scope");
-        scopeElement.setTextContent(scope);
+        scopeElement.setTextContent(dependency.getScope());
         nuevaDependencia.appendChild(scopeElement);
 
         dependencies.appendChild(nuevaDependencia);
     }
 
 
-//    private static void agregarDependencia(Document documento, String dependencia) {
-//        Element dependencies = (Element) documento.getElementsByTagName("dependencies").item(0);
-//        Element nuevaDependencia = documento.createElement("dependency");
-//        nuevaDependencia.appendChild(documento.createCDATASection(dependencia));
-//        dependencies.appendChild(nuevaDependencia);
-//    }
 
-
-    private static void guardarCambios(Document documento, String rutaProyecto) {
+    private  void saveChanges(Document documento, String projectPath) {
         try {
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer();
             DOMSource source = new DOMSource(documento);
-            StreamResult result = new StreamResult(new File(rutaProyecto + "/pom.xml"));
+            StreamResult result = new StreamResult(new File(projectPath + "/pom.xml"));
             transformer.transform(source, result);
             System.out.println("Dependencias agregadas correctamente.");
         } catch (TransformerException e) {
