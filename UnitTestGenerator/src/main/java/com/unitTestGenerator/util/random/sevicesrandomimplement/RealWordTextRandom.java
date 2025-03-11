@@ -1,11 +1,14 @@
 package com.unitTestGenerator.util.random.sevicesrandomimplement;
 
+import com.unitTestGenerator.ioc.anotations.Componente;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+@Componente
 public class RealWordTextRandom {
 
     private static final List<String> WORD_BANK = Arrays.asList(
@@ -30,7 +33,10 @@ public class RealWordTextRandom {
 
     private static final Random random = new Random();
 
-    public static String generateMeaningfulText(int wordCount) {
+    public RealWordTextRandom() {
+    }
+
+    public String generateMeaningfulText(int wordCount) {
         Collections.shuffle(WORD_BANK);
         List<String> selectedWords = WORD_BANK.stream().limit(wordCount).collect(Collectors.toList());
         return processText(selectedWords);

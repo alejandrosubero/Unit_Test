@@ -1,5 +1,8 @@
 package com.unitTestGenerator.persistence.repositories;
 
+import com.unitTestGenerator.ioc.anotations.Componente;
+import com.unitTestGenerator.ioc.anotations.Inyect;
+import com.unitTestGenerator.ioc.anotations.Singleton;
 import com.unitTestGenerator.persistence.mapper.DataDaoMapper;
 import com.unitTestGenerator.persistence.model.Data;
 
@@ -12,11 +15,15 @@ import org.hibernate.service.ServiceRegistryBuilder;
 import java.util.List;
 import java.util.Properties;
 
+@Componente
+@Singleton
 public class DataDAOServicesImplement implements IDaoService {
 
     private static SessionFactory sessionFactory = null;
     private static ServiceRegistry serviceRegistry = null;
-    private static DataDaoMapper mapper = new DataDaoMapper();
+
+    @Inyect
+    private static DataDaoMapper mapper;
 
     public DataDAOServicesImplement() {
         configureSessionFactory();

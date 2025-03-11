@@ -1,8 +1,11 @@
 package com.unitTestGenerator.persistence.model;
 
 
+import com.unitTestGenerator.ioc.anotations.Componente;
+
 import java.util.Objects;
 
+@Componente
 public class DataPojo {
 
     private Long id;

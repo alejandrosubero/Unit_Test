@@ -1,6 +1,7 @@
 package com.unitTestGenerator.analyzers.services;
 
 
+import com.unitTestGenerator.ioc.anotations.Componente;
 import com.unitTestGenerator.pojos.Clase;
 import com.unitTestGenerator.pojos.ImportAnalizePojo;
 import com.unitTestGenerator.util.IBaseModel;
@@ -10,10 +11,13 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Componente
+public class ImportAnalizeService implements IBaseModel {
 
-public class IImportAnalizeService implements IBaseModel {
+    public ImportAnalizeService() {
+    }
 
-    public static ImportAnalizePojo importAnalize(Clase clase) {
+    public ImportAnalizePojo importAnalize(Clase clase) {
 
         ImportAnalizePojo importAnalizePojo = null;
         String[] parts = clase.getPaquete().split("\\.");

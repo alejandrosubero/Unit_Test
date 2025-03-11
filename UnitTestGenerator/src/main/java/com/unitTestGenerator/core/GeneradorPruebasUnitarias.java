@@ -1,12 +1,10 @@
 package com.unitTestGenerator.core;
 
-import com.unitTestGenerator.analyzers.GradleAnalyzer;
-import com.unitTestGenerator.analyzers.PomAnalyzer;
+
 import com.unitTestGenerator.builders.BuildTestFile;
-import com.unitTestGenerator.interfaces.IApplicationTestProperties;
 import com.unitTestGenerator.interfaces.IManageMavenGadleAppProperties;
-import com.unitTestGenerator.util.IBaseModel;
-import com.unitTestGenerator.builders.interfaces.IFileManager;
+import com.unitTestGenerator.ioc.anotations.Componente;
+import com.unitTestGenerator.ioc.anotations.Inyect;
 import com.unitTestGenerator.pojos.Clase;
 import com.unitTestGenerator.pojos.Project;
 import com.unitTestGenerator.pojos.TestFileContent;
@@ -15,39 +13,51 @@ import com.unitTestGenerator.services.GenerateMethodService;
 import com.unitTestGenerator.services.GeneratedVariableService;
 import com.unitTestGenerator.services.MethodParameterObject;
 
-import java.io.File;
 
-
+@Componente
 public class GeneradorPruebasUnitarias implements IManageMavenGadleAppProperties {
 
     private Project project;
 
+    @Inyect
+    private GenerateMethodService generateMethodService;
+
+    @Inyect
+    private GeneratedVariableService generatedVariableService;
+
+    @Inyect
+    private MethodParameterObject methodParameterObject;
+
+    @Inyect
+    private BuildTestFile buildTestFile;
+
     public GeneradorPruebasUnitarias() {
     }
 
-    public GeneradorPruebasUnitarias(Project project) {
+    public void setProject(Project project) {
         this.project = project;
     }
+
 
     public void generateTest(Clase clase, String pathProject) {
        this.projectTypeDependencesAnalizer(pathProject, this.project);
         TestFileContent fileContent = generateTestFileBody(clase);
         String pathOfTest = this.getPathOfTest(clase,pathProject);
-        BuildTestFile.getInstance().createTestFile(pathOfTest, fileContent);
+        buildTestFile.createTestFile(pathOfTest, fileContent);
     }
 
     private  TestFileContent generateTestFileBody(Clase clase) {
-        GeneratedVariableService variableService = GeneratedVariableService.getInstance();
+//        GeneratedVariableService variableService = generatedVariableService.getInstance();
         TestFileContent fileContent = TestFileContent.builder()
                 .testsClassImport(this.generateImport(clase))
                 .testsClassSingne(this.classSingne(clase))
-                .testsClassVariables(variableService.generateVariable(clase))
+                .testsClassVariables(generatedVariableService.generateVariable(clase))
                 .testsClassMethods("")
                 .build();
         if(!clase.getUseMock()) {
             this.applicationTestPropertiesExist(this.project);
         }
-        TestFileContent fileContentGenerate =  GenerateMethodService.getInstance().generateMethods(clase,this.project, fileContent);
+        TestFileContent fileContentGenerate =  generateMethodService.generateMethods(clase,this.project, fileContent);
         return fileContentGenerate;
     }
 
@@ -83,7 +93,7 @@ public class GeneradorPruebasUnitarias implements IManageMavenGadleAppProperties
         }
 
         contex.append( this.stringEnsamble("import ", clase.getPaquete(), ".",clase.getNombre())).append(";").append("\n");
-        contex.append(MethodParameterObject.getInstance().getImportMethodParameterObject(clase,project));
+        contex.append(methodParameterObject.getImportMethodParameterObject(clase,project));
 
         for(Variable variable : clase.getVariables()){
             this.project.getClaseList().stream().forEach(projectClass -> {

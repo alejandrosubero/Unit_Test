@@ -10,31 +10,31 @@ import java.util.Set;
 import com.unitTestGenerator.ioc.anotations.*;
 import org.reflections.Reflections;
 
-    public class AplicationContextIOC {
+    public class ContextIOC {
 
-        private static AplicationContextIOC instance;
+        private static ContextIOC instance;
         private  static Class<?> nainClass;
         private Map<String, Object> singletonInstances = new HashMap<>();
         private Map<String, Class<?>> registeredClasses = new HashMap<>();
 
-        public AplicationContextIOC() {
+        public ContextIOC() {
         }
 
-        public static AplicationContextIOC getInstance(){
+        public static ContextIOC getInstance(){
             if(instance == null){
-                instance = new AplicationContextIOC();
+                instance = new ContextIOC();
             }
             return instance;
         }
 
-        public static AplicationContextIOC getInstance(String packge){
+        public static ContextIOC getInstance(String packge){
             instance = getInstance();
             instance.scanPackage(packge);
             return instance;
         }
 
 
-        public static AplicationContextIOC getInstance(Class<?> clazzI) {
+        public static ContextIOC getInstance(Class<?> clazzI) {
             try {
                 instance = getInstance();
                 nainClass = clazzI;
@@ -54,14 +54,6 @@ import org.reflections.Reflections;
         }
 
 
-
-
-
-
-
-
-
-
         // Scan a package and automatically register classes annotated with @Componente
         public void scanPackage(String packageName) {
             Reflections reflections = new Reflections(packageName);
@@ -71,7 +63,6 @@ import org.reflections.Reflections;
                 register(clazz);
             }
         }
-
 
 
         // Register a class in the container
@@ -106,8 +97,6 @@ import org.reflections.Reflections;
                 throw new RuntimeException("Error creating instance of " + clazz.getName(), e);
             }
         }
-
-
 
         // Get the constructor with dependencies (the one with parameters)
         private Constructor<?> getConstructorWithDependencies(Class<?> clazz) {

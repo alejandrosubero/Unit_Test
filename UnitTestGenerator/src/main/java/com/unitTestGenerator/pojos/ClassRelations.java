@@ -1,9 +1,12 @@
 package com.unitTestGenerator.pojos;
 
+import com.unitTestGenerator.ioc.anotations.Componente;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@Componente
 public class ClassRelations {
 
     private String className;

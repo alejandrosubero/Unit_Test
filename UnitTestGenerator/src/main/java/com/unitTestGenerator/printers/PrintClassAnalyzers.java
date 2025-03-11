@@ -1,21 +1,25 @@
 package com.unitTestGenerator.printers;
 
+import com.unitTestGenerator.ioc.anotations.Componente;
+import com.unitTestGenerator.ioc.anotations.Singleton;
 import com.unitTestGenerator.pojos.Clase;
 import com.unitTestGenerator.pojos.Metodo;
 import com.unitTestGenerator.pojos.Project;
 
+@Componente
+@Singleton
 public class PrintClassAnalyzers {
 
-    private static PrintClassAnalyzers instance;
+//    private static PrintClassAnalyzers instance;
 
-    public static PrintClassAnalyzers getInstance(){
-        if(instance == null){
-            instance = new PrintClassAnalyzers();
-        }
-        return instance;
-    }
+//    public static PrintClassAnalyzers getInstance(){
+//        if(instance == null){
+//            instance = new PrintClassAnalyzers();
+//        }
+//        return instance;
+//    }
 
-    private  PrintClassAnalyzers() {
+    public   PrintClassAnalyzers() {
     }
 
 

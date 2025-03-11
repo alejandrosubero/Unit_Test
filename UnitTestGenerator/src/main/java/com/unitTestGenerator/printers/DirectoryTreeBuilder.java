@@ -1,24 +1,29 @@
 package com.unitTestGenerator.printers;
 
+import com.unitTestGenerator.ioc.anotations.Componente;
+import com.unitTestGenerator.ioc.anotations.Singleton;
 import com.unitTestGenerator.util.DetectSO;
 import com.unitTestGenerator.util.IBaseModel;
 
 import java.util.*;
 
+@Componente
+@Singleton
 public class DirectoryTreeBuilder implements IBaseModel {
 
-    public static DirectoryTreeBuilder instance;
     private final TreeNode root = new TreeNode("");
     private String projetName;
 
-    public static DirectoryTreeBuilder getInstance() {
-        if (instance == null){
-            instance = new DirectoryTreeBuilder();
-        }
-        return instance;
-    }
+//    public static DirectoryTreeBuilder instance;
 
-    private DirectoryTreeBuilder() {
+//    public static DirectoryTreeBuilder getInstance() {
+//        if (instance == null){
+//            instance = new DirectoryTreeBuilder();
+//        }
+//        return instance;
+//    }
+
+    public DirectoryTreeBuilder() {
     }
 
     public void setProjetName(String projetPath){

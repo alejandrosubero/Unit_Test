@@ -1,7 +1,10 @@
 package com.unitTestGenerator.pojos;
 
+import com.unitTestGenerator.ioc.anotations.Componente;
+
 import java.util.Objects;
 
+@Componente
 public class EstructuraControl {
 
     private String tipo;

@@ -1,5 +1,7 @@
 package com.unitTestGenerator.persistence.mapper;
 
+import com.unitTestGenerator.ioc.anotations.Componente;
+import com.unitTestGenerator.ioc.anotations.Singleton;
 import com.unitTestGenerator.persistence.model.Data;
 import com.unitTestGenerator.persistence.model.DataPojo;
 import org.modelmapper.ModelMapper;
@@ -10,6 +12,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.Optional;
 
+@Componente
+@Singleton
 public class DataDaoMapper {
 
     private static final ModelMapper modelMapper = new ModelMapper();

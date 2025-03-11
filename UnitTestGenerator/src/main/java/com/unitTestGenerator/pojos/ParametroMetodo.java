@@ -1,6 +1,8 @@
 package com.unitTestGenerator.pojos;
 
+import com.unitTestGenerator.ioc.anotations.Componente;
 
+@Componente
 public class ParametroMetodo {
     private String nombre;
     private String tipo;
@@ -37,7 +39,6 @@ public class ParametroMetodo {
     public interface ParametroMetodoBuilder {
         public Builder nombre(String nombre);
         public Builder tipo(String tipo);
-
         public ParametroMetodo build();
     }
 

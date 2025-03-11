@@ -1,6 +1,8 @@
 package com.unitTestGenerator.util.random.servicesRandom;
 
+import com.unitTestGenerator.ioc.anotations.Componente;
 
+@Componente
 public interface IAddressRandomService {
 
 

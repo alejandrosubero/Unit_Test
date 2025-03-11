@@ -1,13 +1,16 @@
 package com.unitTestGenerator.pojos;
 
+import com.unitTestGenerator.ioc.anotations.Componente;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@Componente
 public class ImportAnalizePojo {
 
     private List<String> externalImports = new ArrayList<>();
-    private List<String>  projectImports = new ArrayList<>();
+    private List<String> projectImports = new ArrayList<>();
     private String projectImportsMap;
 
 

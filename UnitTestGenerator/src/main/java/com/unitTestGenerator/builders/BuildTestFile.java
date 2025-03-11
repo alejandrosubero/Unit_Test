@@ -2,19 +2,23 @@ package com.unitTestGenerator.builders;
 
 import com.unitTestGenerator.builders.interfaces.IFileContentEditor;
 import com.unitTestGenerator.builders.interfaces.IFileManager;
+import com.unitTestGenerator.ioc.anotations.Componente;
+import com.unitTestGenerator.ioc.anotations.Singleton;
 import com.unitTestGenerator.pojos.TestFileContent;
 
 import java.io.File;
 import java.util.Scanner;
 
+@Componente
+@Singleton
 public class BuildTestFile implements IFileContentEditor, IFileManager {
 
     public BuildTestFile() {
     }
 
-    public static BuildTestFile getInstance() {
-        return new BuildTestFile();
-    }
+//    public static BuildTestFile getInstance() {
+//        return new BuildTestFile();
+//    }
 
 
     public void createTestFile(String ruta, TestFileContent content) {

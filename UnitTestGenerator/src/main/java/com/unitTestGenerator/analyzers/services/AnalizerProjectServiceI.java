@@ -1,22 +1,26 @@
 package com.unitTestGenerator.analyzers.services;
 
+import com.unitTestGenerator.ioc.anotations.Componente;
+import com.unitTestGenerator.ioc.anotations.Singleton;
 import com.unitTestGenerator.pojos.Project;
 import com.unitTestGenerator.printers.IPrintAnalizeImports;
 
 import java.util.Scanner;
 
+@Componente
+@Singleton
 public class AnalizerProjectServiceI implements IPrintAnalizeImports, IExtendsInInterfacesService, IProjectAnalizeService {
 
-    private static AnalizerProjectServiceI instance;
+//    private static AnalizerProjectServiceI instance;
 
-    public static AnalizerProjectServiceI getInstance(){
-        if(instance == null){
-            instance = new AnalizerProjectServiceI();
-        }
-        return instance;
-    }
+//    public static AnalizerProjectServiceI getInstance(){
+//        if(instance == null){
+//            instance = new AnalizerProjectServiceI();
+//        }
+//        return instance;
+//    }
 
-    private AnalizerProjectServiceI() {
+    public AnalizerProjectServiceI() {
     }
 
 

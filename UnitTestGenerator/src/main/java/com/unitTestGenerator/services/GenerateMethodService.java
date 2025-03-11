@@ -1,5 +1,8 @@
 package com.unitTestGenerator.services;
 
+import com.unitTestGenerator.ioc.anotations.Componente;
+import com.unitTestGenerator.ioc.anotations.Inyect;
+import com.unitTestGenerator.ioc.anotations.Singleton;
 import com.unitTestGenerator.util.IBaseModel;
 import com.unitTestGenerator.pojos.*;
 
@@ -8,28 +11,40 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Componente
+@Singleton
 public class GenerateMethodService implements IBaseModel {
 
     private Project project;
-    private static GenerateMethodService instance;
+//    private static GenerateMethodService instance;
+
     private MockitoWhen mockitoWhen;
     private GenerateContentMockService generateContentMockService;
     private GenerateContentWithoutMockService contentWithoutMockService;
+    private MethodParameterObject methodParameterObject;
 
-    private GenerateMethodService(){
-            this.mockitoWhen = new MockitoWhen();
-            this.generateContentMockService = GenerateContentMockService.getInstance();
-            this.contentWithoutMockService = GenerateContentWithoutMockService.getInstance();
+    public GenerateMethodService(MockitoWhen mockitoWhen, GenerateContentMockService generateContentMockService, GenerateContentWithoutMockService contentWithoutMockService, MethodParameterObject methodParameterObject) {
+        this.mockitoWhen = mockitoWhen;
+        this.generateContentMockService = generateContentMockService;
+        this.contentWithoutMockService = contentWithoutMockService;
+        this.methodParameterObject = methodParameterObject;
     }
 
-    public static GenerateMethodService getInstance(){
-        if(instance == null){
-            instance = new GenerateMethodService();
-        }
-        return instance;
-    }
+    //    private GenerateMethodService(){
+//            this.mockitoWhen = new MockitoWhen();
+//            this.generateContentMockService = GenerateContentMockService.getInstance();
+//            this.contentWithoutMockService = GenerateContentWithoutMockService.getInstance();
+//    }
 
-    private void setProject(Project project){
+
+//    public static GenerateMethodService getInstance(){
+//        if(instance == null){
+//            instance = new GenerateMethodService();
+//        }
+//        return instance;
+//    }
+
+    public void setProject(Project project){
        try {
            this.project = project;
            if(this.generateContentMockService != null) {
@@ -72,7 +87,7 @@ public class GenerateMethodService implements IBaseModel {
     }
 
     private TestFileContent setContent(TestFileContent fileContent,  Clase clase, Project project,Metodo metodo){
-        String variable = MethodParameterObject.getInstance().methodParameterObject(metodo, project, clase.getUseMock());
+        String variable = methodParameterObject.methodParameterObject(metodo, project, clase.getUseMock());
         if (variable != null) {
             List<String> mockDeclarations = new ArrayList<>();
             String regex = "(?s)@Mock\\s+private\\s+\\w+\\s+\\w+;";

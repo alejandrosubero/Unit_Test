@@ -1,5 +1,7 @@
 package com.unitTestGenerator.analyzers;
 
+import com.unitTestGenerator.ioc.anotations.Componente;
+import com.unitTestGenerator.ioc.anotations.Singleton;
 import com.unitTestGenerator.pojos.Dependency;
 import com.unitTestGenerator.util.Dependencies;
 import com.unitTestGenerator.util.IConstantModel;
@@ -19,19 +21,21 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.io.IOException;
 
+@Componente
+@Singleton
 public class PomAnalyzer implements IConstantModel {
 
-    private static PomAnalyzer instance;
+//    private static PomAnalyzer instance;
 
-    private PomAnalyzer(){
+    public PomAnalyzer(){
     }
 
-    public static PomAnalyzer getInstance() {
-        if(instance == null){
-            instance = new PomAnalyzer();
-        }
-        return instance;
-    }
+//    public static PomAnalyzer getInstance() {
+//        if(instance == null){
+//            instance = new PomAnalyzer();
+//        }
+//        return instance;
+//    }
 
 
     private Boolean addTestDependency(Document documento) {

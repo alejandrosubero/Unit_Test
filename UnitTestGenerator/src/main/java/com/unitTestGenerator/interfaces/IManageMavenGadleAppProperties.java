@@ -3,6 +3,7 @@ package com.unitTestGenerator.interfaces;
 import com.unitTestGenerator.analyzers.GradleAnalyzer;
 import com.unitTestGenerator.analyzers.PomAnalyzer;
 import com.unitTestGenerator.builders.interfaces.IFileManager;
+import com.unitTestGenerator.ioc.ContextIOC;
 import com.unitTestGenerator.pojos.Clase;
 import com.unitTestGenerator.pojos.Project;
 import com.unitTestGenerator.util.IBaseModel;
@@ -14,7 +15,9 @@ public interface IManageMavenGadleAppProperties extends IApplicationTestProperti
 
     default void gradleAnalyzer(String pathProject, Integer importType){
         File fileGradle = new File( this.stringEnsamble(pathProject , Separator ,"build.gradle"));
-        GradleAnalyzer analyzer = new GradleAnalyzer(fileGradle);
+        GradleAnalyzer analyzer = ContextIOC.getInstance().getClassInstance(GradleAnalyzer.class);
+        analyzer.setArchivoGradle(fileGradle);
+
         if(importType == 1){
             analyzer.startedMokitoDependencys();
         }
@@ -28,7 +31,7 @@ public interface IManageMavenGadleAppProperties extends IApplicationTestProperti
 
     default void projectTypeDependencesAnalizer(String pathProject, Project project){
         if(project.getMaven()) {
-            PomAnalyzer.getInstance().addDependencys(pathProject,1);
+          ContextIOC.getInstance().getClassInstance(PomAnalyzer.class).addDependencys(pathProject,1);
         } else if(project.getGradle()){
             this.gradleAnalyzer( pathProject, 1);
         }
@@ -36,7 +39,7 @@ public interface IManageMavenGadleAppProperties extends IApplicationTestProperti
 
     default void addLombokDependency(Project project){
         if(project.getMaven()) {
-            PomAnalyzer.getInstance().addDependencys(project.getPathProject(),2);
+            ContextIOC.getInstance().getClassInstance(PomAnalyzer.class).addDependencys(project.getPathProject(),2);
         } else if(project.getGradle()){
             this.gradleAnalyzer( project.getPathProject(), 2);
         }
@@ -48,7 +51,7 @@ public interface IManageMavenGadleAppProperties extends IApplicationTestProperti
 
         if(!filePathExists(basePath)){
             if(project.getMaven()) {
-                PomAnalyzer.getInstance().addDependencys(project.getPathProject(),0);
+                ContextIOC.getInstance().getClassInstance(PomAnalyzer.class).addDependencys(project.getPathProject(),0);
             } else if(project.getGradle()){
                 this.gradleAnalyzer( project.getPathProject(), 0);
             }

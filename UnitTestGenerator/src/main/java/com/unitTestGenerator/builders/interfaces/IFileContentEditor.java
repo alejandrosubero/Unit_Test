@@ -1,5 +1,7 @@
 package com.unitTestGenerator.builders.interfaces;
 
+import com.unitTestGenerator.ioc.ContextIOC;
+import com.unitTestGenerator.ioc.anotations.Inyect;
 import com.unitTestGenerator.pojos.Clase;
 import com.unitTestGenerator.pojos.Metodo;
 import com.unitTestGenerator.pojos.TestFileContent;
@@ -7,7 +9,6 @@ import com.unitTestGenerator.pojos.Variable;
 import com.unitTestGenerator.analyzers.services.AnalyzeClassServiceService;
 
 public interface IFileContentEditor {
-
 
 
     default String mixFileContentOrAddContent( String oldContentValue, TestFileContent newfileContent) {
@@ -20,8 +21,9 @@ public interface IFileContentEditor {
             Integer firstBraceIndex = oldContentValue.indexOf("{")+2;
             String contentWithVariables = "";
             String updatedContent = "";
-            Clase newClassContent = AnalyzeClassServiceService.getInstance().getAnalisisOfVariables(newfileContent.toString());
-            Clase oldClassContent = AnalyzeClassServiceService.getInstance().getAnalisisOfVariables(oldContentValue);
+            AnalyzeClassServiceService analyzeClassServiceService = ContextIOC.getInstance().getClassInstance(AnalyzeClassServiceService.class);
+            Clase newClassContent = analyzeClassServiceService.getAnalisisOfVariables(newfileContent.toString());
+            Clase oldClassContent = analyzeClassServiceService.getAnalisisOfVariables(oldContentValue);
 
             if (newfileContent != null && newfileContent.getTestsClassVariables() != null) {
 
@@ -78,8 +80,5 @@ public interface IFileContentEditor {
         }
         return ultimoIndice;
     }
-
-
-
 
 }

@@ -5,6 +5,9 @@ import com.unitTestGenerator.interfaces.IClassObject;
 import com.unitTestGenerator.interfaces.IManageMavenGadleAppProperties;
 import com.unitTestGenerator.interfaces.IMethodServiceTools;
 import com.unitTestGenerator.interfaces.IReturnType;
+import com.unitTestGenerator.ioc.anotations.Componente;
+import com.unitTestGenerator.ioc.anotations.Inyect;
+import com.unitTestGenerator.ioc.anotations.Singleton;
 import com.unitTestGenerator.pojos.*;
 import com.unitTestGenerator.util.IBaseModel;
 
@@ -14,20 +17,25 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
+@Componente
+@Singleton
 public class GenerateContentWithoutMockService implements IReturnType, IMethodServiceTools, IManageMavenGadleAppProperties, IClassObject {
 
-    public static GenerateContentWithoutMockService instance;
+//    public static GenerateContentWithoutMockService instance;
     private Project project;
 
-    private GenerateContentWithoutMockService() {
+    @Inyect
+    private AddPatterBuilder addPatterBuilder;
+
+    public GenerateContentWithoutMockService() {
     }
 
-    public static GenerateContentWithoutMockService getInstance(){
-        if(instance == null){
-            instance = new GenerateContentWithoutMockService();
-        }
-        return instance;
-    }
+//    public static GenerateContentWithoutMockService getInstance(){
+//        if(instance == null){
+//            instance = new GenerateContentWithoutMockService();
+//        }
+//        return instance;
+//    }
 
     public void setProject(Project project){
         this.project = project;
@@ -116,7 +124,7 @@ public class GenerateContentWithoutMockService implements IReturnType, IMethodSe
                             stringEnsamble( clase1.getNombre(),".java")
                     );
                     try {
-                        AddPatterBuilder.getInstance().generateBuilderPatterFromClassFile(filePath);
+                        addPatterBuilder.generateBuilderPatterFromClassFile(filePath);
                         clase1.setApplyBuildMethod(true);
                         clase1.setUseLomboxBuild(false);
                     } catch (IOException e) {

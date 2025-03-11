@@ -9,7 +9,7 @@ import com.unitTestGenerator.test.ioc.IocConected;
 public class testIOC {
 
     public static void main(String[] args) {
-        AplicationContextIOC.getInstance(testIOC.class).getClassInstance(IocConected.class).ejecute();
+        ContextIOC.getInstance(testIOC.class).getClassInstance(IocConected.class).ejecute();
     }
 
 }

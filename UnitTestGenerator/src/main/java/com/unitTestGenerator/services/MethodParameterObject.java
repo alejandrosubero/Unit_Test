@@ -1,25 +1,29 @@
 package com.unitTestGenerator.services;
 
 import com.unitTestGenerator.interfaces.IGenerateVariable;
+import com.unitTestGenerator.ioc.anotations.Componente;
+import com.unitTestGenerator.ioc.anotations.Singleton;
 import com.unitTestGenerator.pojos.Clase;
 import com.unitTestGenerator.pojos.Metodo;
 import com.unitTestGenerator.pojos.Project;
 
 import java.util.*;
 
+@Componente
+@Singleton
 public class MethodParameterObject implements IGenerateVariable {
 
     private Map<String, Clase> claseDirectory = new HashMap<>();
-    private static MethodParameterObject instance;
+//    private static MethodParameterObject instance;
 
-    private MethodParameterObject(){}
+    public MethodParameterObject(){}
 
-    public static MethodParameterObject getInstance(){
-        if(instance == null){
-            instance = new MethodParameterObject();
-        }
-        return instance;
-    }
+//    public static MethodParameterObject getInstance(){
+//        if(instance == null){
+//            instance = new MethodParameterObject();
+//        }
+//        return instance;
+//    }
 
 
     public String methodParameterObject(Metodo method, Project project, boolean isMock ){

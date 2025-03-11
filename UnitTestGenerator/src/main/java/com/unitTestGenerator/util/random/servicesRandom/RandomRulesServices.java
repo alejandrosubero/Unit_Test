@@ -2,6 +2,8 @@ package com.unitTestGenerator.util.random.servicesRandom;
 
 import com.unitTestGenerator.interfaces.IClassObject;
 import com.unitTestGenerator.interfaces.IReturnType;
+import com.unitTestGenerator.ioc.anotations.Componente;
+import com.unitTestGenerator.ioc.anotations.Singleton;
 import com.unitTestGenerator.pojos.Clase;
 import com.unitTestGenerator.pojos.Project;
 import com.unitTestGenerator.pojos.Variable;
@@ -10,22 +12,24 @@ import com.unitTestGenerator.util.IConstantModel;
 import java.util.Arrays;
 import java.util.List;
 
+@Componente
+@Singleton
 public class RandomRulesServices implements IReturnType {
 
     private static List<String> collectionListTypeNames = Arrays.asList("List", "Set", "ArrayList", "LinkedList", "Vector", "Stack", "HashSet", "TreeSet", "LinkedHashSet", "Queue", "LinkedList", "PriorityQueue", "Deque", "ArrayDeque", "LinkedList");
     private static List<String> collectionMapTypeNames = Arrays.asList("Map", "HashMap", "TreeMap", "LinkedHashMap", "HashTable");
 
-    private static RandomRulesServices instance;
+//    private static RandomRulesServices instance;
 
-    private RandomRulesServices() {
+    public RandomRulesServices() {
     }
 
-    public static RandomRulesServices getInstance() {
-        if (instance == null) {
-            instance = new RandomRulesServices();
-        }
-        return instance;
-    }
+//    public static RandomRulesServices getInstance() {
+//        if (instance == null) {
+//            instance = new RandomRulesServices();
+//        }
+//        return instance;
+//    }
 
     public static Boolean nameC(String variableName) {
         if (variableName == null) return false;
@@ -85,7 +89,7 @@ public class RandomRulesServices implements IReturnType {
     }
 
 
-    public  String buildObjectSetValues(Variable variable) {
+    public String buildObjectSetValues(Variable variable) {
         String response = "";
         if (variable != null) {
             StringBuilder content = new StringBuilder();

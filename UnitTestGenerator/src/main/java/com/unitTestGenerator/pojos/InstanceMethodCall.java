@@ -1,9 +1,12 @@
 package com.unitTestGenerator.pojos;
 
 
+import com.unitTestGenerator.ioc.anotations.Componente;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@Componente
 public class InstanceMethodCall {
 
     private String method;

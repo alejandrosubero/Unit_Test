@@ -1,5 +1,9 @@
 package com.unitTestGenerator.analyzers.services;
 
+import com.unitTestGenerator.ioc.ContextIOC;
+import com.unitTestGenerator.ioc.anotations.Componente;
+import com.unitTestGenerator.ioc.anotations.Inyect;
+import com.unitTestGenerator.ioc.anotations.Singleton;
 import com.unitTestGenerator.pojos.*;
 import com.unitTestGenerator.services.MethodService;
 import org.apache.commons.io.FileUtils;
@@ -10,22 +14,27 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Componente
+@Singleton
 public class AnalyzeClassServiceService implements IAnalyzeCassMethodService, IAnalyzeClassRelationsService {
 
-    public static AnalyzeClassServiceService instance;
+//    public static AnalyzeClassServiceService instance;
+//
+//    public static AnalyzeClassServiceService getInstance() {
+//        if (instance == null){
+//            instance = new AnalyzeClassServiceService();
+//        }
+//        return instance;
+//    }
 
-    public static AnalyzeClassServiceService getInstance() {
-        if (instance == null){
-            instance = new AnalyzeClassServiceService();
-        }
-        return instance;
-    }
+    @Inyect
+    private MethodService methodService;
 
-    private AnalyzeClassServiceService() {
+    public AnalyzeClassServiceService() {
     }
 
     public Clase getAnalisisOfVariables(String content){
-        Clase clase = new Clase();
+        Clase clase = ContextIOC.getInstance().getClassInstance(Clase.class);
         try {
             clase = analyzeClaseContentString(content);
         } catch (Exception e) {
@@ -35,7 +44,7 @@ public class AnalyzeClassServiceService implements IAnalyzeCassMethodService, IA
     }
 
     public Clase getAnalisisOfContenidoMetodo(String content){
-        Clase clase = new Clase();
+        Clase clase = ContextIOC.getInstance().getClassInstance(Clase.class);
         analyzeMethods(content, clase);
         return clase;
     }
@@ -49,7 +58,6 @@ public class AnalyzeClassServiceService implements IAnalyzeCassMethodService, IA
                classs.setClassPath(path);
            }
             return classs;
-
         } catch (Exception e) {
             System.out.println("Error al analizar archivo: " + archivo.getName());
         }
@@ -57,8 +65,8 @@ public class AnalyzeClassServiceService implements IAnalyzeCassMethodService, IA
     }
 
 
-    private  Clase analyzeClaseContentString( String content) throws Exception {
-        Clase clase = new Clase();
+    private Clase analyzeClaseContentString( String content) throws Exception {
+        Clase clase = ContextIOC.getInstance().getClassInstance(Clase.class);
 
         clase.setRawClass(content);
         analyzePackage(content, clase);
@@ -100,8 +108,7 @@ public class AnalyzeClassServiceService implements IAnalyzeCassMethodService, IA
                 clase.setIndexFirmaClass(matcherInterface.start(1));
             }
         }
-
-        this.getClassSignatureLine( contenido, clase);
+        this.getClassSignatureLine(contenido, clase);
         this.getClassRelationsInClassSignatureLine(clase);
     }
 
@@ -112,7 +119,7 @@ public class AnalyzeClassServiceService implements IAnalyzeCassMethodService, IA
         Matcher matcherConstructor = patronConstructor.matcher(contenido);
 
         while (matcherConstructor.find()) {
-            Constructor constructor = new Constructor();
+            Constructor constructor = ContextIOC.getInstance().getClassInstance(Constructor.class);
             constructor.setCostructorSignature(matcherConstructor.group(0));
 
             String[] parametros = matcherConstructor.group(2).split(",");
@@ -120,7 +127,7 @@ public class AnalyzeClassServiceService implements IAnalyzeCassMethodService, IA
             for (String parametro : parametros) {
                 if (!parametro.trim().isEmpty()) {
                     String[] partes = parametro.trim().split("\\s+");
-                    ParametroMetodo parametroMetodo = new ParametroMetodo(partes[1], partes[0]);
+                    ParametroMetodo parametroMetodo = ParametroMetodo.builder().nombre(partes[1]).tipo(partes[0]).build();
                     parametroMetodos.add(parametroMetodo);
                 }
             }
@@ -144,7 +151,7 @@ public class AnalyzeClassServiceService implements IAnalyzeCassMethodService, IA
             Matcher matcherMetodo = patronMetodo.matcher(contenido);
 
             while (matcherMetodo.find()) {
-                Metodo metodo = new Metodo();
+                Metodo metodo = ContextIOC.getInstance().getClassInstance(Metodo.class);
                 this.analyzeMethodBasic( metodo, matcherMetodo);
                 this.analyzeMethodParameters( metodo, matcherMetodo);
                 this.analyzeMethodContent(contenido, metodo, matcherMetodo);
@@ -160,7 +167,7 @@ public class AnalyzeClassServiceService implements IAnalyzeCassMethodService, IA
             Matcher matcherMetodoInterface = patronMetodoInterface.matcher(contenido);
 
             while (matcherMetodoInterface.find()) {
-                Metodo metodo = new Metodo();
+                Metodo metodo = ContextIOC.getInstance().getClassInstance(Metodo.class);
                 this.analyzeMethodBasic( metodo, matcherMetodoInterface);
                 this.analyzeMethodParameters( metodo, matcherMetodoInterface);
                 metodo.setMethodSignature(matcherMetodoInterface.group(0).trim());
@@ -207,7 +214,7 @@ public class AnalyzeClassServiceService implements IAnalyzeCassMethodService, IA
                         int index = 1;
                         if (index >= 0 && index < partes.length) {
                             if (partes[0] != null && partes[1] != null) {
-                                ParametroMetodo parametroMetodo = new ParametroMetodo(partes[1], partes[0]);
+                                ParametroMetodo parametroMetodo = ParametroMetodo.builder().nombre(partes[1]).tipo(partes[0]).build();
                                 metodo.agregarParametro(parametroMetodo);
                             }
                         }
@@ -225,7 +232,7 @@ public class AnalyzeClassServiceService implements IAnalyzeCassMethodService, IA
         Pattern patronVariable = Pattern.compile("(?:@[^\\n]*)*\\s*(public|protected|private) (\\w+) (\\w+);");
         Matcher matcherVariable = patronVariable.matcher(content);
         while (matcherVariable.find()) {
-            Variable variable = new Variable();
+            Variable variable = ContextIOC.getInstance().getClassInstance(Variable.class);
             variable.setTipo(matcherVariable.group(2));
             variable.setNombre(matcherVariable.group(3));
             variable.setAccessModifier(matcherVariable.group(1));
@@ -245,7 +252,7 @@ public class AnalyzeClassServiceService implements IAnalyzeCassMethodService, IA
         Matcher matcherEstructuras = patronEstructuras.matcher(contenido);
 
         while (matcherEstructuras.find()) {
-            EstructuraControl estructura = new EstructuraControl();
+            EstructuraControl estructura = ContextIOC.getInstance().getClassInstance(EstructuraControl.class);
             estructura.setTipo(matcherEstructuras.group());
             clase.addEstructura(estructura);
         }
@@ -258,9 +265,7 @@ public class AnalyzeClassServiceService implements IAnalyzeCassMethodService, IA
                     classIn.getMetodos().stream().forEach(method -> {
                         if (method != null && variable != null && variable.getNombre() != null && method.getContenido() != null) {
                             method.addInstanceMethodCallAll(
-                                    MethodService.getInstance().findOperationPerformedInMethod(
-                                            method.getContenido(),
-                                            variable.getNombre())
+                                    methodService.findOperationPerformedInMethod(method.getContenido(), variable.getNombre())
                             );
                         }
                     });
@@ -280,7 +285,6 @@ public class AnalyzeClassServiceService implements IAnalyzeCassMethodService, IA
         if (matcherBuilder.find()) {
             clase.setUseLomboxBuild(true);
         }
-
     }
 
 
@@ -294,7 +298,6 @@ public class AnalyzeClassServiceService implements IAnalyzeCassMethodService, IA
         if (matcherMetodoBuilder.find() && matcherMetodoBuild.find()) {
             clase.setApplyBuildMethod(true);
         }
-
     }
 
 

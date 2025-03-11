@@ -1,21 +1,25 @@
 package com.unitTestGenerator.test;
 
-import com.unitTestGenerator.core.AppProjectStarted;
-import com.unitTestGenerator.pojos.InstanceMethodCall;
 
+import com.unitTestGenerator.core.AppProjectStarted;
+import com.unitTestGenerator.ioc.ContextIOC;
+import com.unitTestGenerator.ioc.anotations.EndebleIOC;
+
+
+@EndebleIOC("com.unitTestGenerator")
 public class InternalFuntionalTests {
 
-    public static InternalFuntionalTests instance;
+//    public static InternalFuntionalTests instance;
 
     private InternalFuntionalTests() {
     }
 
-    public static InternalFuntionalTests getInstance() {
-        if (instance == null) {
-            instance = new InternalFuntionalTests();
-        }
-        return instance;
-    }
+//    public static InternalFuntionalTests getInstance() {
+//        if (instance == null) {
+//            instance = new InternalFuntionalTests();
+//        }
+//        return instance;
+//    }
 
     public static void executeTest() {
 
@@ -32,9 +36,8 @@ public class InternalFuntionalTests {
 //        String method ="findByFechaEgreso";
 //        String method = "findByTotalHorasFeriadoYear";
 //        AppProjectStarted.getInstance().executeTest(pathProject, isAnalisis, nombreClase, method, useMock);
-        AppProjectStarted.getInstance().analizedTest(pathProject, isAnalisis, nombreClase, method, useMock);
-
-
+        ContextIOC con = ContextIOC.getInstance(InternalFuntionalTests.class);
+        con.getClassInstance(AppProjectStarted.class).analizedTest(pathProject, isAnalisis, nombreClase, method, useMock);;
     }
 
     public static void main(String[] args) {

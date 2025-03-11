@@ -1,5 +1,6 @@
 package com.unitTestGenerator.interfaces;
 
+import com.unitTestGenerator.ioc.ContextIOC;
 import com.unitTestGenerator.pojos.Clase;
 import com.unitTestGenerator.pojos.Constructor;
 import com.unitTestGenerator.pojos.ParametroMetodo;
@@ -10,8 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public interface IClassObject {
-
-
 
     default String generateNewClassObject(Clase clase) {
         StringBuilder contenido = new StringBuilder();
@@ -67,13 +66,13 @@ public interface IClassObject {
             String variableName = variable.getNombre();
 
             if (!variablesList.contains(variableName)) {
-                String contentBody =  RandomRulesServices.getInstance().buildObjectSetValues(variable);
+                String contentBody = ContextIOC.getInstance().getClassInstance(RandomRulesServices.class).buildObjectSetValues(variable);
                 content.append("\t\t").append(".").append(variableName).append("(").append(contentBody).append(")").append("\n");
                 variablesList.add(variableName);
             }
 
             if (RandomRulesServices.containTypeNamesMapList(variable.getTipo())) {
-                String objectClass = RandomRulesServices.getInstance().buildObjectSetContainTypeNames(variable);
+                String objectClass = ContextIOC.getInstance().getClassInstance(RandomRulesServices.class).buildObjectSetContainTypeNames(variable);
                 Clase classObjectVariable = project.getClass(objectClass);
                 String contentBody = this.buildObject(classObjectVariable, project);
                 content.append("\t\t").append(".").append(variableName).append("(").append(contentBody).append(")").append("\n");

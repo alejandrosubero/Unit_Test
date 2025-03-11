@@ -1,11 +1,13 @@
 package com.unitTestGenerator.interfaces;
 
+import com.unitTestGenerator.ioc.ContextIOC;
 import com.unitTestGenerator.util.random.servicesRandom.IRandomService;
 import com.unitTestGenerator.util.random.sevicesrandomimplement.IRandomServiceImplemet;
 
+
 public interface IReturnType extends IValueExtractor{
 
-    IRandomService IRandomService = new IRandomServiceImplemet();
+   public IRandomService IRandomService = ContextIOC.getInstance().getClassInstance(IRandomServiceImplemet.class);
 
     default String getDefaultValueName(){
         return "\""+ IRandomService.generateRandomName()+"\"";

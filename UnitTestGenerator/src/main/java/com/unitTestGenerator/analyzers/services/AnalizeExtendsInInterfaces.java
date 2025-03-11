@@ -1,6 +1,8 @@
 package com.unitTestGenerator.analyzers.services;
 
 
+import com.unitTestGenerator.ioc.anotations.Componente;
+import com.unitTestGenerator.ioc.anotations.Singleton;
 import com.unitTestGenerator.pojos.Clase;
 import com.unitTestGenerator.pojos.ClassRelations;
 import com.unitTestGenerator.pojos.Project;
@@ -10,18 +12,20 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+@Componente
+@Singleton
 public class AnalizeExtendsInInterfaces {
 
-    private static AnalizeExtendsInInterfaces instance;
+//    private static AnalizeExtendsInInterfaces instance;
 
-    public static AnalizeExtendsInInterfaces getInstance(){
-        if(instance == null){
-            instance = new AnalizeExtendsInInterfaces();
-        }
-        return instance;
-    }
+//    public static AnalizeExtendsInInterfaces getInstance(){
+//        if(instance == null){
+//            instance = new AnalizeExtendsInInterfaces();
+//        }
+//        return instance;
+//    }
 
-    private  AnalizeExtendsInInterfaces() {
+    public   AnalizeExtendsInInterfaces() {
     }
 
     public Project analizeImplements( Project project, Character key){

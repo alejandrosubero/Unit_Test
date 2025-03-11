@@ -1,5 +1,7 @@
 package com.unitTestGenerator.services;
 
+import com.unitTestGenerator.ioc.anotations.Componente;
+import com.unitTestGenerator.ioc.anotations.Singleton;
 import com.unitTestGenerator.pojos.InstanceMethodCall;
 import com.unitTestGenerator.pojos.ParametroMetodo;
 
@@ -9,18 +11,20 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Componente
+@Singleton
 public class MethodService {
 
-    private static MethodService instance;
-    private MethodService() {
+    public MethodService() {
     }
-
-    public static MethodService getInstance(){
-        if(instance == null){
-            instance = new MethodService();
-        }
-        return instance;
-    }
+//    private static MethodService instance;
+//
+//    public static MethodService getInstance(){
+//        if(instance == null){
+//            instance = new MethodService();
+//        }
+//        return instance;
+//    }
 
 
     public  List<InstanceMethodCall> findOperationPerformedInMethod(String contentMethod, String variable) {
@@ -57,9 +61,8 @@ public class MethodService {
                         parameters.add(ParametroMetodo.builder().nombre(param).tipo(typeVariable).build());
                     }
                 }
-                InstanceMethodCall call =  InstanceMethodCall.builder() .variableInstace(variable).method(nombreMetodo)
-                        .parametros(parameters).operation(operation) .build();
-
+                InstanceMethodCall call =  InstanceMethodCall.builder().variableInstace(variable).method(nombreMetodo)
+                        .parametros(parameters).operation(operation).build();
                 operationsInstanceMethodCall.add(call);
             }
         }

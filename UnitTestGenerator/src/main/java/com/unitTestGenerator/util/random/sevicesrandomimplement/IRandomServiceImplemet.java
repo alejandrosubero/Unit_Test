@@ -1,6 +1,8 @@
 package com.unitTestGenerator.util.random.sevicesrandomimplement;
 
 
+import com.unitTestGenerator.ioc.anotations.Componente;
+import com.unitTestGenerator.ioc.anotations.Inyect;
 import com.unitTestGenerator.util.random.servicesRandom.IAddressRandomService;
 import com.unitTestGenerator.util.random.servicesRandom.IRandomService;
 
@@ -12,11 +14,14 @@ import java.time.ZoneId;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
-
+@Componente
 public class IRandomServiceImplemet implements IRandomService {
 
+    @Inyect
+    private IAddressRandomServiceImplement iAddressRandomService;
 
-    private IAddressRandomService IAddressRandomService;
+    @Inyect
+    private RealWordTextRandom realWordTextRandom;
 
     private Map<String, String> clientesMap = new HashMap<String, String>();
 
@@ -38,7 +43,7 @@ public class IRandomServiceImplemet implements IRandomService {
 
 
     public IRandomServiceImplemet() {
-        IAddressRandomService = new IAddressRandomServiceImplement();
+//        iAddressRandomService = new IAddressRandomServiceImplement();
     }
 
     @Override
@@ -166,7 +171,7 @@ public class IRandomServiceImplemet implements IRandomService {
     }
 
     public String generateAddress() {
-        String address = IAddressRandomService.generateAddress();
+        String address = iAddressRandomService.generateAddress();
         return address;
     }
 
@@ -200,7 +205,7 @@ public class IRandomServiceImplemet implements IRandomService {
 
     @Override
     public String generateRandomRealWordText(Integer wordNumbers) {
-        return RealWordTextRandom.generateMeaningfulText(wordNumbers);
+        return realWordTextRandom.generateMeaningfulText(wordNumbers);
     }
 
 

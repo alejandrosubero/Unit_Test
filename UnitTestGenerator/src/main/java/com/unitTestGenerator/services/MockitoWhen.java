@@ -1,6 +1,8 @@
 package com.unitTestGenerator.services;
 
 import com.unitTestGenerator.interfaces.IClassObject;
+import com.unitTestGenerator.ioc.anotations.Componente;
+import com.unitTestGenerator.ioc.anotations.Inyect;
 import com.unitTestGenerator.util.IBaseModel;
 import com.unitTestGenerator.interfaces.IMethodServiceTools;
 import com.unitTestGenerator.interfaces.IReturnType;
@@ -10,7 +12,11 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Componente
 public class MockitoWhen implements IBaseModel, IMethodServiceTools, IClassObject, IReturnType {
+
+    @Inyect
+    private GeneratedVariableService generatedVariableService;
 
     public MockitoWhen() {
     }
@@ -151,7 +157,7 @@ public class MockitoWhen implements IBaseModel, IMethodServiceTools, IClassObjec
         if(!typeOfOptional.equals("null")){
             typeOfOptionalName =  typeOfOptional.toLowerCase()+"Entity";
             typeOfOptionalReturn = "optional"+typeOfOptional;
-            fileContent.addVariable(GeneratedVariableService.getInstance().generateVariable(
+            fileContent.addVariable(generatedVariableService.generateVariable(
                     typeOfOptional,
                     typeOfOptionalName,
                     false, true));

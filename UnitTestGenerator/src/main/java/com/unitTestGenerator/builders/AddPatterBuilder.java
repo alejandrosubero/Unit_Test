@@ -1,24 +1,28 @@
 package com.unitTestGenerator.builders;
 
 import com.unitTestGenerator.builders.interfaces.IFileManager;
+import com.unitTestGenerator.ioc.anotations.Componente;
+import com.unitTestGenerator.ioc.anotations.Singleton;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Componente
+@Singleton
 public class AddPatterBuilder implements IFileManager {
 
-    private static AddPatterBuilder instance;
+//    private static AddPatterBuilder instance;
 
-    private AddPatterBuilder() { }
+    public AddPatterBuilder() { }
 
-    public static AddPatterBuilder getInstance(){
-        if (instance == null) {
-            instance = new AddPatterBuilder();
-        }
-        return instance;
-    }
+//    public static AddPatterBuilder getInstance(){
+//        if (instance == null) {
+//            instance = new AddPatterBuilder();
+//        }
+//        return instance;
+//    }
 
     public void generateBuilderPatterFromClassFile(String filePath) throws IOException {
         File classfileOriginal = new File(filePath);

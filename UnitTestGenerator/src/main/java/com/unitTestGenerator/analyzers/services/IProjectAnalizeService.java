@@ -1,12 +1,14 @@
 package com.unitTestGenerator.analyzers.services;
 
 import com.unitTestGenerator.analyzers.AnalizadorProyecto;
+import com.unitTestGenerator.ioc.ContextIOC;
 import com.unitTestGenerator.pojos.Clase;
 import com.unitTestGenerator.pojos.Metodo;
 import com.unitTestGenerator.pojos.Project;
 import com.unitTestGenerator.printers.PrintClassToUML;
 
 import java.util.List;
+
 
 public interface IProjectAnalizeService {
 
@@ -15,7 +17,7 @@ public interface IProjectAnalizeService {
 
         if (pathProject != null) {
             Project project = new Project(pathProject);
-            List<Clase> clases = AnalizadorProyecto.getInstance().analizarProyecto(pathProject, project);
+            List<Clase> clases = ContextIOC.getInstance().getClassInstance(AnalizadorProyecto.class).analizarProyecto(pathProject, project);
             if (clases != null) {
                 project.setClaseList(clases);
             }
