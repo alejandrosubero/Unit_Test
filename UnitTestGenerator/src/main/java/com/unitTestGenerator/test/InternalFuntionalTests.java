@@ -8,18 +8,9 @@ import com.unitTestGenerator.ioc.anotations.EndebleIOC;
 
 @EndebleIOC("com.unitTestGenerator")
 public class InternalFuntionalTests {
-
-//    public static InternalFuntionalTests instance;
-
+    
     private InternalFuntionalTests() {
     }
-
-//    public static InternalFuntionalTests getInstance() {
-//        if (instance == null) {
-//            instance = new InternalFuntionalTests();
-//        }
-//        return instance;
-//    }
 
     public static void executeTest() {
 
