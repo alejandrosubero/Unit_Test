@@ -1,11 +1,8 @@
 package com.unitTestGenerator.ioc;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.lang.reflect.*;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import com.unitTestGenerator.ioc.anotations.*;
 import org.reflections.Reflections;
@@ -54,13 +51,24 @@ import org.reflections.Reflections;
         }
 
 
-        // Scan a package and automatically register classes annotated with @Componente
         public void scanPackage(String packageName) {
             Reflections reflections = new Reflections(packageName);
-            // Get all classes annotated with @Componente
             Set<Class<?>> classes = reflections.getTypesAnnotatedWith(Componente.class);
+
+            // Registrar todas las clases primero
             for (Class<?> clazz : classes) {
                 register(clazz);
+            }
+            System.out.println("Registered classes: " + registeredClasses.keySet());
+            // Crear instancias de clases Singleton después de registrar todas
+            for (Class<?> clazz : registeredClasses.values()) {
+                if (clazz.isAnnotationPresent(Singleton.class)) {
+                    String name = clazz.getSimpleName().toLowerCase();
+                    if (!singletonInstances.containsKey(name)) {
+                        Object instance = createInstance(clazz);
+                        singletonInstances.put(name, instance);
+                    }
+                }
             }
         }
 
@@ -70,33 +78,62 @@ import org.reflections.Reflections;
             String name = clazz.getSimpleName().toLowerCase();
             // If it implements an interface, use the interface name instead of the class name
             Class<?>[] interfaces = clazz.getInterfaces();
+
+                // Register interface
             if (interfaces.length > 0) {
-                name = interfaces[0].getSimpleName().toLowerCase();
+                for (Class<?> interfaz : interfaces) {
+                    registeredClasses.put(interfaz.getSimpleName().toLowerCase(), clazz);
+                }
             }
             registeredClasses.put(name, clazz);
-            if (clazz.isAnnotationPresent(Singleton.class)) {
-                Object instance = createInstance(clazz);
-                singletonInstances.put(name, instance);
-            }
             System.out.println("Registered: " + name + " -> " + clazz.getName());  // Debug
         }
 
-        // Create an instance of a class and resolve its dependencies
         private Object createInstance(Class<?> clazz) {
             try {
-                // Get the constructor with dependencies
+                // Obtener constructor
                 Constructor<?> constructor = getConstructorWithDependencies(clazz);
-                // Resolve the dependencies of the constructor parameters
+                // Resolver los parámetros del constructor
                 Object[] parameters = resolveConstructorParameters(constructor);
-                // Create the instance using the constructor
+                // Crear instancia
                 Object instance = constructor.newInstance(parameters);
-                // Inject dependencies into fields (if necessary)
+                // Inyectar dependencias en campos
                 injectDependencies(instance);
+
                 return instance;
             } catch (Exception e) {
                 throw new RuntimeException("Error creating instance of " + clazz.getName(), e);
             }
         }
+
+
+        private void injectDependencies(Object object) {
+            for (Field field : object.getClass().getDeclaredFields()) {
+                if (field.isAnnotationPresent(Inyect.class)) {
+                    Class<?> fieldType = field.getType();
+                    String fieldName = fieldType.getSimpleName().toLowerCase();
+
+                    Object instance = singletonInstances.get(fieldName);
+                    if (instance == null) {
+                        Class<?> clazz = registeredClasses.get(fieldName);
+                        if (clazz != null) {
+                            instance = createInstance(clazz);
+                            singletonInstances.put(fieldName, instance);
+                        } else {
+                            throw new RuntimeException("No registered instance for dependency: " + fieldName);
+                        }
+                    }
+
+                    field.setAccessible(true);
+                    try {
+                        field.set(object, instance);
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException("Error injecting dependency into field " + field.getName(), e);
+                    }
+                }
+            }
+        }
+
 
         // Get the constructor with dependencies (the one with parameters)
         private Constructor<?> getConstructorWithDependencies(Class<?> clazz) {
@@ -116,42 +153,81 @@ import org.reflections.Reflections;
             }
         }
 
-        // Resolve the parameters of the constructor
+
+        private final Set<String> instancesInProgress = new HashSet<>(); // Para evitar ciclos
+
         private Object[] resolveConstructorParameters(Constructor<?> constructor) {
-            Class<?>[] parameterTypes = constructor.getParameterTypes();
-            Object[] parameters = new Object[parameterTypes.length];
+            Parameter[] parameters = constructor.getParameters();
+            Object[] resolvedParameters = new Object[parameters.length];
 
-            for (int i = 0; i < parameterTypes.length; i++) {
-                String name = parameterTypes[i].getSimpleName().toLowerCase();
-                parameters[i] = getClassInstance(name, parameterTypes[i]);
-            }
-            return parameters;
-        }
+            for (int i = 0; i < parameters.length; i++) {
+                Class<?> paramType = parameters[i].getType();
+                String paramName = paramType.getSimpleName().toLowerCase();
 
-        // Inject dependencies into an object's fields
-        private void injectDependencies(Object object) {
-            // Get all fields of the class
-            for (Field field : object.getClass().getDeclaredFields()) {
-                // Check if the field is annotated with @Inject
-                if (field.isAnnotationPresent(Inyect.class)) {
-                    // Get the field type
-                    Class<?> fieldType = field.getType();
-                    // Find the corresponding instance in the container
-                    Object instance = getClassInstance(fieldType.getSimpleName().toLowerCase(), fieldType);
-                    // Make the field accessible (even if it's private)
-                    field.setAccessible(true);
+                // 🔥 Manejo de List<T>
+                if (List.class.isAssignableFrom(paramType)) {
+                    Type genericType = parameters[i].getParameterizedType();
+                    if (!(genericType instanceof ParameterizedType)) {
+                        throw new RuntimeException("Cannot determine generic type for List in " + constructor.getDeclaringClass().getName());
+                    }
+
+                    Type actualType = ((ParameterizedType) genericType).getActualTypeArguments()[0];
+                    if (!(actualType instanceof Class)) {
+                        throw new RuntimeException("Unknown generic type for List in " + constructor.getDeclaringClass().getName());
+                    }
+
+                    Class<?> listElementType = (Class<?>) actualType;
+
+                    // Buscar todas las instancias del tipo genérico (Evita llamadas infinitas)
+                    List<Object> list = registeredClasses.values().stream()
+                            .filter(clazz -> listElementType.isAssignableFrom(clazz))
+                            .map(clazz -> {
+                                try {
+                                    return createInstance(clazz);
+                                } catch (Exception e) {
+                                    return null; // Si falla, devuelve null en vez de fallar todo
+                                }
+                            })
+                            .filter(Objects::nonNull)
+                            .collect(Collectors.toList());
+
+                    resolvedParameters[i] = list;
+                }
+                // 🔥 Manejo de String y Tipos Primitivos
+                else if (paramType.equals(String.class)) {
+                    resolvedParameters[i] = ""; // Valor por defecto para String
+                } else if (paramType.equals(int.class) || paramType.equals(Integer.class)) {
+                    resolvedParameters[i] = 0;
+                } else if (paramType.equals(boolean.class) || paramType.equals(Boolean.class)) {
+                    resolvedParameters[i] = false;
+                } else if (paramType.equals(double.class) || paramType.equals(Double.class)) {
+                    resolvedParameters[i] = 0.0;
+                } else if (paramType.equals(float.class) || paramType.equals(Float.class)) {
+                    resolvedParameters[i] = 0.0f;
+                } else {
+                    // Evitar ciclo de dependencias
+                    if (instancesInProgress.contains(paramName)) {
+                        throw new RuntimeException("Dependency cycle detected while creating: " + paramName);
+                    }
+
+                    instancesInProgress.add(paramName); // Marcar como "en progreso"
                     try {
-                        // Assign the instance to the field
-                        field.set(object, instance);
-                    } catch (IllegalAccessException e) {
-                        throw new RuntimeException("Error injecting dependency into field " + field.getName(), e);
+                        resolvedParameters[i] = getClassInstance(paramName, paramType);
+                    } finally {
+                        instancesInProgress.remove(paramName); // Remover después de crear
                     }
                 }
             }
+            return resolvedParameters;
         }
+
+
 
         // Get an instance from the container
         public <T> T getClassInstance(String name, Class<T> type) {
+//            System.out.println("🔍 Searching for instance: " + name);
+//            System.out.println("📌 Available instances: " + registeredClasses.keySet());
+
             // Check if it is a Singleton
             if (singletonInstances.containsKey(name)) {
                 return type.cast(singletonInstances.get(name));

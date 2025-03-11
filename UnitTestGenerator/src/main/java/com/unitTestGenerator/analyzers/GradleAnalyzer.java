@@ -24,6 +24,7 @@ import org.xml.sax.SAXException;
 public class GradleAnalyzer implements IFileManager {
 
     private File archivoGradle;
+
     public GradleAnalyzer(){
     }
 
@@ -36,7 +37,6 @@ public class GradleAnalyzer implements IFileManager {
     }
 
     private String getImportType(Integer importType) {
-//    String typeImport = importType == 1? "implementation" :"testImplementation";
         return importType == 1 ? "implementation" : "testImplementation";
     }
 

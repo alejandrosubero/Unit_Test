@@ -1,9 +1,9 @@
 package com.unitTestGenerator.services;
 
 import com.unitTestGenerator.interfaces.IClassObject;
+import com.unitTestGenerator.interfaces.IGenerateVariable;
 import com.unitTestGenerator.ioc.anotations.Componente;
-import com.unitTestGenerator.ioc.anotations.Inyect;
-import com.unitTestGenerator.util.IBaseModel;
+
 import com.unitTestGenerator.interfaces.IMethodServiceTools;
 import com.unitTestGenerator.interfaces.IReturnType;
 import com.unitTestGenerator.pojos.*;
@@ -13,10 +13,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Componente
-public class MockitoWhen implements IBaseModel, IMethodServiceTools, IClassObject, IReturnType {
+public class MockitoWhen implements IMethodServiceTools, IClassObject, IReturnType, IGenerateVariable {
 
-    @Inyect
-    private GeneratedVariableService generatedVariableService;
 
     public MockitoWhen() {
     }
@@ -58,16 +56,12 @@ public class MockitoWhen implements IBaseModel, IMethodServiceTools, IClassObjec
     public String generateRetrunValue (Metodo metodo, Project project) {
         String returnType = metodo.getTipoRetorno();
         Clase returnClass = null;
-
         if(!isValidTypeReturn(returnType)){
             returnClass = project.getClass(returnType);
         }
-
         if (returnClass != null) {
-            // Generate a return class
             return generateNewClassObject(returnClass);
         } else {
-            // return default value
             return getDefaultValue(returnType);
         }
     }
@@ -77,7 +71,6 @@ public class MockitoWhen implements IBaseModel, IMethodServiceTools, IClassObjec
 
         contenido.append("Mockito.verify(").append(variableInstanceName).append(", Mockito.times(1)).").append(methodName).append("(");
 
-        // Agregar los parámetros
         for (int i = 0; i < parametros.size(); i++) {
             ParametroMetodo parametro = parametros.get(i);
             contenido.append(parametro.getNombre());
@@ -90,23 +83,7 @@ public class MockitoWhen implements IBaseModel, IMethodServiceTools, IClassObjec
         return contenido.toString();
     }
 
-    public String getMokitoSetUpBeforeEach(boolean isAutoCloseable){
-        StringBuilder mokitoSetUpBeforeEach = new StringBuilder("\n");
-        if(isAutoCloseable) {
-            mokitoSetUpBeforeEach.append("\t").append("private AutoCloseable closeable;").append("\n").append("\n");
-            mokitoSetUpBeforeEach.append("\t").append("\t@BeforeEach").append("\n");
-            mokitoSetUpBeforeEach.append("\t").append("\tpublic void setUp() {").append("\n");
-            mokitoSetUpBeforeEach.append("\t").append("\t\tcloseable = MockitoAnnotations.openMocks(this);").append("\n").append("}").append("\n").append("\n");
-            mokitoSetUpBeforeEach.append("\t").append("\t@AfterEach").append("\n");
-            mokitoSetUpBeforeEach.append("\t").append("\tpublic void tearDown() throws Exception {").append("\n");
-            mokitoSetUpBeforeEach.append("\t").append("\t\tcloseable.close();").append("\n").append("}").append("\n").append("\n");
-        }else {
-            mokitoSetUpBeforeEach.append("\t").append("\t@BeforeEach").append("\n");
-            mokitoSetUpBeforeEach.append("\t").append("\tpublic void setUp() {").append("\n");
-            mokitoSetUpBeforeEach.append("\t").append("\t\tMockitoAnnotations.openMocks(this);").append("\n").append("\t").append("}").append("\n").append("\n");
-        }
-        return mokitoSetUpBeforeEach.toString();
-    }
+
 
     private String methodNameEqualsFindById(String testMethod, Metodo metodo, TestFileContent fileContent) {
         StringBuilder content = new StringBuilder();
@@ -157,7 +134,7 @@ public class MockitoWhen implements IBaseModel, IMethodServiceTools, IClassObjec
         if(!typeOfOptional.equals("null")){
             typeOfOptionalName =  typeOfOptional.toLowerCase()+"Entity";
             typeOfOptionalReturn = "optional"+typeOfOptional;
-            fileContent.addVariable(generatedVariableService.generateVariable(
+            fileContent.addVariable(this.generateVariable(
                     typeOfOptional,
                     typeOfOptionalName,
                     false, true));

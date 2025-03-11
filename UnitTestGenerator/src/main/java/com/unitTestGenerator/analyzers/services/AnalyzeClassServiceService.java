@@ -18,15 +18,6 @@ import java.util.regex.Pattern;
 @Singleton
 public class AnalyzeClassServiceService implements IAnalyzeCassMethodService, IAnalyzeClassRelationsService {
 
-//    public static AnalyzeClassServiceService instance;
-//
-//    public static AnalyzeClassServiceService getInstance() {
-//        if (instance == null){
-//            instance = new AnalyzeClassServiceService();
-//        }
-//        return instance;
-//    }
-
     @Inyect
     private MethodService methodService;
 
@@ -52,10 +43,12 @@ public class AnalyzeClassServiceService implements IAnalyzeCassMethodService, IA
     public Clase analyzeClase(File archivo) {
         try {
             String content = FileUtils.readFileToString(archivo, "UTF-8");
+            String rawString = content;
             Clase classs = analyzeClaseContentString(content);
            if(archivo != null && classs != null){
                String path = archivo.getAbsolutePath();
                classs.setClassPath(path);
+               classs.setRawClass(FileUtils.readFileToString(archivo, "UTF-8"));
            }
             return classs;
         } catch (Exception e) {
@@ -67,8 +60,6 @@ public class AnalyzeClassServiceService implements IAnalyzeCassMethodService, IA
 
     private Clase analyzeClaseContentString( String content) throws Exception {
         Clase clase = ContextIOC.getInstance().getClassInstance(Clase.class);
-
-        clase.setRawClass(content);
         analyzePackage(content, clase);
         analyzeNamesAndTypeOfClass(content, clase);
         analyzeConstructors(content, clase);
@@ -78,7 +69,6 @@ public class AnalyzeClassServiceService implements IAnalyzeCassMethodService, IA
         containPatterBuild(content, clase);
         containLomboxAnotacionBuild(content,clase);
         this.getRelationsInClass(clase);
-
         return postClassMethodAnalysis(clase);
     }
 

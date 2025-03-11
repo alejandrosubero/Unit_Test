@@ -16,11 +16,6 @@ public class BuildTestFile implements IFileContentEditor, IFileManager {
     public BuildTestFile() {
     }
 
-//    public static BuildTestFile getInstance() {
-//        return new BuildTestFile();
-//    }
-
-
     public void createTestFile(String ruta, TestFileContent content) {
         File file = new File(ruta);
         String oldVlue = this.fileExist(file);

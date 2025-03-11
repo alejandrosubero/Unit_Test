@@ -4,7 +4,6 @@ package com.unitTestGenerator.core;
 import com.unitTestGenerator.analyzers.services.AnalizerProjectServiceI;
 import com.unitTestGenerator.analyzers.services.IProjectAnalizeService;
 import com.unitTestGenerator.ioc.anotations.Componente;
-import com.unitTestGenerator.ioc.anotations.Inyect;
 import com.unitTestGenerator.ioc.anotations.Singleton;
 import com.unitTestGenerator.menus.MainMenue;
 import com.unitTestGenerator.test.interfaces.IInternalTest;
@@ -19,30 +18,22 @@ import java.util.Scanner;
 @Singleton
 public class AppProjectStarted implements IProjectAnalizeService,MainMenue,IInternalTest {
 
-    @Inyect
     private AnalizerProjectServiceI analizerProjectServiceI;
-
-    @Inyect
+    private GeneradorPruebasUnitarias generadorPruebasUnitarias;
+    private ProjectHolder projectHolder;
     private Project project;
 
-    @Inyect
-    private GeneradorPruebasUnitarias generadorPruebasUnitarias;
-
-//    private static AppProjectStarted instance;
-
-    public AppProjectStarted() {
-//        this.project = new Project();
+    public AppProjectStarted(AnalizerProjectServiceI analizerProjectServiceI, GeneradorPruebasUnitarias generadorPruebasUnitarias, ProjectHolder projectHolder) {
+        this.projectHolder = projectHolder;
+        this.analizerProjectServiceI = analizerProjectServiceI;
+        this.generadorPruebasUnitarias = generadorPruebasUnitarias;
+        this.project = this.projectHolder.getProject();
     }
-
-//    public static AppProjectStarted getInstance(){
-//        if(instance == null){
-//            instance = new AppProjectStarted();
-//        }
-//        return instance;
-//    }
 
 
     public void start(){
+
+
         Scanner scanner = new Scanner(System.in);
         boolean continuar = true;
 
@@ -76,7 +67,6 @@ public class AppProjectStarted implements IProjectAnalizeService,MainMenue,IInte
 
         if(this.project.getClaseList().isEmpty()){
             analizerProjectServiceI.analizerProject(scanner, false,this.project);
-//            this.project = analizarProyecto(scanner, false);
         }
         System.out.println("Enter the class name to test to generate the unit tests:");
         String nombreClase = scanner.next();
@@ -113,25 +103,10 @@ public class AppProjectStarted implements IProjectAnalizeService,MainMenue,IInte
     }
 
 
-    public List<Clase> getClases() {
-        return this.project.getClaseList();
-    }
-
-    public Project getProject() {
-        return this.project;
-    }
-
-    public  String getRutaProyecto() {
-        return this.project.getPathProject();
-    }
-
-
-
     @Override
     public void executeTest(String pathProject, boolean isAnalisis, String nombreClase, String method, Boolean useMock) {
 
         analizerProjectServiceI.projectAnalize (pathProject,isAnalisis, this.project);
-//        this.projectAnalize( pathProject,  isAnalisis );
         if(!isAnalisis){
             if(method == null || method.equals("")){
                 method = "all";
@@ -143,9 +118,15 @@ public class AppProjectStarted implements IProjectAnalizeService,MainMenue,IInte
     @Override
     public void analizedTest(String pathProject, boolean isAnalisis, String nombreClase, String method, Boolean useMock) {
         analizerProjectServiceI.projectAnalize (pathProject,isAnalisis, this.project);
-//        this.projectAnalize( pathProject,  isAnalisis );
     }
 
 
+    public List<Clase> getClases() {
+        return this.project.getClaseList();
+    }
+
+    public  String getRutaProyecto() {
+        return this.project.getPathProject();
+    }
 
 }

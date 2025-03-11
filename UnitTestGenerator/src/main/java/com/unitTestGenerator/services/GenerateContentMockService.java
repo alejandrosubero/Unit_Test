@@ -1,5 +1,6 @@
 package com.unitTestGenerator.services;
 
+import com.unitTestGenerator.interfaces.IGenerateVariable;
 import com.unitTestGenerator.ioc.anotations.Componente;
 import com.unitTestGenerator.ioc.anotations.Inyect;
 import com.unitTestGenerator.ioc.anotations.Singleton;
@@ -16,29 +17,20 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 @Componente
 @Singleton
-public class GenerateContentMockService implements IMethodServiceTools, IBaseModel {
+public class GenerateContentMockService implements IMethodServiceTools, IGenerateVariable {
 
-//    public static GenerateContentMockService instance;
+
     private Project project;
     private MockitoWhen mockitoWhen;
-    private GeneratedVariableService  generatedVariableService;
 
-    public GenerateContentMockService(MockitoWhen mockitoWhen, GeneratedVariableService generatedVariableService) {
+    public GenerateContentMockService(MockitoWhen mockitoWhen) {
         this.mockitoWhen = mockitoWhen;
-        this.generatedVariableService = generatedVariableService;
     }
 
-    //    public static GenerateContentMockService getInstance(){
-//        if(instance == null){
-//            instance = new GenerateContentMockService();
-//        }
-//        return instance;
-//    }
 
     public void setProject(Project project){
         this.project = project;
     }
-
 
 
     public String generateContentMock(Metodo method, Clase clase, TestFileContent fileContent) {
@@ -83,7 +75,7 @@ public class GenerateContentMockService implements IMethodServiceTools, IBaseMod
                 if(instanceMethodCall.getParametros() !=null && !instanceMethodCall.getParametros().isEmpty()){
                     instanceMethodCall.getParametros().forEach(parametroMetodo ->
                             fileContent.addVariable(
-                                    generatedVariableService.generateVariable(
+                                    this.generateVariable(
                                             parametroMetodo.getTipo(),
                                             parametroMetodo.getNombre(),
                                             false, true))

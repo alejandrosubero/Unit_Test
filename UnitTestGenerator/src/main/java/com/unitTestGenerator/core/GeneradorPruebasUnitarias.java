@@ -9,8 +9,6 @@ import com.unitTestGenerator.pojos.Clase;
 import com.unitTestGenerator.pojos.Project;
 import com.unitTestGenerator.pojos.TestFileContent;
 import com.unitTestGenerator.pojos.Variable;
-import com.unitTestGenerator.services.GenerateMethodService;
-import com.unitTestGenerator.services.GeneratedVariableService;
 import com.unitTestGenerator.services.MethodParameterObject;
 
 
@@ -20,10 +18,7 @@ public class GeneradorPruebasUnitarias implements IManageMavenGadleAppProperties
     private Project project;
 
     @Inyect
-    private GenerateMethodService generateMethodService;
-
-    @Inyect
-    private GeneratedVariableService generatedVariableService;
+    private DependenceManager dependenceManager;
 
     @Inyect
     private MethodParameterObject methodParameterObject;
@@ -47,17 +42,17 @@ public class GeneradorPruebasUnitarias implements IManageMavenGadleAppProperties
     }
 
     private  TestFileContent generateTestFileBody(Clase clase) {
-//        GeneratedVariableService variableService = generatedVariableService.getInstance();
+
         TestFileContent fileContent = TestFileContent.builder()
                 .testsClassImport(this.generateImport(clase))
                 .testsClassSingne(this.classSingne(clase))
-                .testsClassVariables(generatedVariableService.generateVariable(clase))
+                .testsClassVariables(dependenceManager.getGeneratedVariableService().generateVariable(clase))
                 .testsClassMethods("")
                 .build();
         if(!clase.getUseMock()) {
             this.applicationTestPropertiesExist(this.project);
         }
-        TestFileContent fileContentGenerate =  generateMethodService.generateMethods(clase,this.project, fileContent);
+        TestFileContent fileContentGenerate =  dependenceManager.getGenerateMethodService().generateMethods(clase,this.project, fileContent);
         return fileContentGenerate;
     }
 

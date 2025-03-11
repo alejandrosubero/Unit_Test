@@ -17,14 +17,6 @@ public class MethodService {
 
     public MethodService() {
     }
-//    private static MethodService instance;
-//
-//    public static MethodService getInstance(){
-//        if(instance == null){
-//            instance = new MethodService();
-//        }
-//        return instance;
-//    }
 
 
     public  List<InstanceMethodCall> findOperationPerformedInMethod(String contentMethod, String variable) {

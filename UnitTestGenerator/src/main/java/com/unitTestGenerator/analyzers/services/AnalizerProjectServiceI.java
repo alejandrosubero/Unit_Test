@@ -11,15 +11,7 @@ import java.util.Scanner;
 @Singleton
 public class AnalizerProjectServiceI implements IPrintAnalizeImports, IExtendsInInterfacesService, IProjectAnalizeService {
 
-//    private static AnalizerProjectServiceI instance;
-
-//    public static AnalizerProjectServiceI getInstance(){
-//        if(instance == null){
-//            instance = new AnalizerProjectServiceI();
-//        }
-//        return instance;
-//    }
-
+    
     public AnalizerProjectServiceI() {
     }
 
@@ -55,22 +47,3 @@ public class AnalizerProjectServiceI implements IPrintAnalizeImports, IExtendsIn
         }
     }
 }
-
-
-//    private void analizarProyecto(Scanner scanner,  boolean isAnalisis ) {
-//        System.out.println("Enter the project path:");
-//        String pathProject = scanner.next();
-//        projectAnalize(pathProject, isAnalisis);
-//    }
-
-//    private void projectAnalize(String pathProject,  boolean isAnalisis ){
-//        if(pathProject != null){
-//            this.project = this.executeProjectAnalize(pathProject, isAnalisis );
-//            this.getInterfaceStructure(project);
-//            this.getExtendsStructure(project);
-//            this.projectAnalyzerType(this.project);
-//            String uml = printUMLClass(this.project);
-//            this.generateImportsMap(project);
-//            this.printProjectAnalize(this.project,isAnalisis);
-//        }
-//    }

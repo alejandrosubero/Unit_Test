@@ -14,16 +14,8 @@ import java.util.*;
 public class MethodParameterObject implements IGenerateVariable {
 
     private Map<String, Clase> claseDirectory = new HashMap<>();
-//    private static MethodParameterObject instance;
 
     public MethodParameterObject(){}
-
-//    public static MethodParameterObject getInstance(){
-//        if(instance == null){
-//            instance = new MethodParameterObject();
-//        }
-//        return instance;
-//    }
 
 
     public String methodParameterObject(Metodo method, Project project, boolean isMock ){
@@ -76,7 +68,6 @@ public class MethodParameterObject implements IGenerateVariable {
                     ).append("\n");
                 });
             }
-//            contentWentisMock.append(this.getMokitoSetUpBeforeEach(false));
         return contentWentisMock.toString();
     }
 
@@ -97,17 +88,3 @@ public class MethodParameterObject implements IGenerateVariable {
 
 
 }
-
-
-//                response = clasesParameters.stream()
-//                        .map(clase -> clase.getNombre() + " " + clase.getNombre().toLowerCase())
-//                        .collect(Collectors.joining(";"));
-
-//                Iterator<Clase> iterator = clasesParameters.iterator();
-//                while (iterator.hasNext()) {
-//                    Clase clase = iterator.next();
-//                    parametes.append(clase.getNombre()).append(" ").append(clase.getNombre().toLowerCase());
-//                    if(iterator.hasNext()){
-//                        parametes.append(";");
-//                    }
-//                }

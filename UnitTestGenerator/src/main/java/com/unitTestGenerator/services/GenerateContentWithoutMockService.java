@@ -21,7 +21,6 @@ import java.util.Scanner;
 @Singleton
 public class GenerateContentWithoutMockService implements IReturnType, IMethodServiceTools, IManageMavenGadleAppProperties, IClassObject {
 
-//    public static GenerateContentWithoutMockService instance;
     private Project project;
 
     @Inyect
@@ -29,13 +28,6 @@ public class GenerateContentWithoutMockService implements IReturnType, IMethodSe
 
     public GenerateContentWithoutMockService() {
     }
-
-//    public static GenerateContentWithoutMockService getInstance(){
-//        if(instance == null){
-//            instance = new GenerateContentWithoutMockService();
-//        }
-//        return instance;
-//    }
 
     public void setProject(Project project){
         this.project = project;

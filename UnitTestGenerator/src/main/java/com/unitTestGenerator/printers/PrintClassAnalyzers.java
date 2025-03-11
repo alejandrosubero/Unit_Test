@@ -10,14 +10,6 @@ import com.unitTestGenerator.pojos.Project;
 @Singleton
 public class PrintClassAnalyzers {
 
-//    private static PrintClassAnalyzers instance;
-
-//    public static PrintClassAnalyzers getInstance(){
-//        if(instance == null){
-//            instance = new PrintClassAnalyzers();
-//        }
-//        return instance;
-//    }
 
     public   PrintClassAnalyzers() {
     }

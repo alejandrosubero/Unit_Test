@@ -25,17 +25,9 @@ import java.io.IOException;
 @Singleton
 public class PomAnalyzer implements IConstantModel {
 
-//    private static PomAnalyzer instance;
 
     public PomAnalyzer(){
     }
-
-//    public static PomAnalyzer getInstance() {
-//        if(instance == null){
-//            instance = new PomAnalyzer();
-//        }
-//        return instance;
-//    }
 
 
     private Boolean addTestDependency(Document documento) {
@@ -121,17 +113,15 @@ public class PomAnalyzer implements IConstantModel {
         for (int i = 0; i < dependencies.getLength(); i++) {
             Element dependency = (Element) dependencies.item(i);
 
-            // Verificar si dependency es null
             if (dependency != null) {
                 NodeList groupIdElements = dependency.getElementsByTagName("groupId");
                 NodeList artifactIdElements = dependency.getElementsByTagName("artifactId");
 
-                // Verificar si groupId y artifactId existen
+                // groupId y artifactId existen
                 if (groupIdElements.getLength() > 0 && artifactIdElements.getLength() > 0) {
                     String groupId = groupIdElements.item(0).getTextContent();
                     String artifactId = artifactIdElements.item(0).getTextContent();
 
-                    // Verificar si groupId y artifactId no son null
                     if (groupId != null && artifactId != null) {
                         if (groupId.equals(dependencia.split("<groupId>")[1].split("</groupId>")[0]) &&
                                 artifactId.equals(dependencia.split("<artifactId>")[1].split("</artifactId>")[0])) {

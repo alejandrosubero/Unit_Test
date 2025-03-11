@@ -19,17 +19,10 @@ public class RandomRulesServices implements IReturnType {
     private static List<String> collectionListTypeNames = Arrays.asList("List", "Set", "ArrayList", "LinkedList", "Vector", "Stack", "HashSet", "TreeSet", "LinkedHashSet", "Queue", "LinkedList", "PriorityQueue", "Deque", "ArrayDeque", "LinkedList");
     private static List<String> collectionMapTypeNames = Arrays.asList("Map", "HashMap", "TreeMap", "LinkedHashMap", "HashTable");
 
-//    private static RandomRulesServices instance;
 
     public RandomRulesServices() {
     }
 
-//    public static RandomRulesServices getInstance() {
-//        if (instance == null) {
-//            instance = new RandomRulesServices();
-//        }
-//        return instance;
-//    }
 
     public static Boolean nameC(String variableName) {
         if (variableName == null) return false;

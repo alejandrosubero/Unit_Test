@@ -32,18 +32,8 @@ public class AnalizadorProyecto implements ITodoDetectorService, IPrintProjectSt
     public AnalizadorProyecto() {
     }
 
-//    private static AnalizadorProyecto instance;
-//    public static AnalizadorProyecto getInstance() {
-//        if (instance == null) {
-//            instance = new AnalizadorProyecto();
-//        }
-//        return instance;
-//    }
-
-
     public List<Clase> analizarProyecto(String rutaProyecto, Project project) {
 
-//        treeBuilder = DirectoryTreeBuilder.getInstance();
         treeBuilder.setProjetName(rutaProyecto);
         List<Clase> clases = new ArrayList<>();
         Map<String, Clase> mapClass = new HashMap<>();
@@ -74,9 +64,7 @@ public class AnalizadorProyecto implements ITodoDetectorService, IPrintProjectSt
                       this.analizarProyectoRecursivo(file, classList, mapClass, project);
                   }else {
                       if(file.getName().trim().contains(".java")) {
-//                          Clase clase = AnalyzeClassServiceService.getInstance().analyzeClase(file);
                           Clase clase = this.analyzeClassServiceService.analyzeClase(file);
-
                           if (clase != null) {
                               clase.setTodoNoteInClass(this.getTodo(clase.getRawClass()));
                               this.treeBuilder.addPath(clase.getClassPath());
@@ -101,7 +89,6 @@ public class AnalizadorProyecto implements ITodoDetectorService, IPrintProjectSt
                         this.analizarProyectoRecursivo(archivo, classList, mapClass, project);
                     } else {
                         if(archivo.getName().trim().endsWith(".java")) {
-//                            Clase clase = AnalyzeClassServiceService.getInstance().analyzeClase(archivo);
                             Clase clase = analyzeClassServiceService.analyzeClase(archivo);
                             if (clase != null) {
                                 clase.setTodoNoteInClass(this.getTodo(clase.getRawClass()));

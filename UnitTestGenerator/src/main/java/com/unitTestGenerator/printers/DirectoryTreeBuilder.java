@@ -14,21 +14,11 @@ public class DirectoryTreeBuilder implements IBaseModel {
     private final TreeNode root = new TreeNode("");
     private String projetName;
 
-//    public static DirectoryTreeBuilder instance;
-
-//    public static DirectoryTreeBuilder getInstance() {
-//        if (instance == null){
-//            instance = new DirectoryTreeBuilder();
-//        }
-//        return instance;
-//    }
-
     public DirectoryTreeBuilder() {
     }
 
     public void setProjetName(String projetPath){
         if(projetPath != null && !projetPath.equals("")){
-//            String separador = DetectSO.os().equals("win")? "\\\\":this.Separator;
             String[] parts = projetPath.split(this.Separator);
             String lastElement = parts[parts.length - 1];
             if(lastElement != null && !lastElement.isEmpty()){

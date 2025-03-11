@@ -1,52 +1,54 @@
 package com.unitTestGenerator.interfaces;
 
+
 import com.unitTestGenerator.ioc.ContextIOC;
 import com.unitTestGenerator.util.random.servicesRandom.IRandomService;
+
 import com.unitTestGenerator.util.random.sevicesrandomimplement.IRandomServiceImplemet;
 
 
 public interface IReturnType extends IValueExtractor{
 
-   public IRandomService IRandomService = ContextIOC.getInstance().getClassInstance(IRandomServiceImplemet.class);
+   public
 
     default String getDefaultValueName(){
-        return "\""+ IRandomService.generateRandomName()+"\"";
+        return "\""+ ContextIOC.getInstance().getClassInstance(IRandomServiceImplemet.class).generateRandomName()+"\"";
     }
 
     default String getDefaultValueCode(){
-        return "\""+ IRandomService.generateCode()+"\"";
+        return "\""+ ContextIOC.getInstance().getClassInstance(IRandomServiceImplemet.class).generateCode()+"\"";
     }
 
     default String getDefaultValueDescription(Integer number){
-        return  "\""+ IRandomService.generateRandomRealWordText(number)+"\"";
+        return  "\""+ ContextIOC.getInstance().getClassInstance(IRandomServiceImplemet.class).generateRandomRealWordText(number)+"\"";
     }
 
     default String getDefaultValue(String tipoRetorno) {
-
+        IRandomService iRandomService = ContextIOC.getInstance().getClassInstance(IRandomServiceImplemet.class);
         switch (tipoRetorno) {
             case "int":
-                return this.toString(IRandomService.generateRandomNumber(2, 10) , " ");
+                return this.toString(iRandomService.generateRandomNumber(2, 10) , " ");
             case "long":
-                return this.toString(IRandomService.generatePositiveRandomLong(1l, 10l) , "L");
+                return this.toString(iRandomService.generatePositiveRandomLong(1l, 10l) , "L");
             case "float":
-                return this.toString(IRandomService.getRandomNumeroDouble(0.0, 99.9),"f");
+                return this.toString(iRandomService.getRandomNumeroDouble(0.0, 99.9),"f");
             case "AtomicBoolean":
             case "boolean":
             case "Boolean":
-                return this.toString(IRandomService.generateRamdonBoolean() , "");
+                return this.toString(iRandomService.generateRamdonBoolean() , "");
             case "String":
-                return "\""+ this.toString(IRandomService.generateRandomText(10), null)+"\"";
+                return "\""+ this.toString(iRandomService.generateRandomText(10), null)+"\"";
             case "Integer":
-                return this.toString(IRandomService.generateRandomNumber(8) , "");
+                return this.toString(iRandomService.generateRandomNumber(8) , "");
             case "Long":
-                return this.toString(IRandomService.generatePositiveRandomLong(1l, 20l), "L");
+                return this.toString(iRandomService.generatePositiveRandomLong(1l, 20l), "L");
             case "double":
             case "Double":
-                return this.toString(IRandomService.getRandomNumeroDouble(0.0, 20.9) ,"");
+                return this.toString(iRandomService.getRandomNumeroDouble(0.0, 20.9) ,"");
             case "Float":
-                return this.toString(IRandomService.getRandomNumeroDouble(0.0, 99.9) ,"F");
+                return this.toString(iRandomService.getRandomNumeroDouble(0.0, 99.9) ,"F");
             case "Date":
-                return this.toString(IRandomService.generateRandomDate(),"");
+                return this.toString(iRandomService.generateRandomDate(),"");
             default:
                 return "null";
         }

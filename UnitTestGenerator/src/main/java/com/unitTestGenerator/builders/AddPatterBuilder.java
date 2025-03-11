@@ -13,16 +13,7 @@ import java.util.List;
 @Singleton
 public class AddPatterBuilder implements IFileManager {
 
-//    private static AddPatterBuilder instance;
-
     public AddPatterBuilder() { }
-
-//    public static AddPatterBuilder getInstance(){
-//        if (instance == null) {
-//            instance = new AddPatterBuilder();
-//        }
-//        return instance;
-//    }
 
     public void generateBuilderPatterFromClassFile(String filePath) throws IOException {
         File classfileOriginal = new File(filePath);

@@ -17,7 +17,7 @@ public class AnalizerMenu {
     }
 
     public void analizerMenuInitial(Project project, Scanner scanner ){
-//        Scanner scanner = new Scanner(System.in);
+
         boolean continuar = true;
 
         while (continuar) {

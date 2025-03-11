@@ -9,7 +9,6 @@ public interface IGenerateVariable extends IBaseModel {
         if(type != null && name != null) {
             String notation = useMock ? (isClass ? "@InjectMocks" : "@Mock") : (isClass ? "@Autowired" : "");
             String nameVariable = stringEnsamble(name.substring(0, 1).toLowerCase(), name.substring(1));
-//            String variableDeclaration = stringEnsamble("private " + type, " ", nameVariable, ";");
             String variableDeclaration = String.format("private %s %s;", type, nameVariable);
             if (!notation.isEmpty()) {
                 content.append("\t").append(notation).append("\n");

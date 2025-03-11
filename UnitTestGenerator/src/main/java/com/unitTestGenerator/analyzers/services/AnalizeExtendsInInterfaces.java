@@ -16,15 +16,6 @@ import java.util.Optional;
 @Singleton
 public class AnalizeExtendsInInterfaces {
 
-//    private static AnalizeExtendsInInterfaces instance;
-
-//    public static AnalizeExtendsInInterfaces getInstance(){
-//        if(instance == null){
-//            instance = new AnalizeExtendsInInterfaces();
-//        }
-//        return instance;
-//    }
-
     public   AnalizeExtendsInInterfaces() {
     }
 

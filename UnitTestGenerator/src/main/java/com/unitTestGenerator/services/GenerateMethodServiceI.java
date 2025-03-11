@@ -1,7 +1,6 @@
 package com.unitTestGenerator.services;
 
 import com.unitTestGenerator.ioc.anotations.Componente;
-import com.unitTestGenerator.ioc.anotations.Inyect;
 import com.unitTestGenerator.ioc.anotations.Singleton;
 import com.unitTestGenerator.util.IBaseModel;
 import com.unitTestGenerator.pojos.*;
@@ -13,43 +12,29 @@ import java.util.regex.Pattern;
 
 @Componente
 @Singleton
-public class GenerateMethodService implements IBaseModel {
+public class GenerateMethodServiceI implements IBaseModel, IMokitoSetUpBeforeEach, IImportInMockObjectService {
 
     private Project project;
-//    private static GenerateMethodService instance;
 
-    private MockitoWhen mockitoWhen;
     private GenerateContentMockService generateContentMockService;
     private GenerateContentWithoutMockService contentWithoutMockService;
     private MethodParameterObject methodParameterObject;
 
-    public GenerateMethodService(MockitoWhen mockitoWhen, GenerateContentMockService generateContentMockService, GenerateContentWithoutMockService contentWithoutMockService, MethodParameterObject methodParameterObject) {
-        this.mockitoWhen = mockitoWhen;
+    public GenerateMethodServiceI(GenerateContentMockService generateContentMockService, GenerateContentWithoutMockService contentWithoutMockService, MethodParameterObject methodParameterObject) {
         this.generateContentMockService = generateContentMockService;
         this.contentWithoutMockService = contentWithoutMockService;
         this.methodParameterObject = methodParameterObject;
     }
 
-    //    private GenerateMethodService(){
-//            this.mockitoWhen = new MockitoWhen();
-//            this.generateContentMockService = GenerateContentMockService.getInstance();
-//            this.contentWithoutMockService = GenerateContentWithoutMockService.getInstance();
-//    }
-
-
-//    public static GenerateMethodService getInstance(){
-//        if(instance == null){
-//            instance = new GenerateMethodService();
-//        }
-//        return instance;
-//    }
 
     public void setProject(Project project){
        try {
            this.project = project;
+
            if(this.generateContentMockService != null) {
                this.generateContentMockService.setProject(this.project);
            }
+
            if(this.contentWithoutMockService != null) {
                this.contentWithoutMockService.setProject(this.project);
            }
@@ -81,7 +66,7 @@ public class GenerateMethodService implements IBaseModel {
 
         if (clase.getUseMock()) {
             fileContent.addVariable("\n");
-            fileContent.addVariable(this.mockitoWhen.getMokitoSetUpBeforeEach(false));
+            fileContent.addVariable(this.getMokitoSetUpBeforeEach(false));
         }
         return fileContent;
     }
@@ -100,7 +85,7 @@ public class GenerateMethodService implements IBaseModel {
             for (String declaration : mockDeclarations) {
                 if (!fileContent.getTestsClassVariables().contains(declaration)) {
                     fileContent.addVariable(new StringBuffer("\t").append(declaration).toString());
-                    fileContent.addImport(this.generateContentMockService.getImportInMockObject(declaration, project));
+                    fileContent.addImport(this.getImportInMockObject(declaration, project));
                 }
             }
         }
