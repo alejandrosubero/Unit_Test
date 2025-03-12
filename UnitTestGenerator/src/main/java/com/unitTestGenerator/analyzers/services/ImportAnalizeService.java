@@ -44,10 +44,7 @@ public class ImportAnalizeService implements IBaseModel {
                         externalImportsList.add(IBaseModel.stringEnsamble2("import ", importStatement));
                     }
                 }
-                String reconstructedCode = externalImports.toString() + "\n" + projectImports.toString() + "\n" + clase.getClassPath();
-
                 importAnalizePojo = ImportAnalizePojo.builder().externalImports(externalImportsList).projectImports(projectImportsList).build();
-                clase.setRawClass(reconstructedCode);
                 clase.setImports(importAnalizePojo);
             }
             return importAnalizePojo;

@@ -61,7 +61,7 @@ public interface MainMenue {
 
     default String questionOfMethodToTest(Scanner scanner){
         String respuesta ="";
-        Integer opcion = this.getNumber( scanner);
+        Integer opcion = this.getNumber(scanner);
 
         if(opcion == 1){
             respuesta = "all";

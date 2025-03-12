@@ -1,4 +1,4 @@
-package com.unitTestGenerator.analyzers.services;
+package com.unitTestGenerator.analyzers.services.interfaces;
 import java.util.regex.*;
 
 public interface ITodoDetectorService {

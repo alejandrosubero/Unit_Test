@@ -1,4 +1,4 @@
-package com.unitTestGenerator.analyzers.services;
+package com.unitTestGenerator.analyzers.services.interfaces;
 
 import com.unitTestGenerator.analyzers.AnalizadorProyecto;
 import com.unitTestGenerator.ioc.ContextIOC;

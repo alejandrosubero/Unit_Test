@@ -1,22 +1,23 @@
 package com.unitTestGenerator.menus;
 
-import com.unitTestGenerator.analyzers.services.AnalizerProjectServiceI;
+import com.unitTestGenerator.analyzers.services.AnalizerProjectService;
+import com.unitTestGenerator.analyzers.services.interfaces.IAnalizerProjectServiceManager;
 import com.unitTestGenerator.ioc.anotations.Componente;
-import com.unitTestGenerator.ioc.anotations.Inyect;
 import com.unitTestGenerator.pojos.Project;
 
 import java.util.Scanner;
 
 @Componente
-public class AnalizerMenu {
+public class AnalizerMenu implements IAnalizerProjectServiceManager {
 
-    @Inyect
-    private AnalizerProjectServiceI analizerProjectServiceI;
+
+    private AnalizerProjectService analizerProjectService;
 
     public AnalizerMenu() {
+        this.analizerProjectService = this.getInstanceAPSI();
     }
 
-    public void analizerMenuInitial(Project project, Scanner scanner ){
+    public void analizerMenuInitial(Project project, Scanner scanner){
 
         boolean continuar = true;
 
@@ -26,7 +27,7 @@ public class AnalizerMenu {
 
             switch (opcion) {
                 case 1:
-                    analizerProjectServiceI.analizerProject(scanner, true, project);
+                    analizerProjectService.analizerProject(scanner, true, project);
                     continuar = this.askContinue(scanner);
                     break;
                 case 2:

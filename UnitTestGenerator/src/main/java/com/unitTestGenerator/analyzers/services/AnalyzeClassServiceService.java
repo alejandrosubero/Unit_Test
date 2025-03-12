@@ -1,5 +1,7 @@
 package com.unitTestGenerator.analyzers.services;
 
+import com.unitTestGenerator.analyzers.services.interfaces.IAnalyzeCassMethodService;
+import com.unitTestGenerator.analyzers.services.interfaces.IAnalyzeClassRelationsService;
 import com.unitTestGenerator.ioc.ContextIOC;
 import com.unitTestGenerator.ioc.anotations.Componente;
 import com.unitTestGenerator.ioc.anotations.Inyect;
@@ -43,12 +45,11 @@ public class AnalyzeClassServiceService implements IAnalyzeCassMethodService, IA
     public Clase analyzeClase(File archivo) {
         try {
             String content = FileUtils.readFileToString(archivo, "UTF-8");
-            String rawString = content;
+            String path = archivo.getAbsolutePath();
             Clase classs = analyzeClaseContentString(content);
            if(archivo != null && classs != null){
-               String path = archivo.getAbsolutePath();
+               classs.setRawClass(content);
                classs.setClassPath(path);
-               classs.setRawClass(FileUtils.readFileToString(archivo, "UTF-8"));
            }
             return classs;
         } catch (Exception e) {

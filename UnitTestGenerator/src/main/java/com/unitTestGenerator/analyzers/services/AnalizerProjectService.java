@@ -1,5 +1,7 @@
 package com.unitTestGenerator.analyzers.services;
 
+import com.unitTestGenerator.analyzers.services.interfaces.IExtendsInInterfacesService;
+import com.unitTestGenerator.analyzers.services.interfaces.IProjectAnalizeService;
 import com.unitTestGenerator.ioc.anotations.Componente;
 import com.unitTestGenerator.ioc.anotations.Singleton;
 import com.unitTestGenerator.pojos.Project;
@@ -9,10 +11,10 @@ import java.util.Scanner;
 
 @Componente
 @Singleton
-public class AnalizerProjectServiceI implements IPrintAnalizeImports, IExtendsInInterfacesService, IProjectAnalizeService {
+public class AnalizerProjectService implements IPrintAnalizeImports, IExtendsInInterfacesService, IProjectAnalizeService {
 
     
-    public AnalizerProjectServiceI() {
+    public AnalizerProjectService() {
     }
 
 

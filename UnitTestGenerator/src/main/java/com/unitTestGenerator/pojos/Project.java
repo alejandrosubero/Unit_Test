@@ -68,13 +68,6 @@ public class Project {
 
     private Clase getClass(String className, Project project){
         Clase foundClass = null;
-//        if(project.getClaseList() != null && !project.getClaseList().isEmpty() && className !=null && !className.equals("")){
-//            for(Clase clasS : project.getClaseList()){
-//                if(clasS.getNombre() !=null && clasS.getNombre().toLowerCase().equals(className.toLowerCase())){
-//                    foundClass = clasS;
-//                }
-//            }
-//        }
         if(project.getMapClass() != null && !project.getMapClass().isEmpty() && className !=null && !className.equals("")){
             if(project.getMapClass().containsKey(className)){
                 foundClass = project.getMapClass().get(className);

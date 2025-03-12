@@ -10,7 +10,7 @@ import com.unitTestGenerator.ioc.anotations.Inyect;
 import com.unitTestGenerator.ioc.anotations.Singleton;
 import com.unitTestGenerator.printers.DirectoryTreeBuilder;
 import com.unitTestGenerator.analyzers.services.AnalyzeClassServiceService;
-import com.unitTestGenerator.analyzers.services.ITodoDetectorService;
+import com.unitTestGenerator.analyzers.services.interfaces.ITodoDetectorService;
 import com.unitTestGenerator.pojos.*;
 import com.unitTestGenerator.printers.IPrintProjectStructure;
 

@@ -1,14 +1,12 @@
-package com.unitTestGenerator.analyzers.services;
+package com.unitTestGenerator.analyzers;
 
 
 import com.unitTestGenerator.ioc.anotations.Componente;
 import com.unitTestGenerator.ioc.anotations.Singleton;
 import com.unitTestGenerator.pojos.Clase;
-import com.unitTestGenerator.pojos.ClassRelations;
 import com.unitTestGenerator.pojos.Project;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 

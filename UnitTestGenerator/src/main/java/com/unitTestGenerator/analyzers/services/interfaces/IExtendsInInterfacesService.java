@@ -1,5 +1,6 @@
-package com.unitTestGenerator.analyzers.services;
+package com.unitTestGenerator.analyzers.services.interfaces;
 
+import com.unitTestGenerator.analyzers.AnalizeExtendsInInterfaces;
 import com.unitTestGenerator.ioc.ContextIOC;
 import com.unitTestGenerator.pojos.Project;
 
