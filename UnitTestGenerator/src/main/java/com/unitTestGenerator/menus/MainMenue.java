@@ -5,7 +5,7 @@ import java.util.Scanner;
 
 public interface MainMenue {
 
-    default void welcomeMenue(){
+    default void welcomeMenu(){
         StringBuffer buffer = new StringBuffer();
         buffer.append("Welcome to the unit test creation tool").append("\n");
         buffer.append("Choose an option:").append("\n");

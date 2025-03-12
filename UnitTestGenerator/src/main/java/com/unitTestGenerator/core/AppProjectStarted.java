@@ -38,7 +38,7 @@ public class AppProjectStarted implements IProjectAnalizeService,MainMenue,IInte
         boolean continuar = true;
 
         while (continuar) {
-           this.welcomeMenue();
+           this.welcomeMenu();
             int opcion = scanner.nextInt();
 
             switch (opcion) {
