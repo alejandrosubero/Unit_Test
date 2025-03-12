@@ -3,6 +3,7 @@ package com.unitTestGenerator.util;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.StringJoiner;
 
 public interface IBaseModel extends IConstantModel {
 
@@ -85,13 +86,25 @@ public interface IBaseModel extends IConstantModel {
 	}
 
 	default String packageToPaths(String packageClass){
-
 		String[] valor = packageClass.split("\\.");
 		return this.stringPaths(false,false, valor);
 	}
 
 
+	default String listStringToColummString(String... paths) {
+		StringBuilder stringColumm = new StringBuilder();
+		List<String> parameters = toList(paths);
+		if (parameters != null && !parameters.isEmpty()) {
+			StringJoiner joiner = new StringJoiner(BREAK_LINE);
+			parameters.forEach(joiner::add);
+			stringColumm.append(joiner.toString());
+		}
+		return stringColumm.toString();
+	}
 
+	default void printColummString(String... paths){
+		System.out.println(listStringToColummString(paths));
+	}
 
 	default String listStringStructureToColummString(List<String> parameters) {
 		StringBuilder stringColumm = new StringBuilder(BREAK_LINE);
@@ -115,7 +128,6 @@ public interface IBaseModel extends IConstantModel {
 				index++;
 			}
 		}
-//		String response = indentation.toString();
 		return indentation.toString();
 	}
 

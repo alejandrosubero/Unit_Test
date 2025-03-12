@@ -4,11 +4,14 @@ import com.unitTestGenerator.analyzers.services.AnalizerProjectService;
 import com.unitTestGenerator.analyzers.services.interfaces.IAnalizerProjectServiceManager;
 import com.unitTestGenerator.ioc.anotations.Componente;
 import com.unitTestGenerator.pojos.Project;
+import com.unitTestGenerator.util.IBaseModel;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
 @Componente
-public class AnalizerMenu implements IAnalizerProjectServiceManager {
+public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel {
 
 
     private AnalizerProjectService analizerProjectService;
@@ -46,13 +49,20 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager {
     }
 
     public void analizerOptionMenu(){
-        StringBuffer buffer = new StringBuffer();
-        buffer.append("Analyze project Module").append("\n");
-        buffer.append("Choose an option:").append("\n");
-        buffer.append("1. Analyze project").append("\n");
-        buffer.append("2. Load a Previous Saved Project").append("\n");
-        buffer.append("3. Exit").append("\n");
-        System.out.println(buffer.toString());
+//        StringBuffer buffer = new StringBuffer();
+//        buffer.append("Analyze project Module").append("\n");
+//        buffer.append("Choose an option:").append("\n");
+//        buffer.append("1. Analyze project").append("\n");
+//        buffer.append("2. Load a Previous Saved Project").append("\n");
+//        buffer.append("3. Exit").append("\n");
+//        System.out.println(buffer.toString());
+
+        this.printColummString("Analyze project Module",
+                "Choose an option:",
+                "1. Analyze project",
+                "2. Load a Previous Saved Project",
+                "3. Exit"
+       );
     }
 
     // need change for adapter a new requirements.
