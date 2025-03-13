@@ -3,7 +3,7 @@ package com.unitTestGenerator.core;
 
 import com.unitTestGenerator.builders.BuildTestFile;
 import com.unitTestGenerator.interfaces.IManageMavenGadleAppProperties;
-import com.unitTestGenerator.ioc.anotations.Componente;
+import com.unitTestGenerator.ioc.anotations.Component;
 import com.unitTestGenerator.ioc.anotations.Inyect;
 import com.unitTestGenerator.pojos.Clase;
 import com.unitTestGenerator.pojos.Project;
@@ -12,7 +12,7 @@ import com.unitTestGenerator.pojos.Variable;
 import com.unitTestGenerator.services.MethodParameterObject;
 
 
-@Componente
+@Component
 public class GeneradorPruebasUnitarias implements IManageMavenGadleAppProperties {
 
     private Project project;

@@ -1,10 +1,10 @@
 package com.unitTestGenerator.analyzers.services;
-import com.unitTestGenerator.ioc.anotations.Componente;
+import com.unitTestGenerator.ioc.anotations.Component;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@Componente
+@Component
 public class SingletonDetectorService {
 
     public static boolean isSingleton(String classContent) {

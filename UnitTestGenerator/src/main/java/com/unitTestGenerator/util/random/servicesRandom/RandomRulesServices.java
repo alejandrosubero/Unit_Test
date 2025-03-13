@@ -1,18 +1,15 @@
 package com.unitTestGenerator.util.random.servicesRandom;
 
-import com.unitTestGenerator.interfaces.IClassObject;
 import com.unitTestGenerator.interfaces.IReturnType;
-import com.unitTestGenerator.ioc.anotations.Componente;
+import com.unitTestGenerator.ioc.anotations.Component;
 import com.unitTestGenerator.ioc.anotations.Singleton;
-import com.unitTestGenerator.pojos.Clase;
-import com.unitTestGenerator.pojos.Project;
 import com.unitTestGenerator.pojos.Variable;
 import com.unitTestGenerator.util.IConstantModel;
 
 import java.util.Arrays;
 import java.util.List;
 
-@Componente
+@Component
 @Singleton
 public class RandomRulesServices implements IReturnType {
 

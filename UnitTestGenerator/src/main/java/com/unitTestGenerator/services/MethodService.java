@@ -1,6 +1,6 @@
 package com.unitTestGenerator.services;
 
-import com.unitTestGenerator.ioc.anotations.Componente;
+import com.unitTestGenerator.ioc.anotations.Component;
 import com.unitTestGenerator.ioc.anotations.Singleton;
 import com.unitTestGenerator.pojos.InstanceMethodCall;
 import com.unitTestGenerator.pojos.ParametroMetodo;
@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@Componente
+@Component
 @Singleton
 public class MethodService {
 

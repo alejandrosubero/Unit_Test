@@ -3,7 +3,7 @@ package com.unitTestGenerator.core;
 
 import com.unitTestGenerator.analyzers.services.AnalizerProjectService;
 import com.unitTestGenerator.analyzers.services.interfaces.IAnalizerProjectServiceManager;
-import com.unitTestGenerator.ioc.anotations.Componente;
+import com.unitTestGenerator.ioc.anotations.Component;
 import com.unitTestGenerator.ioc.anotations.Singleton;
 import com.unitTestGenerator.menus.MainMenue;
 import com.unitTestGenerator.test.interfaces.IInternalTest;
@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-@Componente
+@Component
 @Singleton
 public class AppProjectStarted implements  MainMenue, IInternalTest, IAnalizerProjectServiceManager {
 

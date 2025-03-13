@@ -2,7 +2,7 @@ package com.unitTestGenerator.services;
 
 import com.unitTestGenerator.interfaces.IClassObject;
 import com.unitTestGenerator.interfaces.IGenerateVariable;
-import com.unitTestGenerator.ioc.anotations.Componente;
+import com.unitTestGenerator.ioc.anotations.Component;
 
 import com.unitTestGenerator.interfaces.IMethodServiceTools;
 import com.unitTestGenerator.interfaces.IReturnType;
@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@Componente
+@Component
 public class MockitoWhen implements IMethodServiceTools, IClassObject, IReturnType, IGenerateVariable {
 
 

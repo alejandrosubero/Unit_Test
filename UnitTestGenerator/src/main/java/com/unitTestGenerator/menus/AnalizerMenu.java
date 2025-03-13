@@ -2,15 +2,13 @@ package com.unitTestGenerator.menus;
 
 import com.unitTestGenerator.analyzers.services.AnalizerProjectService;
 import com.unitTestGenerator.analyzers.services.interfaces.IAnalizerProjectServiceManager;
-import com.unitTestGenerator.ioc.anotations.Componente;
+import com.unitTestGenerator.ioc.anotations.Component;
 import com.unitTestGenerator.pojos.Project;
 import com.unitTestGenerator.util.IBaseModel;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Scanner;
 
-@Componente
+@Component
 public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel {
 
 

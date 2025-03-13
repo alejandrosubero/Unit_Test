@@ -1,6 +1,6 @@
 package com.unitTestGenerator.util.random.sevicesrandomimplement;
 
-import com.unitTestGenerator.ioc.anotations.Componente;
+import com.unitTestGenerator.ioc.anotations.Component;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-@Componente
+@Component
 public class RealWordTextRandom {
 
     private static final List<String> WORD_BANK = Arrays.asList(

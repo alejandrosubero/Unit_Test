@@ -1,8 +1,8 @@
 package com.unitTestGenerator.pojos;
 
-import com.unitTestGenerator.ioc.anotations.Componente;
+import com.unitTestGenerator.ioc.anotations.Component;
 
-@Componente
+@Component
 public class ParametroMetodo {
     private String nombre;
     private String tipo;

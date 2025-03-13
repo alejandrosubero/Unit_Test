@@ -1,13 +1,13 @@
 package com.unitTestGenerator.persistence.model;
 
 
-import com.unitTestGenerator.ioc.anotations.Componente;
+import com.unitTestGenerator.ioc.anotations.Component;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "data")
-@Componente
+@Component
 public class Data {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

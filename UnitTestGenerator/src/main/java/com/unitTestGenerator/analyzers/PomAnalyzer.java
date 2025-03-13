@@ -1,6 +1,6 @@
 package com.unitTestGenerator.analyzers;
 
-import com.unitTestGenerator.ioc.anotations.Componente;
+import com.unitTestGenerator.ioc.anotations.Component;
 import com.unitTestGenerator.ioc.anotations.Singleton;
 import com.unitTestGenerator.pojos.Dependency;
 import com.unitTestGenerator.util.Dependencies;
@@ -21,7 +21,7 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.io.IOException;
 
-@Componente
+@Component
 @Singleton
 public class PomAnalyzer implements IConstantModel {
 

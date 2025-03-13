@@ -1,7 +1,7 @@
 package com.unitTestGenerator.services;
 
 import com.unitTestGenerator.interfaces.IGenerateVariable;
-import com.unitTestGenerator.ioc.anotations.Componente;
+import com.unitTestGenerator.ioc.anotations.Component;
 import com.unitTestGenerator.ioc.anotations.Singleton;
 import com.unitTestGenerator.pojos.Clase;
 import com.unitTestGenerator.pojos.Metodo;
@@ -9,7 +9,7 @@ import com.unitTestGenerator.pojos.Project;
 
 import java.util.*;
 
-@Componente
+@Component
 @Singleton
 public class MethodParameterObject implements IGenerateVariable {
 

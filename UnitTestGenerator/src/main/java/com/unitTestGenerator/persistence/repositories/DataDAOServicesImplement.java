@@ -1,6 +1,6 @@
 package com.unitTestGenerator.persistence.repositories;
 
-import com.unitTestGenerator.ioc.anotations.Componente;
+import com.unitTestGenerator.ioc.anotations.Component;
 import com.unitTestGenerator.ioc.anotations.Inyect;
 import com.unitTestGenerator.ioc.anotations.Singleton;
 import com.unitTestGenerator.persistence.mapper.DataDaoMapper;
@@ -15,7 +15,7 @@ import org.hibernate.service.ServiceRegistryBuilder;
 import java.util.List;
 import java.util.Properties;
 
-@Componente
+@Component
 @Singleton
 public class DataDAOServicesImplement implements IDaoService {
 

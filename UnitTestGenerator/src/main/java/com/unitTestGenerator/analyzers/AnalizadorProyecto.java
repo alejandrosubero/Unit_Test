@@ -5,7 +5,7 @@ import java.util.*;
 
 
 import com.unitTestGenerator.analyzers.services.ImportAnalizeService;
-import com.unitTestGenerator.ioc.anotations.Componente;
+import com.unitTestGenerator.ioc.anotations.Component;
 import com.unitTestGenerator.ioc.anotations.Inyect;
 import com.unitTestGenerator.ioc.anotations.Singleton;
 import com.unitTestGenerator.printers.DirectoryTreeBuilder;
@@ -14,7 +14,7 @@ import com.unitTestGenerator.analyzers.services.interfaces.ITodoDetectorService;
 import com.unitTestGenerator.pojos.*;
 import com.unitTestGenerator.printers.IPrintProjectStructure;
 
-@Componente
+@Component
 @Singleton
 public class AnalizadorProyecto implements ITodoDetectorService, IPrintProjectStructure {
 

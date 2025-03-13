@@ -2,14 +2,14 @@ package com.unitTestGenerator.analyzers.services;
 
 import com.unitTestGenerator.analyzers.services.interfaces.IExtendsInInterfacesService;
 import com.unitTestGenerator.analyzers.services.interfaces.IProjectAnalizeService;
-import com.unitTestGenerator.ioc.anotations.Componente;
+import com.unitTestGenerator.ioc.anotations.Component;
 import com.unitTestGenerator.ioc.anotations.Singleton;
 import com.unitTestGenerator.pojos.Project;
 import com.unitTestGenerator.printers.IPrintAnalizeImports;
 
 import java.util.Scanner;
 
-@Componente
+@Component
 @Singleton
 public class AnalizerProjectService implements IPrintAnalizeImports, IExtendsInInterfacesService, IProjectAnalizeService {
 

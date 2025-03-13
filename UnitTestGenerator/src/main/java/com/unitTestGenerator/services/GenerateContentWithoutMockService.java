@@ -5,11 +5,10 @@ import com.unitTestGenerator.interfaces.IClassObject;
 import com.unitTestGenerator.interfaces.IManageMavenGadleAppProperties;
 import com.unitTestGenerator.interfaces.IMethodServiceTools;
 import com.unitTestGenerator.interfaces.IReturnType;
-import com.unitTestGenerator.ioc.anotations.Componente;
+import com.unitTestGenerator.ioc.anotations.Component;
 import com.unitTestGenerator.ioc.anotations.Inyect;
 import com.unitTestGenerator.ioc.anotations.Singleton;
 import com.unitTestGenerator.pojos.*;
-import com.unitTestGenerator.util.IBaseModel;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,7 +16,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
-@Componente
+@Component
 @Singleton
 public class GenerateContentWithoutMockService implements IReturnType, IMethodServiceTools, IManageMavenGadleAppProperties, IClassObject {
 

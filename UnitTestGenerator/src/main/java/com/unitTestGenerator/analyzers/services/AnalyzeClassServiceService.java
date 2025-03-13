@@ -3,7 +3,7 @@ package com.unitTestGenerator.analyzers.services;
 import com.unitTestGenerator.analyzers.services.interfaces.IAnalyzeCassMethodService;
 import com.unitTestGenerator.analyzers.services.interfaces.IAnalyzeClassRelationsService;
 import com.unitTestGenerator.ioc.ContextIOC;
-import com.unitTestGenerator.ioc.anotations.Componente;
+import com.unitTestGenerator.ioc.anotations.Component;
 import com.unitTestGenerator.ioc.anotations.Inyect;
 import com.unitTestGenerator.ioc.anotations.Singleton;
 import com.unitTestGenerator.pojos.*;
@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@Componente
+@Component
 @Singleton
 public class AnalyzeClassServiceService implements IAnalyzeCassMethodService, IAnalyzeClassRelationsService {
 

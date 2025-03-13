@@ -1,10 +1,8 @@
 package com.unitTestGenerator.services;
 
 import com.unitTestGenerator.interfaces.IGenerateVariable;
-import com.unitTestGenerator.ioc.anotations.Componente;
-import com.unitTestGenerator.ioc.anotations.Inyect;
+import com.unitTestGenerator.ioc.anotations.Component;
 import com.unitTestGenerator.ioc.anotations.Singleton;
-import com.unitTestGenerator.util.IBaseModel;
 import com.unitTestGenerator.interfaces.IMethodServiceTools;
 import com.unitTestGenerator.pojos.*;
 import org.apache.commons.lang3.StringUtils;
@@ -15,7 +13,7 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-@Componente
+@Component
 @Singleton
 public class GenerateContentMockService implements IMethodServiceTools, IGenerateVariable {
 

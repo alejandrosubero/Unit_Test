@@ -1,13 +1,12 @@
 package com.unitTestGenerator.printers;
 
-import com.unitTestGenerator.ioc.anotations.Componente;
+import com.unitTestGenerator.ioc.anotations.Component;
 import com.unitTestGenerator.ioc.anotations.Singleton;
-import com.unitTestGenerator.util.DetectSO;
 import com.unitTestGenerator.util.IBaseModel;
 
 import java.util.*;
 
-@Componente
+@Component
 @Singleton
 public class DirectoryTreeBuilder implements IBaseModel {
 

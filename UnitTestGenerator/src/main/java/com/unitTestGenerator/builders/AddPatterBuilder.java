@@ -1,7 +1,7 @@
 package com.unitTestGenerator.builders;
 
 import com.unitTestGenerator.builders.interfaces.IFileManager;
-import com.unitTestGenerator.ioc.anotations.Componente;
+import com.unitTestGenerator.ioc.anotations.Component;
 import com.unitTestGenerator.ioc.anotations.Singleton;
 
 import java.io.File;
@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-@Componente
+@Component
 @Singleton
 public class AddPatterBuilder implements IFileManager {
 

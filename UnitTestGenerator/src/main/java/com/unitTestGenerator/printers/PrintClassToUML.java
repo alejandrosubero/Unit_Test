@@ -1,13 +1,12 @@
 package com.unitTestGenerator.printers;
-import com.unitTestGenerator.ioc.anotations.Componente;
+import com.unitTestGenerator.ioc.anotations.Component;
 import com.unitTestGenerator.pojos.ClassRelations;
 import com.unitTestGenerator.pojos.Metodo;
 import com.unitTestGenerator.pojos.Variable;
 
 import java.util.List;
-import java.util.Map;
 
-@Componente
+@Component
 public class PrintClassToUML {
 
     private String nombre;

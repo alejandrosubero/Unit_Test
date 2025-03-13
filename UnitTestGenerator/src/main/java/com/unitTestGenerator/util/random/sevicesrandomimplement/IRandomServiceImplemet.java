@@ -1,9 +1,8 @@
 package com.unitTestGenerator.util.random.sevicesrandomimplement;
 
 
-import com.unitTestGenerator.ioc.anotations.Componente;
+import com.unitTestGenerator.ioc.anotations.Component;
 import com.unitTestGenerator.ioc.anotations.Inyect;
-import com.unitTestGenerator.util.random.servicesRandom.IAddressRandomService;
 import com.unitTestGenerator.util.random.servicesRandom.IRandomService;
 
 import java.math.BigDecimal;
@@ -14,7 +13,7 @@ import java.time.ZoneId;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
-@Componente
+@Component
 public class IRandomServiceImplemet implements IRandomService {
 
     @Inyect

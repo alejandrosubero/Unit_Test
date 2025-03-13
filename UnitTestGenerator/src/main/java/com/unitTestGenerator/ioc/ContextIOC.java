@@ -53,7 +53,7 @@ import org.reflections.Reflections;
 
         public void scanPackage(String packageName) {
             Reflections reflections = new Reflections(packageName);
-            Set<Class<?>> classes = reflections.getTypesAnnotatedWith(Componente.class);
+            Set<Class<?>> classes = reflections.getTypesAnnotatedWith(Component.class);
 
             // Registrar todas las clases primero
             for (Class<?> clazz : classes) {

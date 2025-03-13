@@ -1,13 +1,13 @@
 package com.unitTestGenerator.pojos;
 
-import com.unitTestGenerator.ioc.anotations.Componente;
+import com.unitTestGenerator.ioc.anotations.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.Objects;
 
-@Componente
+@Component
 public class Metodo {
 
     private String nombre;

@@ -1,11 +1,11 @@
 package com.unitTestGenerator.pojos;
 
-import com.unitTestGenerator.ioc.anotations.Componente;
+import com.unitTestGenerator.ioc.anotations.Component;
 
 import java.io.File;
 import java.util.*;
 
-@Componente
+@Component
 public class Project {
 
     private List<Clase> claseList = new ArrayList<>();
