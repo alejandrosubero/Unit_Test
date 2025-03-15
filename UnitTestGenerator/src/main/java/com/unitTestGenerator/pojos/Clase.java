@@ -29,6 +29,7 @@ public class Clase {
     private ImportAnalizePojo imports;
     private String structureInterface;
     private String structureExtends;
+    private String classAnotations;
 
     public Clase() {
         this.metodos = new ArrayList<>();
@@ -204,6 +205,14 @@ public class Clase {
         this.indexFirmaClass = indexFirmaClass;
     }
 
+    public String getClassAnotations() {
+        return classAnotations;
+    }
+
+    public void setClassAnotations(String classAnotations) {
+        this.classAnotations = classAnotations;
+    }
+
     public void addClassAnotation(String anotation){
         String newRawClass = this.addTxtBeforeClassSignature(this.rawClass, this.indexFirmaClass, anotation);
         this.setRawClass(newRawClass);
@@ -230,15 +239,14 @@ public class Clase {
 
     @Override
     public boolean equals(Object o) {
-
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Clase clase = (Clase) o;
-        return Objects.equals(nombre, clase.nombre) && Objects.equals(paquete, clase.paquete) && Objects.equals(metodos, clase.metodos) && Objects.equals(variables, clase.variables) && Objects.equals(estructuras, clase.estructuras) && Objects.equals(useMock, clase.useMock) && Objects.equals(testMethod, clase.testMethod) && Objects.equals(constructores, clase.constructores) && Objects.equals(typeClass, clase.typeClass) && Objects.equals(rawClass, clase.rawClass);
+        return Objects.equals(nombre, clase.nombre) && Objects.equals(paquete, clase.paquete) && Objects.equals(metodos, clase.metodos) && Objects.equals(variables, clase.variables) && Objects.equals(estructuras, clase.estructuras) && Objects.equals(useMock, clase.useMock) && Objects.equals(testMethod, clase.testMethod) && Objects.equals(constructores, clase.constructores) && Objects.equals(typeClass, clase.typeClass) && Objects.equals(rawClass, clase.rawClass) && Objects.equals(useLomboxBuild, clase.useLomboxBuild) && Objects.equals(applyBuildMethod, clase.applyBuildMethod) && Objects.equals(indexFirmaClass, clase.indexFirmaClass) && Objects.equals(classSignatureLine, clase.classSignatureLine) && Objects.equals(classRelations, clase.classRelations) && Objects.equals(classPath, clase.classPath) && Objects.equals(todoNoteInClass, clase.todoNoteInClass) && Objects.equals(imports, clase.imports) && Objects.equals(structureInterface, clase.structureInterface) && Objects.equals(structureExtends, clase.structureExtends) && Objects.equals(classAnotations, clase.classAnotations);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(nombre, paquete, metodos, variables, estructuras, useMock, testMethod, constructores, typeClass, rawClass);
+        return Objects.hash(nombre, paquete, metodos, variables, estructuras, useMock, testMethod, constructores, typeClass, rawClass, useLomboxBuild, applyBuildMethod, indexFirmaClass, classSignatureLine, classRelations, classPath, todoNoteInClass, imports, structureInterface, structureExtends, classAnotations);
     }
 }

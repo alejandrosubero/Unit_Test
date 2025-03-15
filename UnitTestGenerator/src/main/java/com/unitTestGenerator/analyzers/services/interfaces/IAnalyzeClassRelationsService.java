@@ -28,6 +28,39 @@ public interface IAnalyzeClassRelationsService extends IReturnType {
         }
     }
 
+
+    default void getClassSignatureLineAnotations(String contenido, Clase clase) {
+
+        String signatureWithAnotations = "";
+
+        if ("class".equals(clase.getTypeClass())) {
+            Pattern patronClase = Pattern.compile("(@[^\\n\\r]+[\\n\\r]+)*\\s*public class (\\w+)(?:\\s+extends\\s+[^{]+)?(?:\\s+implements\\s+[^{]+)?\\s*\\{");
+            Matcher matcherClase = patronClase.matcher(contenido);
+            if (matcherClase.find()) {
+                signatureWithAnotations = matcherClase.group(0).trim();
+            }
+        }
+
+        if ("interface".equals(clase.getTypeClass())) {
+            Pattern patronInterface = Pattern.compile("(@[^\\n\\r]+[\\n\\r]+)*\\s*public interface (\\w+)(?:\\s+extends\\s+[^{]+)?\\s*\\{");
+            Matcher matcherInterface = patronInterface.matcher(contenido);
+            if (matcherInterface.find()) {
+                signatureWithAnotations = matcherInterface.group(0).trim();
+            }
+        }
+
+        if(signatureWithAnotations != null && !signatureWithAnotations.equals("")){
+            Pattern patronAnotacion = Pattern.compile("@[^\\n]*");
+            Matcher matcherAnotacion = patronAnotacion.matcher(signatureWithAnotations);
+            StringBuilder anotations = new StringBuilder();
+            while (matcherAnotacion.find()) {
+                anotations.append(matcherAnotacion.group()).append(" ");
+            }
+            clase.setClassAnotations(anotations.toString());
+        }
+    }
+
+
     default void getClassRelationsInClassSignatureLine(Clase clase){
         String classExtends ="";
         List<String> classImplements = new ArrayList<>();

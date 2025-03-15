@@ -101,6 +101,7 @@ public class AnalyzeClassServiceService implements IAnalyzeCassMethodService, IA
         }
         this.getClassSignatureLine(contenido, clase);
         this.getClassRelationsInClassSignatureLine(clase);
+        this.getClassSignatureLineAnotations(contenido, clase);
     }
 
 
