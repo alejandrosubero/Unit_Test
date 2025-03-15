@@ -67,6 +67,7 @@ public class AnalizadorProyecto implements ITodoDetectorService, IPrintProjectSt
                               clase.setTodoNoteInClass(this.getTodo(clase.getRawClass()));
                               this.treeBuilder.addPath(clase.getClassPath());
                               this.importAnalizeService.importAnalize(clase);
+
                           }
                           this.setContainers(clase, classList, mapClass);
                       }

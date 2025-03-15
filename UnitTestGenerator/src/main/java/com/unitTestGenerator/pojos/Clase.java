@@ -2,9 +2,10 @@ package com.unitTestGenerator.pojos;
 
 import com.unitTestGenerator.ioc.anotations.Component;
 
-import java.util.ArrayList;
+import java.util.*;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
+import java.util.Set;
 
 @Component
 public class Clase {
@@ -227,6 +228,48 @@ public class Clase {
         }
         return content;
     }
+
+//    public Variable getVariable(String type){
+//        Variable var = null;
+//        try {
+//            var = this.variables.stream().filter( variable -> variable.getTipo().equals(type)).findFirst().get();
+//        }catch (Exception e){
+//            e.printStackTrace();
+//            return var;
+//        }
+//        return var;
+//    }
+
+    public Variable getVariable(String type) {
+
+        if (this.variables == null || this.variables.isEmpty()) {
+            return null;
+        }
+
+        for (Variable v : this.variables) {
+            if (v != null && Objects.equals(v.getTipo(), type)) {
+                return v;
+            }
+        }
+        return null;
+    }
+
+
+
+    public boolean checkAnotation(List<String> iocAnotations) {
+        if (this.classAnotations == null || this.classAnotations.isEmpty()) {
+            return false;
+        }
+        Set<String> anotations = new HashSet<>(Arrays.asList(this.classAnotations.trim().split(",")));
+        for (String iocAnotation : iocAnotations) {
+            if (anotations.contains(iocAnotation)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
 
 
     public String getClassSignatureLine() {

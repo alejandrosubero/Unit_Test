@@ -9,9 +9,10 @@ import java.util.List;
 public class Constructor {
 
     private List<ParametroMetodo> parametros = new ArrayList<>();
-    private boolean isNoneParam;
+    private Boolean isNoneParam;
     private String costructorSignature;
     private String costructorContent;
+    private String rawConstructor;
 
 
 
@@ -43,11 +44,11 @@ public class Constructor {
         this.parametros = parametros;
     }
 
-    public boolean isNoneParam() {
+    public Boolean isNoneParam() {
         return isNoneParam;
     }
 
-    public void setIsNoneParam(boolean isNoneParam) {
+    public void setIsNoneParam(Boolean isNoneParam) {
         this.isNoneParam = isNoneParam;
     }
 
@@ -55,5 +56,11 @@ public class Constructor {
         return this.parametros.isEmpty();
     }
 
+    public String getRawConstructor() {
+        return rawConstructor;
+    }
 
+    public void setRawConstructor(String rawConstructor) {
+        this.rawConstructor = rawConstructor;
+    }
 }

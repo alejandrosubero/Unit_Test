@@ -48,8 +48,8 @@ public class AnalyzeClassServiceService implements IAnalyzeCassMethodService, IA
             String path = archivo.getAbsolutePath();
             Clase classs = analyzeClaseContentString(content);
            if(archivo != null && classs != null){
-               classs.setRawClass(content);
                classs.setClassPath(path);
+               //
            }
             return classs;
         } catch (Exception e) {
@@ -61,6 +61,7 @@ public class AnalyzeClassServiceService implements IAnalyzeCassMethodService, IA
 
     private Clase analyzeClaseContentString( String content) throws Exception {
         Clase clase = ContextIOC.getInstance().getClassInstance(Clase.class);
+        clase.setRawClass(content);
         analyzePackage(content, clase);
         analyzeNamesAndTypeOfClass(content, clase);
         analyzeConstructors(content, clase);
@@ -69,7 +70,8 @@ public class AnalyzeClassServiceService implements IAnalyzeCassMethodService, IA
         analyzeControlStructure(content, clase);
         containPatterBuild(content, clase);
         containLomboxAnotacionBuild(content,clase);
-        this.getRelationsInClass(clase);
+        this.getRelationsIOCInClass(clase);
+
         return postClassMethodAnalysis(clase);
     }
 
@@ -105,6 +107,16 @@ public class AnalyzeClassServiceService implements IAnalyzeCassMethodService, IA
     }
 
 
+    private void getSignatureConstructors(Constructor constructor ) {
+//        Pattern patronConstructor = Pattern.compile("public\\s+(\\w+)\\(.*?\\)\\s*(?=\\{)", Pattern.DOTALL);
+        Pattern patronConstructor = Pattern.compile("(public|private|protected)\\s+(\\w+)\\(.*?\\)\\s*(?=\\{)", Pattern.DOTALL);
+        Matcher matcherConstructor = patronConstructor.matcher(constructor.getRawConstructor());
+
+        while (matcherConstructor.find()) {
+            constructor.setCostructorSignature(matcherConstructor.group(0).trim());
+        }
+    }
+
 
     private void analyzeConstructors(String contenido, Clase clase) {
         Pattern patronConstructor = Pattern.compile("public (\\w+)\\((.*?)\\)\\s*\\{(.*?)\\}", Pattern.DOTALL);
@@ -112,7 +124,8 @@ public class AnalyzeClassServiceService implements IAnalyzeCassMethodService, IA
 
         while (matcherConstructor.find()) {
             Constructor constructor = ContextIOC.getInstance().getClassInstance(Constructor.class);
-            constructor.setCostructorSignature(matcherConstructor.group(0));
+            constructor.setRawConstructor(matcherConstructor.group(0));
+            this.getSignatureConstructors(constructor);
 
             String[] parametros = matcherConstructor.group(2).split(",");
             List<ParametroMetodo> parametroMetodos = new ArrayList<>();

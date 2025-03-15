@@ -1,8 +1,11 @@
 package com.unitTestGenerator.analyzers.services.interfaces;
 
 import com.unitTestGenerator.interfaces.IReturnType;
+import com.unitTestGenerator.ioc.anotations.Component;
+import com.unitTestGenerator.ioc.anotations.Singleton;
 import com.unitTestGenerator.pojos.Clase;
 import com.unitTestGenerator.pojos.ClassRelations;
+import com.unitTestGenerator.pojos.Variable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -54,7 +57,7 @@ public interface IAnalyzeClassRelationsService extends IReturnType {
             Matcher matcherAnotacion = patronAnotacion.matcher(signatureWithAnotations);
             StringBuilder anotations = new StringBuilder();
             while (matcherAnotacion.find()) {
-                anotations.append(matcherAnotacion.group()).append(" ");
+                anotations.append(matcherAnotacion.group()).append(",");
             }
             clase.setClassAnotations(anotations.toString());
         }
@@ -91,19 +94,36 @@ public interface IAnalyzeClassRelationsService extends IReturnType {
 
     }
 
-    default void getRelationsInClass(Clase xclass){
+    default void getRelationsIOCInClass(Clase xclass){
+
+        List<String> iocAnotations = Arrays.asList("@Componet", "@Service", "@Bean", "@Singleton");
+
         if(xclass.getVariables() != null && !xclass.getVariables().isEmpty()){
             xclass.getVariables().stream().forEach(variable -> {
                 if(!this.isValidTypeReturn(variable.getTipo()) && variable.getAnotation().equals("@Autowired")){
                     if(!xclass.getClassRelations().getDependencyInjectionIoC().contains(variable.getTipo())){
                         xclass.getClassRelations().addDependencyInjectionIoC(variable.getTipo());
                     }
-
                 }
             });
         }
 
+        if(xclass.getConstructores() != null && !xclass.getConstructores().isEmpty()){
+            xclass.getConstructores().stream().forEach(constructor -> {
+                constructor.getParametros().stream().forEach(parametroMetodo -> {
+                    Variable var = xclass.getVariable(parametroMetodo.getTipo());
+                    if(var != null && xclass.checkAnotation(iocAnotations) ){
+                        if(!xclass.getClassRelations().getDependencyInjectionIoC().contains(var.getTipo())){
+                            xclass.getClassRelations().addDependencyInjectionIoC(var.getTipo());
+                        }
+                    }
+                });
+            });
+        }
     }
+
+
+
 
 
 
