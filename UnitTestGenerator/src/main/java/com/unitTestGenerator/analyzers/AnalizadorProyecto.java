@@ -34,9 +34,9 @@ public class AnalizadorProyecto implements ITodoDetectorService, IPrintProjectSt
 
     public List<Clase> analizarProyecto(String rutaProyecto, Project project) {
 
-        treeBuilder.setProjetName(rutaProyecto);
         List<Clase> clases = new ArrayList<>();
         Map<String, Clase> mapClass = new HashMap<>();
+        treeBuilder.setProjetName(rutaProyecto);
         File carpetaProyecto = new File(rutaProyecto);
         this.analizarProyectoRecursivo(carpetaProyecto, clases, mapClass, project);
         project.setMapClass(mapClass);
@@ -52,14 +52,12 @@ public class AnalizadorProyecto implements ITodoDetectorService, IPrintProjectSt
       private void analizarProyectoRecursivo(File dir, List<Clase> classList, Map<String, Clase> mapClass, Project project) {
 
         List<String> IGNORED_FOLDERS = Arrays.asList("target", ".idea", ".git");
-          StringBuilder tree = new StringBuilder();
           File[] files = dir.listFiles();
           if (files != null) {
               for (File file : files) {
                   if (IGNORED_FOLDERS.contains(file.getName())) {
                       continue;
                   }
-
                   if (file.isDirectory()) {
                       this.analizarProyectoRecursivo(file, classList, mapClass, project);
                   }else {

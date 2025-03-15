@@ -13,22 +13,22 @@ public class InternalFuntionalTests {
     }
 
     public static void executeTest() {
-
-        Boolean isAnalisis = false;
-        Boolean useMock = false;
 //        String pathProject = "/Users/alejandrosubero/Documents/TESTREPOSITORY/Employee1";
-        String pathProject = "/Users/user/Documents/TEST_REPOSITORY/Employee1";
 //        String pathProject ="D:\\TEST_REPOSITORIES\\Employee1";
-        String me ="/Users/user/Documents/TEST_REPOSITORY/UnitTestGenerator";
+//        String me ="/Users/user/Documents/TEST_REPOSITORY/UnitTestGenerator";
 //        String nombreClase = "EmpleadoServiceImplement";
 //        String method = "updateEmpleado";
-        String nombreClase = "CargoServiceImplement";
-        String method = "updateCargo";
 //        String method ="findById";
 //        String method ="findByFechaEgreso";
 //        String method = "findByTotalHorasFeriadoYear";
 //        AppProjectStarted.getInstance().executeTest(pathProject, isAnalisis, nombreClase, method, useMock);
+//        String pathProject = "/Users/user/Documents/TEST_REPOSITORY/Employee1";
         ContextIOC con = ContextIOC.getInstance(InternalFuntionalTests.class);
+        Boolean isAnalisis = false;
+        Boolean useMock = false;
+        String me ="/Users/alejandrosubero/Documents/TESTREPOSITORY/UnitTestGenerator";
+        String nombreClase = "CargoServiceImplement";
+        String method = "updateCargo";
         con.getClassInstance(AppProjectStarted.class).analizedTest(me, isAnalisis, nombreClase, method, useMock);;
     }
 
@@ -38,7 +38,6 @@ public class InternalFuntionalTests {
 }
 
 // https://mvnrepository.com/artifact/commons-io/commons-io
-
 // https://github.com/vinayakbagal7/HibernateSqlite/blob/master/HibernateHelloWorld/src/main/java/com/srccodes/example/hibernate/App.java
 // https://github.com/xerial/sqlite-jdbc?tab=readme-ov-file
 
@@ -53,13 +52,6 @@ TOMAR EN CUENTA UNA AVERTENCIA CUANDO SELECCIONAS ALL QUE SE SOBRE ESCRIBIRAN TO
 3) TRABAJAR cUANDO NO SE QUIERE USAR MOCK
 4) hay una falla si se tiene la variable que el debe de costruir no adiciona los metodos y falla cuando esta en mock add;
 
-
-
-
-
 'org.projectlombok', name: 'lombok', version: '1.18.34'
-
-
-
 
 */

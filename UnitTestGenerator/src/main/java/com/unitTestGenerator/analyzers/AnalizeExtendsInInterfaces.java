@@ -23,7 +23,7 @@ public class AnalizeExtendsInInterfaces {
                 if(clase.getClassRelations() != null && !clase.getClassRelations().getImplementsList().isEmpty()){
                     StringBuffer buffer = new StringBuffer();
                     clase.getClassRelations().getImplementsList().forEach(Implementation -> {
-                        buffer.append("- ").append(Implementation.trim()).append("\n");
+                        buffer.append("|__ ").append(Implementation.trim()).append("\n");
                         Clase implementClass = project.getClass(Implementation.trim());
                         String treeString = this.extendsLoop(project, implementClass);
                         if (!treeString.isEmpty()) {
@@ -31,7 +31,8 @@ public class AnalizeExtendsInInterfaces {
                             buffer.append(indentedTree);
                         }
                     });
-                    clase.setStructureInterface(buffer.toString());
+                    String implementTree = clase.getNombre() +""+"\n"+buffer.toString().replaceAll("(?m)^", "   ");
+                    clase.setStructureInterface(implementTree);
                 }
             });
 
@@ -45,7 +46,7 @@ public class AnalizeExtendsInInterfaces {
                 if(clase.getClassRelations() != null && isExtents(clase)){
                     StringBuffer buffer = new StringBuffer();
                     String nameClass = clase.getClassRelations().getClassExtends().trim();
-                        buffer.append("- ").append(nameClass).append("\n");
+                        buffer.append("|__ ").append(nameClass).append("\n");
                         Clase implementClass = project.getClass(nameClass);
                         String treeString = this.extendsLoop(project, implementClass);
                         if (!treeString.isEmpty()) {

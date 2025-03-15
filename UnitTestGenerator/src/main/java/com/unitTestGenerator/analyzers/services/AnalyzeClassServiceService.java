@@ -161,7 +161,10 @@ public class AnalyzeClassServiceService implements IAnalyzeCassMethodService, IA
                 Metodo metodo = ContextIOC.getInstance().getClassInstance(Metodo.class);
                 this.analyzeMethodBasic( metodo, matcherMetodoInterface);
                 this.analyzeMethodParameters( metodo, matcherMetodoInterface);
-                metodo.setMethodSignature(matcherMetodoInterface.group(0).trim());
+                String [] signturePart = matcherMetodoInterface.group(0).trim().split("\\{");
+                String va = signturePart[0];
+
+                metodo.setMethodSignature(va);
                 this.analyzeMethodAnotations(contenido,metodo, metodo.getMethodSignature());
                 clase.addMetodo(metodo);
             }
