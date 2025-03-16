@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagrama Interactivo</title>
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="script.js"></script>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+        #container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: scroll;
+            background-color: #222;
+        }
+        #linesCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        .element {
+            position: absolute;
+            width: 120px;
+            height: 80px;
+            background: white;
+            border: 2px solid black;
+            cursor: grab;
+            padding: 10px;
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+        button {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+<div id="container">
+    <canvas id="linesCanvas"></canvas>
+    <div id="elements"></div>
+    <button id="addElement">Agregar Elemento</button>
+</div>
+<script>
+    const container = document.getElementById("container");
+    const elementsDiv = document.getElementById("elements");
+    const canvas = document.getElementById("linesCanvas");
+    const ctx = canvas.getContext("2d");
+    const addElementBtn = document.getElementById("addElement");
+
+    let elements = [];
+    let elementCounter = 0;
+
+    const predefinedElements = [
+        { name: "Inicio", valor: "A", conste: [{ conexion: 1, move: false }] },
+        { name: "Proceso", valor: "B", conste: [{ conexion: 2, move: true }] },
+        { name: "Decisión", valor: "C", conste: [{ conexion: 3, move: false }] },
+        { name: "Fin", valor: "D", conste: [] },
+        { name: "Tarea", valor: "E", conste: [{ conexion: 0, move: true }, { conexion: 2, move: false }] },
+        { name: "Subproceso", valor: "F", conste: [{ conexion: 1, move: false }, { conexion: 3, move: true }] }
+    ];
+
+    function createElement(x, y, name, valor, id, conste) {
+        const element = document.createElement("div");
+        element.classList.add("element");
+        element.style.left = `${x}px`;
+        element.style.top = `${y}px`;
+        element.innerHTML = `<strong>${name}</strong><br>Valor: ${valor}`;
+        element.dataset.id = id;
+        elementsDiv.appendChild(element);
+        elements.push({ id, element, x, y, conste });
+        makeDraggable(element);
+    }
+
+    function makeDraggable(element) {
+        let offsetX, offsetY, isDragging = false;
+
+        element.addEventListener("mousedown", (e) => {
+            isDragging = true;
+            offsetX = e.clientX - element.offsetLeft;
+            offsetY = e.clientY - element.offsetTop;
+            element.style.cursor = "grabbing";
+        });
+
+        document.addEventListener("mousemove", (e) => {
+            if (!isDragging) return;
+            element.style.left = `${e.clientX - offsetX}px`;
+            element.style.top = `${e.clientY - offsetY}px`;
+            updateConnections();
+        });
+
+        document.addEventListener("mouseup", () => {
+            isDragging = false;
+            element.style.cursor = "grab";
+        });
+    }
+
+    function updateConnections() {
+        canvas.width = container.clientWidth;
+        canvas.height = container.clientHeight;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.strokeStyle = "white";
+        ctx.lineWidth = 2;
+
+        elements.forEach(({ id, conste }) => {
+            const fromElement = elements.find(e => e.id === id)?.element;
+            if (!fromElement) return;
+
+            conste.forEach(({ conexion, move }) => {
+                const toElement = elements.find(e => e.id === conexion)?.element;
+                if (!toElement) return;
+
+                const x1 = fromElement.offsetLeft + fromElement.clientWidth / 2;
+                const y1 = fromElement.offsetTop + fromElement.clientHeight / 2;
+                const x2 = toElement.offsetLeft + toElement.clientWidth / 2;
+                const y2 = toElement.offsetTop + toElement.clientHeight / 2;
+
+                ctx.beginPath();
+                ctx.moveTo(x1, y1);
+                ctx.lineTo(x2, y2);
+                ctx.stroke();
+
+                const middleX = (x1 + x2) / 2;
+                const middleY = (y1 + y2) / 2;
+
+                if (move) {
+                    // Flecha azul en el medio de la línea
+                    ctx.fillStyle = "blue";
+                    ctx.beginPath();
+                    ctx.moveTo(middleX - 10, middleY - 5);
+                    ctx.lineTo(middleX + 10, middleY - 5);
+                    ctx.lineTo(middleX, middleY + 10);
+                    ctx.closePath();
+                    ctx.fill();
+                } else {
+                    // Cuadro rojo en el medio de la línea
+                    ctx.fillStyle = "red";
+                    ctx.fillRect(middleX - 5, middleY - 5, 10, 10);
+                }
+            });
+        });
+    }
+
+    function initializeElements() {
+        predefinedElements.forEach((el, index) => {
+            createElement(100 + index * 150, 100, el.name, el.valor, index, el.conste);
+        });
+        updateConnections();
+    }
+
+    addElementBtn.addEventListener("click", () => {
+        createElement(100 + elements.length * 150, 100, `Elemento ${elementCounter}`, "X", elementCounter, []);
+        elementCounter++;
+    });
+
+    initializeElements();
+</script>
+</body>
+</html>
