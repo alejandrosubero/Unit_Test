@@ -5,13 +5,12 @@ import com.unitTestGenerator.ioc.ContextIOC;
 import com.unitTestGenerator.pojos.Clase;
 import com.unitTestGenerator.pojos.Metodo;
 import com.unitTestGenerator.pojos.Project;
-import com.unitTestGenerator.printers.PrintClassToUML;
+import com.unitTestGenerator.uml.sevices.PrintClassToUML;
 
 import java.util.List;
 
 
 public interface IProjectAnalizeService {
-
 
     default Project executeProjectAnalize(String pathProject, boolean isAnalisis) {
 
@@ -26,12 +25,20 @@ public interface IProjectAnalizeService {
         return null;
     }
 
-    default String printUMLClass(Project projectP) {
+    default String printListClassToUML(Project projectP) {
         StringBuilder buffer = new StringBuilder();
         for (Clase classs : projectP.getClaseList()) {
             PrintClassToUML umlClass = new PrintClassToUML(classs.getNombre(), classs.getVariables(), classs.getMetodos(), classs.getClassRelations());
             buffer.append(umlClass.generarDiagrama()).append("\n").append("\n");
         }
+        return buffer.toString();
+    }
+
+
+    default String printUMLClass(Clase classs) {
+        StringBuilder buffer = new StringBuilder();
+            PrintClassToUML umlClass = new PrintClassToUML(classs.getNombre(), classs.getVariables(), classs.getMetodos(), classs.getClassRelations());
+            buffer.append(umlClass.generarDiagrama()).append("\n").append("\n");
         return buffer.toString();
     }
 

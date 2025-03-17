@@ -30,7 +30,7 @@ public class AnalizerProjectService implements IPrintAnalizeImports, IExtendsInI
             this.getInterfaceStructure(project);
             this.getExtendsStructure(project);
             this.projectAnalyzerType(project);
-            String uml = printUMLClass(project);
+            String uml = printListClassToUML(project);
             this.generateImportsMap(project);
             this.printProjectAnalize(project,isAnalisis);
         }

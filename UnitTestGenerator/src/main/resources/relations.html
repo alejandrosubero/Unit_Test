@@ -63,6 +63,10 @@
             left: 0;
         }
 
+        .popup p {
+            margin: 2px 0;
+        }
+
         /* button { position: absolute; top: 10px; left: 10px; z-index: 1000; } */
     </style>
 </head>
@@ -71,6 +75,7 @@
 <div id="container">
     <canvas id="linesCanvas"></canvas>
     <div id="elements"></div>
+
 </div>
 <script>
     const container = document.getElementById("container");
@@ -81,24 +86,36 @@
 
 
     const predefinedElements = [
-        { name: "Inicio", valor: "A", variables: ["var1", "var2"], metodos: ["met1"], conste: [{ conexion: "Proceso", move: false }, { conexion: "Fin", move: false }] },
-        { name: "Proceso", valor: "B", variables: ["data", "count"], metodos: ["process", "validate"], conste: [{ conexion: "Decisión", move: true }] },
-        { name: "Decisión", valor: "C", variables: ["flag"], metodos: ["checkCondition"], conste: [{ conexion: "Fin", move: false }, { conexion: "Proceso", move: false }] },
-        { name: "Fin", valor: "D", variables: [], metodos: [], conste: [] }
+        { name: "Inicio", value: "A", variables: ["var1", "var2"], method: ["met1"], relations: ["Proceso", "Fin"], conste: [{ connection: "Proceso", move: false }, { connection: "Decisión", move: true }, { connection: "Fin", move: true }] },
+        { name: "Proceso", value: "B", variables: ["data", "count"], method: ["process", "validate"], relations: ["Proceso", "Fin"], conste: [{ connection: "Decisión", move: false }] },
+        {
+            name: "Decisión", value: "C", variables: ["flag"],
+            method: [
+                "checkCondition",
+                "addAllStrongDependencyAssociation(List<String> strongDependencys)",
+                "addAllStrongDependencyAssociationAllStrongDependencyAssociation(List<String> strongDependencys)"
+            ], relations: ["Proceso", "Fin"],
+            conste: [
+                { connection: "Fin", move: false },
+                { connection: "Proceso", move: true }
+            ]
+        },
+        { name: "Fin", value: "", variables: [], method: [], relations: [], conste: [] }
     ];
 
 
-    function createElement(x, y, name, valor, id, conste, variables, metodos) {
+    function createElement(x, y, name, value, id, conste, variables, method, relations) {
         const element = document.createElement("div");
         element.classList.add("element");
         element.style.left = `${x}px`;
         element.style.top = `${y}px`;
-        element.innerHTML = `<strong>${name}</strong><br>Valor: ${valor}`;
+        // element.innerHTML = `<strong>${name}</strong><br>value: ${value}`;
+        element.innerHTML = `<strong>${name}</strong>${value ? `<br>value: ${value}` : ''}`;
         element.dataset.id = id;
         elementsDiv.appendChild(element);
 
         // Añadir propiedad popup al elemento
-        elements.push({ id, element, x, y, conste, variables, metodos, popup: null });
+        elements.push({ id, element, x, y, conste, variables, method, relations, popup: null });
 
         element.addEventListener("click", function (e) {
             if (this.dataset.dragged === "true") { // Verificar si hubo arrastre
@@ -109,7 +126,6 @@
         });
         makeDraggable(element);
     }
-
 
 
     function makeDraggable(element) {
@@ -137,31 +153,56 @@
         });
     }
 
+
     function showPopup(id) {
         const element = elements.find(e => e.id === id);
-        if (!element || element.popup) return;  // Si ya tiene popup, no hacer nada
+        if (!element || element.popup) return;
 
         let popup = document.createElement("div");
         popup.classList.add("popup");
         popup.style.left = `${element.element.offsetLeft + 140}px`;
         popup.style.top = `${element.element.offsetTop}px`;
 
-        popup.innerHTML = `<strong>${element.element.innerText.split('\n')[0]}</strong>`;
-        popup.innerHTML += `<hr>`;
-        popup.innerHTML += `<p><strong>Variables:</strong></p>`;
-        element.variables.forEach(v => popup.innerHTML += `<p>${v}</p>`);
-        popup.innerHTML += `<hr>`;
-        popup.innerHTML += `<p><strong>Métodos:</strong></p>`;
-        element.metodos.forEach(m => popup.innerHTML += `<p>${m}()</p>`);
-        popup.innerHTML += `<hr>`;
+        let popupContent = `
+              <div style="text-align: center;">
+                    <strong>${element.element.innerText.split('\n')[0]}</strong>
+            </div>
+            <br>
+        `;
+
+        if (element.variables && element.variables.length > 0) {
+            popupContent += `
+            <hr>
+            <p><strong>Variables:</strong></p>
+            ${element.variables.map(v => `<p>${v}</p>`).join('')}
+            `;
+        }
+
+        if (element.method && element.method.length > 0) {
+            popupContent += `
+            <hr>
+            <p><strong>Methods:</strong></p>
+            ${element.method.map(m => `<p>${m}()</p>`).join('')}
+            `;
+        }
+
+        if (element.relations && element.relations.length > 0) {
+            popupContent += `
+                <hr>
+                <p><strong>Relations:</strong></p>
+                ${element.relations.map(r => `<p>${r}</p>`).join('')}
+            `;
+        }
+        popupContent += `<hr>`;
+        popup.innerHTML = popupContent;
 
         let closeButton = document.createElement("button");
         closeButton.innerText = "Cerrar";
-
         closeButton.addEventListener("click", () => {
             popup.remove();
-            element.popup = null;  // Eliminar referencia al cerrar
+            element.popup = null;
         });
+
         popup.appendChild(closeButton);
         document.body.appendChild(popup);
         element.popup = popup;
@@ -172,53 +213,101 @@
         canvas.width = container.clientWidth;
         canvas.height = container.clientHeight;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // 1. Dibujar todas las líneas blancas primero
         ctx.strokeStyle = "white";
         ctx.lineWidth = 2;
 
-        elements.forEach(({ id, conste }) => {
-            const fromElement = elements.find(e => e.id === id)?.element;
-            if (!fromElement) return;
-
-            conste.forEach(({ conexion, move }) => {
-                const toElement = elements.find(e => e.element.innerText.includes(conexion))?.element;
-
+        elements.forEach(element => {
+            element.conste.forEach(con => {
+                const toElement = elements.find(e => e.element.innerText.includes(con.connection))?.element;
                 if (!toElement) return;
 
-                const x1 = fromElement.offsetLeft + fromElement.clientWidth / 2;
-                const y1 = fromElement.offsetTop + fromElement.clientHeight / 2;
+                const x1 = element.element.offsetLeft + element.element.clientWidth / 2;
+                const y1 = element.element.offsetTop + element.element.clientHeight / 2;
                 const x2 = toElement.offsetLeft + toElement.clientWidth / 2;
                 const y2 = toElement.offsetTop + toElement.clientHeight / 2;
 
+                // Dibujar línea
                 ctx.beginPath();
                 ctx.moveTo(x1, y1);
                 ctx.lineTo(x2, y2);
                 ctx.stroke();
+            });
+        });
 
-                const middleX = (x1 + x2) / 2;
-                const middleY = (y1 + y2) / 2;
+        // 2. Dibujar marcadores sobre las líneas
+        elements.forEach(element => {
+            element.conste.forEach((con, index) => {
+                const toElement = elements.find(e => e.element.innerText.includes(con.connection))?.element;
+                if (!toElement) return;
 
-                if (move) {
-                    // Flecha azul en el medio de la línea
-                    ctx.fillStyle = "blue";
+                const x1 = element.element.offsetLeft + element.element.clientWidth / 2;
+                const y1 = element.element.offsetTop + element.element.clientHeight / 2;
+                const x2 = toElement.offsetLeft + toElement.clientWidth / 2;
+                const y2 = toElement.offsetTop + toElement.clientHeight / 2;
+
+                const dx = x2 - x1;
+                const dy = y2 - y1;
+                const length = Math.sqrt(dx * dx + dy * dy);
+                if (length === 0) return;
+
+                // Calcular posición del marcador
+                const totalMarkers = element.conste.length;
+                const spacing = length / (totalMarkers + 1);
+                const markerPosition = {
+                    x: x1 + dx * ((index + 1) / (totalMarkers + 1)),
+                    y: y1 + dy * ((index + 1) / (totalMarkers + 1))
+                };
+
+                // Dibujar marcador
+                if (con.move) {
+                    // Flecha azul
+                    ctx.fillStyle = "#0000FF";
+                    ctx.strokeStyle = "#000000";
+                    const angle = Math.atan2(dy, dx);
+
+                    ctx.save();
+                    ctx.translate(markerPosition.x, markerPosition.y);
+                    ctx.rotate(angle);
+
+                    // Triángulo de flecha
                     ctx.beginPath();
-                    ctx.moveTo(middleX - 10, middleY - 5);
-                    ctx.lineTo(middleX + 10, middleY - 5);
-                    ctx.lineTo(middleX, middleY + 10);
+                    ctx.moveTo(-15, -10);
+                    ctx.lineTo(0, 0);
+                    ctx.lineTo(-15, 10);
                     ctx.closePath();
+
                     ctx.fill();
+                    ctx.stroke();
+                    ctx.restore();
                 } else {
-                    // Cuadro rojo en el medio de la línea
-                    ctx.fillStyle = "red";
-                    ctx.fillRect(middleX - 5, middleY - 5, 10, 10);
+                    // Cuadrado rojo
+                    ctx.fillStyle = "#FF0000";
+                    ctx.strokeStyle = "#000000";
+
+                    ctx.beginPath();
+                    ctx.rect(
+                        markerPosition.x - 7,
+                        markerPosition.y - 7,
+                        14,
+                        14
+                    );
+                    ctx.fill();
+                    ctx.stroke();
                 }
             });
         });
     }
 
 
+
     predefinedElements.forEach((el, index) => {
-        createElement(100 + index * 150, 100, el.name, el.valor, index, el.conste, el.variables, el.metodos);
+        createElement(100 + index * 150, 100, el.name, el.value, index, el.conste, el.variables, el.method, el.relations);
     });
+
+
+
 </script>
 </body>
 

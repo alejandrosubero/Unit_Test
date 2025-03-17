@@ -1,4 +1,4 @@
-package com.unitTestGenerator.printers;
+package com.unitTestGenerator.uml.sevices;
 import com.unitTestGenerator.ioc.anotations.Component;
 import com.unitTestGenerator.pojos.ClassRelations;
 import com.unitTestGenerator.pojos.Metodo;
