@@ -4,73 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Diagrama Interactivo</title>
-    <link rel="stylesheet" href="styles.css">
-    <script defer src="script.js"></script>
     <style>
-        body {
-            margin: 0;
-            overflow: hidden;
-        }
-        #container {
-            position: relative;
-            width: 100vw;
-            height: 100vh;
-            overflow: scroll;
-            background-color: #222;
-        }
-        #linesCanvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-        }
-        .element {
-            position: absolute;
-            width: 120px;
-            height: 80px;
-            background: white;
-            border: 2px solid black;
-            cursor: grab;
-            padding: 10px;
-            text-align: center;
-            font-family: Arial, sans-serif;
-        }
-        button {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            z-index: 1000;
-        }
+        body { margin: 0; overflow: hidden; }
+        #container { position: relative; width: 100vw; height: 100vh; overflow: scroll; background-color: #222; }
+        #linesCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+        .element { position: absolute; width: 120px; height: 80px; background: white; border: 2px solid black; cursor: grab; padding: 10px; text-align: center; font-family: Arial, sans-serif; }
+        .popup { position: absolute; background: white; border: 2px solid black; padding: 10px; z-index: 1000; min-width: 150px; }
+        .popup hr { margin: 5px 0; }
+        /* .popup button { display: block; width: 100%; margin-top: 5px; } */
+        .popup button {display: block; width: 100%; margin-top: 5px; position: absolute; bottom: 0; left: 0;}
+        /* button { position: absolute; top: 10px; left: 10px; z-index: 1000; } */
     </style>
 </head>
 <body>
 <div id="container">
     <canvas id="linesCanvas"></canvas>
     <div id="elements"></div>
-    <button id="addElement">Agregar Elemento</button>
 </div>
 <script>
     const container = document.getElementById("container");
     const elementsDiv = document.getElementById("elements");
     const canvas = document.getElementById("linesCanvas");
     const ctx = canvas.getContext("2d");
-    const addElementBtn = document.getElementById("addElement");
-
     let elements = [];
-    let elementCounter = 0;
 
     const predefinedElements = [
-        { name: "Inicio", valor: "A", conste: [{ conexion: 1, move: false }] },
-        { name: "Proceso", valor: "B", conste: [{ conexion: 2, move: true }] },
-        { name: "Decisión", valor: "C", conste: [{ conexion: 3, move: false }] },
-        { name: "Fin", valor: "D", conste: [] },
-        { name: "Tarea", valor: "E", conste: [{ conexion: 0, move: true }, { conexion: 2, move: false }] },
-        { name: "Subproceso", valor: "F", conste: [{ conexion: 1, move: false }, { conexion: 3, move: true }] }
+        { name: "Inicio", valor: "A", variables: ["var1", "var2"], metodos: ["met1"], conste: [{ conexion: 1, move: false }] },
+        { name: "Proceso", valor: "B", variables: ["data", "count"], metodos: ["process", "validate"], conste: [{ conexion: 2, move: true }] },
+        { name: "Decisión", valor: "C", variables: ["flag"], metodos: ["checkCondition"], conste: [{ conexion: 3, move: false }] },
+        { name: "Fin", valor: "D", variables: [], metodos: [], conste: [] },
+        { name: "Tarea", valor: "E", variables: ["temp", "result"], metodos: ["execute"], conste: [{ conexion: 0, move: true }, { conexion: 2, move: false }] },
+        { name: "Subproceso", valor: "F", variables: ["id", "status"], metodos: ["run", "stop"], conste: [{ conexion: 1, move: false }, { conexion: 3, move: true }] }
     ];
 
-    function createElement(x, y, name, valor, id, conste) {
+    function createElement(x, y, name, valor, id, conste, variables, metodos) {
         const element = document.createElement("div");
         element.classList.add("element");
         element.style.left = `${x}px`;
@@ -78,32 +45,54 @@
         element.innerHTML = `<strong>${name}</strong><br>Valor: ${valor}`;
         element.dataset.id = id;
         elementsDiv.appendChild(element);
-        elements.push({ id, element, x, y, conste });
+        elements.push({ id, element, x, y, conste, variables, metodos });
+        element.addEventListener("click", () => showPopup(id));
         makeDraggable(element);
     }
 
     function makeDraggable(element) {
         let offsetX, offsetY, isDragging = false;
-
         element.addEventListener("mousedown", (e) => {
             isDragging = true;
             offsetX = e.clientX - element.offsetLeft;
             offsetY = e.clientY - element.offsetTop;
-            element.style.cursor = "grabbing";
         });
-
         document.addEventListener("mousemove", (e) => {
             if (!isDragging) return;
             element.style.left = `${e.clientX - offsetX}px`;
             element.style.top = `${e.clientY - offsetY}px`;
             updateConnections();
         });
-
-        document.addEventListener("mouseup", () => {
-            isDragging = false;
-            element.style.cursor = "grab";
-        });
+        document.addEventListener("mouseup", () => { isDragging = false; });
     }
+
+    function showPopup(id) {
+        const element = elements.find(e => e.id === id);
+        if (!element) return;
+
+        let popup = document.createElement("div");
+        popup.classList.add("popup");
+        popup.style.left = `${element.element.offsetLeft + 140}px`;
+        popup.style.top = `${element.element.offsetTop}px`;
+
+        popup.innerHTML = `<strong>${element.element.innerText.split('\n')[0]}</strong>`;
+        popup.innerHTML += `<hr>`;
+        popup.innerHTML += `<p><strong>Variables:</strong></p>`;
+        element.variables.forEach(v => popup.innerHTML += `<p>${v}</p>`);
+        popup.innerHTML += `<hr>`;
+        popup.innerHTML += `<p><strong>Métodos:</strong></p>`;
+        element.metodos.forEach(m => popup.innerHTML += `<p>${m}()</p>`);
+        popup.innerHTML += `<hr>`;
+
+        let closeButton = document.createElement("button");
+        closeButton.innerText = "Cerrar";
+        closeButton.addEventListener("click", () => popup.remove());
+        popup.appendChild(closeButton);
+
+        document.body.appendChild(popup);
+    }
+
+
 
     function updateConnections() {
         canvas.width = container.clientWidth;
@@ -151,19 +140,10 @@
         });
     }
 
-    function initializeElements() {
-        predefinedElements.forEach((el, index) => {
-            createElement(100 + index * 150, 100, el.name, el.valor, index, el.conste);
-        });
-        updateConnections();
-    }
 
-    addElementBtn.addEventListener("click", () => {
-        createElement(100 + elements.length * 150, 100, `Elemento ${elementCounter}`, "X", elementCounter, []);
-        elementCounter++;
+    predefinedElements.forEach((el, index) => {
+        createElement(100 + index * 150, 100, el.name, el.valor, index, el.conste, el.variables, el.metodos);
     });
-
-    initializeElements();
 </script>
 </body>
 </html>
