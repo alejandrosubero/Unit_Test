@@ -1,6 +1,7 @@
 package com.unitTestGenerator.printers;
 
 import com.unitTestGenerator.pojos.Clase;
+import com.unitTestGenerator.pojos.ImportAnalizePojo;
 import com.unitTestGenerator.pojos.Project;
 
 import java.util.ArrayList;
@@ -31,6 +32,10 @@ public interface IPrintAnalizeImports {
     default Boolean importsExits(Clase loop) {
         return loop != null && loop.getImports() != null && loop.getImports().getProjectImports() != null && !loop.getImports().getProjectImports().isEmpty();
     }
+
+
+
+
 
     default String extendsLoop(Project project, Clase classFather) {
         List<String> tree = new ArrayList<>();

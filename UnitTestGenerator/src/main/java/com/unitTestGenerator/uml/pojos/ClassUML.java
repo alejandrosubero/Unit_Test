@@ -7,6 +7,16 @@ public class ClassUML {
 
     private String ClassToUML;
 
+    public ClassUML() {
+    }
+
+    public String getClassToUML() {
+        return ClassToUML;
+    }
+
+    public void setClassToUML(String classToUML) {
+        ClassToUML = classToUML;
+    }
 
     private String uMLTemplate(String accessModifier, String name, String type) {
         StringBuilder bilder = new StringBuilder();
