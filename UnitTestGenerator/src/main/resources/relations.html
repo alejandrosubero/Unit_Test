@@ -53,7 +53,6 @@
             margin: 5px 0;
         }
 
-        /* .popup button { display: block; width: 100%; margin-top: 5px; } */
         .popup button {
             display: block;
             width: 100%;
@@ -67,23 +66,92 @@
             margin: 2px 0;
         }
 
-        /* button { position: absolute; top: 10px; left: 10px; z-index: 1000; } */
+        /* Nuevos estilos para el modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            min-width: 300px;
+            z-index: 1001;
+        }
+
+        .modal label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+
+        .modal input[type="text"] {
+            width: 100%;
+            padding: 5px;
+        }
+
+        .modal-buttons {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        #addElementBtn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 1000;
+            padding: 8px 16px;
+            cursor: pointer;
+        }
+
+        .conste-entry {
+            margin: 10px 0;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .popup-buttons {
+            display: flex;
+            gap: 5px;
+            margin-top: 10px;
+        }
+
+        .popup button {
+            position: relative;
+            width: auto;
+            flex: 1;
+        }
     </style>
 </head>
 
 <body>
+
+<button id="addElementBtn">Agregar Elemento</button>
 <div id="container">
     <canvas id="linesCanvas"></canvas>
     <div id="elements"></div>
-
 </div>
+
 <script>
+    // Función showPopup modificada
+
     const container = document.getElementById("container");
     const elementsDiv = document.getElementById("elements");
     const canvas = document.getElementById("linesCanvas");
     const ctx = canvas.getContext("2d");
     let elements = [];
-
 
     const predefinedElements = [
         { name: "Inicio", value: "A", variables: ["var1", "var2"], method: ["met1"], relations: ["Proceso", "Fin"], conste: [{ connection: "Proceso", move: false }, { connection: "Decisión", move: true }, { connection: "Fin", move: true }] },
@@ -100,26 +168,42 @@
                 { connection: "Proceso", move: true }
             ]
         },
+        {
+            name: "AllStrongDependencyAssociationAllStrongDependencyAssociation", value: "C", variables: ["flag"],
+            method: [
+                "checkCondition",
+                "addAllStrongDependencyAssociation(List<String> strongDependencys)",
+                "addAllStrongDependencyAssociationAllStrongDependencyAssociation(List<String> strongDependencys)"
+            ], relations: ["Proceso", "Fin"],
+            conste: [
+                { connection: "Fin", move: false },
+                { connection: "Proceso", move: true }
+            ]
+        },
         { name: "Fin", value: "", variables: [], method: [], relations: [], conste: [] }
     ];
 
-
+    // Función para crear nuevo elemento (existente)
     function createElement(x, y, name, value, id, conste, variables, method, relations) {
         const element = document.createElement("div");
         element.classList.add("element");
         element.style.left = `${x}px`;
         element.style.top = `${y}px`;
-        // element.innerHTML = `<strong>${name}</strong><br>value: ${value}`;
         element.innerHTML = `<strong>${name}</strong>${value ? `<br>value: ${value}` : ''}`;
         element.dataset.id = id;
         elementsDiv.appendChild(element);
 
-        // Añadir propiedad popup al elemento
-        elements.push({ id, element, x, y, conste, variables, method, relations, popup: null });
+        const width = element.scrollWidth;
+        const height = element.scrollHeight;
+        // Establece el tamaño dinámico
+        element.style.width = `${width}px`;
+        element.style.height = `${height}px`;
+
+        elements.push({ id, element, x, y, name, conste, variables, method, relations, popup: null });
 
         element.addEventListener("click", function (e) {
-            if (this.dataset.dragged === "true") { // Verificar si hubo arrastre
-                this.dataset.dragged = "false"; // Resetear bandera
+            if (this.dataset.dragged === "true") {
+                this.dataset.dragged = "false";
                 return;
             }
             showPopup(id);
@@ -127,6 +211,119 @@
         makeDraggable(element);
     }
 
+    // Funciones existentes (makeDraggable, showPopup, updateConnections)
+
+    // Nuevo código para agregar elementos
+    document.getElementById('addElementBtn').addEventListener('click', showNewElementModal);
+
+    function showNewElementModal() {
+        const overlay = document.createElement('div');
+        overlay.className = 'modal-overlay';
+
+        const modal = document.createElement('div');
+        modal.className = 'modal';
+        modal.innerHTML = `
+            <h3>Nuevo Elemento</h3>
+            <label>Nombre:</label>
+            <input type="text" id="newName" required>
+
+            <label>Valor:</label>
+            <input type="text" id="newValue">
+
+            <label>Variables (separadas por comas):</label>
+            <input type="text" id="newVariables">
+
+            <label>Métodos (separados por comas):</label>
+            <input type="text" id="newMethods">
+
+            <label>Relaciones (separadas por comas):</label>
+            <input type="text" id="newRelations">
+
+            <label>Conexiones:</label>
+            <div id="consteContainer">
+                <div class="conste-entry">
+                    <select class="conste-select">
+                        <option value="">Seleccionar</option>
+                        ${elements.map(e => `<option>${e.element.innerText.split('\n')[0]}</option>`).join('')}
+                    </select>
+                    <label>
+                        <input type="checkbox" class="conste-move">
+                        Mover
+                    </label>
+                </div>
+            </div>
+            <button id="addConste">+ Agregar Conexión</button>
+
+            <div class="modal-buttons">
+                <button id="saveElement">Guardar</button>
+                <button id="cancelModal">Cancelar</button>
+            </div>
+        `;
+
+        overlay.appendChild(modal);
+        document.body.appendChild(overlay);
+
+        // Manejar conexiones
+        modal.querySelector('#addConste').addEventListener('click', () => {
+            const newEntry = document.createElement('div');
+            newEntry.className = 'conste-entry';
+            newEntry.innerHTML = `
+                <select class="conste-select">
+                    <option value="">Seleccionar</option>
+                    ${elements.map(e => `<option>${e.element.innerText.split('\n')[0]}</option>`).join('')}
+                </select>
+                <label>
+                    <input type="checkbox" class="conste-move">
+                    Mover
+                </label>
+                <button class="remove-conste">×</button>
+            `;
+            newEntry.querySelector('.remove-conste').addEventListener('click', () => newEntry.remove());
+            modal.querySelector('#consteContainer').appendChild(newEntry);
+        });
+
+        // Manejar guardado
+        modal.querySelector('#saveElement').addEventListener('click', () => {
+            const newElement = {
+                name: modal.querySelector('#newName').value,
+                value: modal.querySelector('#newValue').value,
+                variables: modal.querySelector('#newVariables').value.split(',').map(v => v.trim()),
+                method: modal.querySelector('#newMethods').value.split(',').map(m => m.trim()),
+                relations: modal.querySelector('#newRelations').value.split(',').map(r => r.trim()),
+                conste: Array.from(modal.querySelectorAll('.conste-entry')).map(entry => ({
+                    connection: entry.querySelector('.conste-select').value,
+                    move: entry.querySelector('.conste-move').checked
+                }))
+            };
+
+            if (!newElement.name) {
+                alert('El nombre es requerido');
+                return;
+            }
+
+            const id = elements.length;
+            const x = 100 + (elements.length % 5) * 200;
+            const y = 100 + Math.floor(elements.length / 5) * 150;
+
+            createElement(x, y, newElement.name, newElement.value, id,
+                newElement.conste, newElement.variables, newElement.method, newElement.relations);
+
+            updateConnections();
+            document.body.removeChild(overlay);
+        });
+
+        // Manejar cancelar
+        modal.querySelector('#cancelModal').addEventListener('click', () => {
+            document.body.removeChild(overlay);
+        });
+    }
+
+    // Resto del código existente (makeDraggable, showPopup, updateConnections, etc.)
+    // ... (Mantener todas las funciones existentes sin cambios)
+
+    predefinedElements.forEach((el, index) => {
+        createElement(100 + index * 150, 100, el.name, el.value, index, el.conste, el.variables, el.method, el.relations);
+    });
 
     function makeDraggable(element) {
         let offsetX, offsetY, isDragging = false;
@@ -154,6 +351,120 @@
     }
 
 
+    // Nueva función para mostrar modal de edición
+    function showEditModal(elementToEdit) {
+        const overlay = document.createElement('div');
+        overlay.className = 'modal-overlay';
+
+        const modal = document.createElement('div');
+        modal.className = 'modal';
+        modal.innerHTML = `
+           <h3>Editar Elemento</h3>
+        <label>Nombre:</label>
+        <input type="text" id="editName" required value="${elementToEdit.name}">
+
+            <label>Valor:</label>
+            <input type="text" id="editValue" value="${elementToEdit.value || ''}">
+
+            <label>Variables (separadas por comas):</label>
+            <input type="text" id="editVariables" value="${elementToEdit.variables.join(', ')}">
+
+            <label>Métodos (separados por comas):</label>
+            <input type="text" id="editMethods" value="${elementToEdit.method.join(', ')}">
+
+            <label>Relaciones (separadas por comas):</label>
+            <input type="text" id="editRelations" value="${elementToEdit.relations.join(', ')}">
+
+         <label>Conexiones:</label>
+        <div id="editConsteContainer">
+            ${elementToEdit.conste.map(con => `
+                <div class="conste-entry">
+                    <select class="conste-select">
+                        <option value="">Seleccionar</option>
+                        ${elements.map(e =>
+            `<option ${con.connection === e.name ? 'selected' : ''}>
+                                ${e.name}
+                            </option>`
+        ).join('')}
+                    </select>
+                    <label>
+                        <input type="checkbox" class="conste-move" ${con.move ? 'checked' : ''}>
+                        Mover
+                    </label>
+                    <button class="remove-conste">×</button>
+                </div>
+            `).join('')}
+        </div>
+            <button id="addEditConste">+ Agregar Conexión</button>
+
+            <div class="modal-buttons">
+                <button id="saveEdit">Guardar</button>
+                <button id="cancelEdit">Cancelar</button>
+            </div>
+        `;
+
+        overlay.appendChild(modal);
+        document.body.appendChild(overlay);
+
+        // Manejar conexiones
+        modal.querySelector('#addEditConste').addEventListener('click', () => {
+            const newEntry = document.createElement('div');
+            newEntry.className = 'conste-entry';
+            newEntry.innerHTML = `
+                <select class="conste-select">
+                    <option value="">Seleccionar</option>
+                    ${elements.map(e => `<option>${e.element.innerText.split('\n')[0]}</option>`).join('')}
+                </select>
+                <label>
+                    <input type="checkbox" class="conste-move">
+                    Mover
+                </label>
+                <button class="remove-conste">×</button>
+            `;
+            newEntry.querySelector('.remove-conste').addEventListener('click', () => newEntry.remove());
+            modal.querySelector('#editConsteContainer').appendChild(newEntry);
+        });
+
+        // Manejar guardado
+        modal.querySelector('#saveEdit').addEventListener('click', () => {
+            const editedElement = {
+                name: modal.querySelector('#editName').value,
+                value: modal.querySelector('#editValue').value,
+                variables: modal.querySelector('#editVariables').value.split(',').map(v => v.trim()),
+                method: modal.querySelector('#editMethods').value.split(',').map(m => m.trim()),
+                relations: modal.querySelector('#editRelations').value.split(',').map(r => r.trim()),
+                conste: Array.from(modal.querySelectorAll('.conste-entry')).map(entry => ({
+                    connection: entry.querySelector('.conste-select').value,
+                    move: entry.querySelector('.conste-move').checked
+                }))
+            };
+
+            if (!editedElement.name) {
+                alert('El nombre es requerido');
+                return;
+            }
+
+            // Actualizar el elemento existente
+            elementToEdit.name = editedElement.name;
+            elementToEdit.value = editedElement.value;
+            elementToEdit.variables = editedElement.variables;
+            elementToEdit.method = editedElement.method;
+            elementToEdit.relations = editedElement.relations;
+            elementToEdit.conste = editedElement.conste;
+
+            // Actualizar la vista
+            elementToEdit.element.innerHTML = `<strong>${editedElement.name}</strong>${editedElement.value ? `<br>value: ${editedElement.value}` : ''}`;
+
+            updateConnections();
+            document.body.removeChild(overlay);
+        });
+
+        // Manejar cancelar
+        modal.querySelector('#cancelEdit').addEventListener('click', () => {
+            document.body.removeChild(overlay);
+        });
+    }
+
     function showPopup(id) {
         const element = elements.find(e => e.id === id);
         if (!element || element.popup) return;
@@ -164,11 +475,11 @@
         popup.style.top = `${element.element.offsetTop}px`;
 
         let popupContent = `
-              <div style="text-align: center;">
-                    <strong>${element.element.innerText.split('\n')[0]}</strong>
-            </div>
-            <br>
-        `;
+        <div style="text-align: center;">
+            <strong>${element.name}</strong>
+        </div>
+        <br>
+    `;
 
         if (element.variables && element.variables.length > 0) {
             popupContent += `
@@ -196,14 +507,27 @@
         popupContent += `<hr>`;
         popup.innerHTML = popupContent;
 
-        let closeButton = document.createElement("button");
+        const buttonContainer = document.createElement('div');
+        buttonContainer.className = 'popup-buttons';
+
+        const editButton = document.createElement("button");
+        editButton.innerText = "Editar";
+        editButton.addEventListener("click", () => {
+            popup.remove();
+            element.popup = null;
+            showEditModal(element);
+        });
+
+        const closeButton = document.createElement("button");
         closeButton.innerText = "Cerrar";
         closeButton.addEventListener("click", () => {
             popup.remove();
             element.popup = null;
         });
 
-        popup.appendChild(closeButton);
+        buttonContainer.appendChild(editButton);
+        buttonContainer.appendChild(closeButton);
+        popup.appendChild(buttonContainer);
         document.body.appendChild(popup);
         element.popup = popup;
     }
@@ -214,7 +538,6 @@
         canvas.height = container.clientHeight;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // 1. Dibujar todas las líneas blancas primero
         ctx.strokeStyle = "white";
         ctx.lineWidth = 2;
 
@@ -228,7 +551,6 @@
                 const x2 = toElement.offsetLeft + toElement.clientWidth / 2;
                 const y2 = toElement.offsetTop + toElement.clientHeight / 2;
 
-                // Dibujar línea
                 ctx.beginPath();
                 ctx.moveTo(x1, y1);
                 ctx.lineTo(x2, y2);
@@ -236,7 +558,6 @@
             });
         });
 
-        // 2. Dibujar marcadores sobre las líneas
         elements.forEach(element => {
             element.conste.forEach((con, index) => {
                 const toElement = elements.find(e => e.element.innerText.includes(con.connection))?.element;
@@ -252,7 +573,6 @@
                 const length = Math.sqrt(dx * dx + dy * dy);
                 if (length === 0) return;
 
-                // Calcular posición del marcador
                 const totalMarkers = element.conste.length;
                 const spacing = length / (totalMarkers + 1);
                 const markerPosition = {
@@ -260,9 +580,7 @@
                     y: y1 + dy * ((index + 1) / (totalMarkers + 1))
                 };
 
-                // Dibujar marcador
                 if (con.move) {
-                    // Flecha azul
                     ctx.fillStyle = "#0000FF";
                     ctx.strokeStyle = "#000000";
                     const angle = Math.atan2(dy, dx);
@@ -271,7 +589,6 @@
                     ctx.translate(markerPosition.x, markerPosition.y);
                     ctx.rotate(angle);
 
-                    // Triángulo de flecha
                     ctx.beginPath();
                     ctx.moveTo(-15, -10);
                     ctx.lineTo(0, 0);
@@ -282,7 +599,6 @@
                     ctx.stroke();
                     ctx.restore();
                 } else {
-                    // Cuadrado rojo
                     ctx.fillStyle = "#FF0000";
                     ctx.strokeStyle = "#000000";
 
@@ -299,14 +615,6 @@
             });
         });
     }
-
-
-
-    predefinedElements.forEach((el, index) => {
-        createElement(100 + index * 150, 100, el.name, el.value, index, el.conste, el.variables, el.method, el.relations);
-    });
-
-
 
 </script>
 </body>

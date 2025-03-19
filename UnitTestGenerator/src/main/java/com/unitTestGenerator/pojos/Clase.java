@@ -32,6 +32,7 @@ public class Clase {
     private String structureExtends;
     private String classAnotations;
 
+
     public Clase() {
         this.metodos = new ArrayList<>();
         this.variables = new ArrayList<>();
@@ -292,4 +293,12 @@ public class Clase {
     public int hashCode() {
         return Objects.hash(nombre, paquete, metodos, variables, estructuras, useMock, testMethod, constructores, typeClass, rawClass, useLomboxBuild, applyBuildMethod, indexFirmaClass, classSignatureLine, classRelations, classPath, todoNoteInClass, imports, structureInterface, structureExtends, classAnotations);
     }
+
+
+
+
+
+
+
+
 }

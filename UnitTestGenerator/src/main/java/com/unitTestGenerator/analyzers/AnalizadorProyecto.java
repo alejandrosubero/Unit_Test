@@ -1,18 +1,18 @@
 package com.unitTestGenerator.analyzers;
 
-import java.io.File;
-import java.util.*;
-
-
+import com.unitTestGenerator.analyzers.services.AnalyzeClassServiceService;
 import com.unitTestGenerator.analyzers.services.ImportAnalizeService;
+import com.unitTestGenerator.analyzers.services.interfaces.ITodoDetectorService;
 import com.unitTestGenerator.ioc.anotations.Component;
 import com.unitTestGenerator.ioc.anotations.Inyect;
 import com.unitTestGenerator.ioc.anotations.Singleton;
+import com.unitTestGenerator.pojos.Clase;
+import com.unitTestGenerator.pojos.Project;
 import com.unitTestGenerator.printers.DirectoryTreeBuilder;
-import com.unitTestGenerator.analyzers.services.AnalyzeClassServiceService;
-import com.unitTestGenerator.analyzers.services.interfaces.ITodoDetectorService;
-import com.unitTestGenerator.pojos.*;
 import com.unitTestGenerator.printers.IPrintProjectStructure;
+
+import java.io.File;
+import java.util.*;
 
 @Component
 @Singleton
@@ -69,7 +69,7 @@ public class AnalizadorProyecto implements ITodoDetectorService, IPrintProjectSt
                               this.importAnalizeService.importAnalize(clase);
 
                           }
-                          this.setContainers(clase, classList, mapClass);
+                          this.setContainers(clase, classList, mapClass, project);
                       }
                   }
               }
@@ -77,37 +77,52 @@ public class AnalizadorProyecto implements ITodoDetectorService, IPrintProjectSt
     }
 
 
-    private  void analizarProyectoRecursivo2(File carpeta, List<Clase> classList, Map<String, Clase> mapClass, Project project) {
+//    private  void analizarProyectoRecursivo2(File carpeta, List<Clase> classList, Map<String, Clase> mapClass, Project project) {
+//
+//        if (carpeta.isDirectory()) {
+//            String nombreCarpeta = carpeta.getName();
+//
+//            if (!Arrays.asList(IGNORAR).contains(nombreCarpeta)) {
+//                for (File archivo : carpeta.listFiles()) {
+//                    if (archivo.isDirectory()) {
+//                        this.analizarProyectoRecursivo(archivo, classList, mapClass, project);
+//                    } else {
+//                        if(archivo.getName().trim().endsWith(".java")) {
+//                            Clase clase = analyzeClassServiceService.analyzeClase(archivo);
+//                            if (clase != null) {
+//                                clase.setTodoNoteInClass(this.getTodo(clase.getRawClass()));
+//                                this.treeBuilder.addPath(clase.getClassPath());
+//                                this.importAnalizeService.importAnalize(clase);
+//                            }
+//                            this.setContainers(clase, classList, mapClass);
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
 
-        if (carpeta.isDirectory()) {
-            String nombreCarpeta = carpeta.getName();
+    private void setContainers(Clase clase, List<Clase> classList, Map<String, Clase> mapClass, Project project){
 
-            if (!Arrays.asList(IGNORAR).contains(nombreCarpeta)) {
-                for (File archivo : carpeta.listFiles()) {
-                    if (archivo.isDirectory()) {
-                        this.analizarProyectoRecursivo(archivo, classList, mapClass, project);
-                    } else {
-                        if(archivo.getName().trim().endsWith(".java")) {
-                            Clase clase = analyzeClassServiceService.analyzeClase(archivo);
-                            if (clase != null) {
-                                clase.setTodoNoteInClass(this.getTodo(clase.getRawClass()));
-                                this.treeBuilder.addPath(clase.getClassPath());
-                                this.importAnalizeService.importAnalize(clase);
-                            }
-                            this.setContainers(clase, classList, mapClass);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private void setContainers(Clase clase, List<Clase> classList, Map<String, Clase> mapClass){
         if(classList != null && clase !=null){
             classList.add(clase);
         }
-        if(mapClass !=null && clase!=null){
+
+        if (mapClass != null && clase != null) {
             mapClass.put(clase.getNombre(), clase);
+            Map<String, List<Clase>> classHashMap = project.getClassHashMap();
+
+            if (classHashMap.containsKey(clase.getTypeClass())) {
+                if (classHashMap.get(clase.getTypeClass()) != null) {
+                    classHashMap.get(clase.getTypeClass()).add(clase);
+                }
+            } else {
+                List<Clase> list = new ArrayList<>();
+                list.add(clase);
+                classHashMap.put(clase.getTypeClass(), list);
+            }
+
+
         }
     }
 

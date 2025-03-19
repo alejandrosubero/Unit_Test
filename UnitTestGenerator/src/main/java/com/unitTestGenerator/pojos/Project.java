@@ -10,6 +10,7 @@ public class Project {
 
     private List<Clase> claseList = new ArrayList<>();
     private Map<String, Clase> mapClass = new HashMap<>();;
+    private Map<String, List<Clase>> classHashMap = new HashMap<>();;
     private Boolean isMaven;
     private Boolean isGradle;
     private String pathProject;
@@ -74,6 +75,30 @@ public class Project {
             }
         }
         return foundClass;
+    }
+
+
+//    private Clase getClass2(String className){
+//
+//        Clase foundClass = null;
+//        if(this.claseList != null && !this.claseList.isEmpty() && className !=null && !className.equals("")){
+//            int mildePoint = (this.claseList.size() + 1) / 2;
+//            List<Clase> primeraParte = this.claseList.subList(0, mildePoint);
+//            List<Clase> segundaParte = this.claseList.subList(mildePoint, this.claseList.size());
+//
+//        }
+//        return foundClass;
+//    }
+//    private Boolean ispresent(List<Clase> list, String className){
+//        return list.stream().anyMatch(classs -> className.equals(classs.getNombre()));
+//    }
+
+    public Map<String, List<Clase>> getClassHashMap() {
+        return classHashMap;
+    }
+
+    public void setClassHashMap(Map<String, List<Clase>> classHashMap) {
+        this.classHashMap = classHashMap;
     }
 
     public String getProjectClassTree() {
