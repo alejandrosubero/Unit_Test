@@ -110,18 +110,6 @@ public class AnalizadorProyecto implements ITodoDetectorService, IPrintProjectSt
 
         if (mapClass != null && clase != null) {
             mapClass.put(clase.getNombre(), clase);
-            Map<String, List<Clase>> classHashMap = project.getClassHashMap();
-
-//            if (classHashMap.containsKey(clase.getTypeClass())) {
-//                if (classHashMap.get(clase.getTypeClass()) != null) {
-//                    classHashMap.get(clase.getTypeClass()).add(clase);
-//                }
-//            } else {
-//                List<Clase> list = new ArrayList<>();
-//                list.add(clase);
-//                classHashMap.put(clase.getTypeClass(), list);
-//            }
-
         }
     }
 

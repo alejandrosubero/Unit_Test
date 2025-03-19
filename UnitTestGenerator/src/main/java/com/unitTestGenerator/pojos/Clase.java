@@ -12,20 +12,21 @@ public class Clase {
 
     private String nombre;
     private String paquete;
+    private String typeClass;
+    private String classSignatureLine;
+    private String classPath;
+    private String classUml;
     private List<Metodo> metodos;
     private List<Variable> variables;
     private List<EstructuraControl> estructuras;
     private Boolean useMock;
     private String testMethod;
     private List<Constructor> constructores;
-    private String typeClass;
     private String rawClass;
     private Boolean useLomboxBuild;
     private Boolean applyBuildMethod;
     private Integer indexFirmaClass;
-    private String classSignatureLine;
     private ClassRelations classRelations = new ClassRelations();
-    private String classPath;
     private String todoNoteInClass;
     private ImportAnalizePojo imports;
     private String structureInterface;
@@ -207,6 +208,15 @@ public class Clase {
         this.indexFirmaClass = indexFirmaClass;
     }
 
+
+    public String getClassUml() {
+        return classUml;
+    }
+
+    public void setClassUml(String classUml) {
+        this.classUml = classUml;
+    }
+
     public String getClassAnotations() {
         return classAnotations;
     }
@@ -271,8 +281,6 @@ public class Clase {
     }
 
 
-
-
     public String getClassSignatureLine() {
         return classSignatureLine;
     }
@@ -294,5 +302,34 @@ public class Clase {
         return Objects.hash(nombre, paquete, metodos, variables, estructuras, useMock, testMethod, constructores, typeClass, rawClass, useLomboxBuild, applyBuildMethod, indexFirmaClass, classSignatureLine, classRelations, classPath, todoNoteInClass, imports, structureInterface, structureExtends, classAnotations);
     }
 
+    @Override
+    public String toString() {
+        return "Clase{" +
+                "nombre='" + nombre + '\'' +
+                ", paquete='" + paquete + '\'' +
+                ", metodos=" + metodos +
+                ", variables=" + variables +
+                ", estructuras=" + estructuras +
+                ", useMock=" + useMock +
+                ", testMethod='" + testMethod + '\'' +
+                ", constructores=" + constructores +
+                ", typeClass='" + typeClass + '\'' +
+                ", rawClass='" + rawClass + '\'' +
+                ", useLomboxBuild=" + useLomboxBuild +
+                ", applyBuildMethod=" + applyBuildMethod +
+                ", indexFirmaClass=" + indexFirmaClass +
+                ", classSignatureLine='" + classSignatureLine + '\'' +
+                ", classRelations=" + classRelations +
+                ", classPath='" + classPath + '\'' +
+                ", todoNoteInClass='" + todoNoteInClass + '\'' +
+                ", imports=" + imports +
+                ", structureInterface='" + structureInterface + '\'' +
+                ", structureExtends='" + structureExtends + '\'' +
+                ", classAnotations='" + classAnotations + '\'' +
+                ", classUml='" + classUml + '\'' +
+                '}';
 
+
+
+    }
 }

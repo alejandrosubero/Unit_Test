@@ -10,8 +10,27 @@ import com.unitTestGenerator.pojos.Project;
 @Singleton
 public class PrintClassAnalyzers {
 
+    public  PrintClassAnalyzers(){}
 
-    public   PrintClassAnalyzers() {
+
+
+    public void printClassDetail() {
+
+        //        private String nombre;
+//        private String paquete;
+//        private String typeClass;
+//        private String classSignatureLine;
+//        private String classPath;
+//        private String classUml;
+//        private List<Metodo> metodos;
+//        private List<Variable> variables;
+//        private List<Constructor> constructores;
+//        private ClassRelations classRelations = new ClassRelations();
+//        private ImportAnalizePojo imports;
+//        private String structureInterface;
+//        private String structureExtends;
+//        private String classAnotations;
+        
     }
 
 

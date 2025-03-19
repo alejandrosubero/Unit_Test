@@ -55,6 +55,19 @@ public class ClassRelations {
         }
     }
 
+    public Boolean check(){
+        if((this.implementsList != null && !this.implementsList.isEmpty()) ||
+                (this.classExtends != null && !this.classExtends.isEmpty() )||
+                (this.identifieresRelatedClasses != null && !this.identifieresRelatedClasses.isEmpty()) ||
+                (this.dependencyInjectionIoC != null && !this.dependencyInjectionIoC.isEmpty()) ||
+                (this.strongDependencyAssociation != null && !this.strongDependencyAssociation.isEmpty())
+        ){
+            return true;
+        }else {
+            return false;
+        }
+    }
+
     public String getClassType() {
         return classType;
     }

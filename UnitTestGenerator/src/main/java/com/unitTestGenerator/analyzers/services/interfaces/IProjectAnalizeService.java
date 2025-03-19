@@ -28,8 +28,8 @@ public interface IProjectAnalizeService {
     default String printListClassToUML(Project projectP) {
         StringBuilder buffer = new StringBuilder();
         for (Clase classs : projectP.getClaseList()) {
-            PrintClassToUML umlClass = new PrintClassToUML(classs.getNombre(), classs.getVariables(), classs.getMetodos(), classs.getClassRelations());
-            buffer.append(umlClass.generarDiagrama()).append("\n").append("\n");
+            PrintClassToUML umlClass = ContextIOC.getInstance().getClassInstance(PrintClassToUML.class);
+            buffer.append(umlClass.generarDiagrama2(classs)).append("\n").append("\n");
         }
         return buffer.toString();
     }
@@ -37,8 +37,8 @@ public interface IProjectAnalizeService {
 
     default String printUMLClass(Clase classs) {
         StringBuilder buffer = new StringBuilder();
-            PrintClassToUML umlClass = new PrintClassToUML(classs.getNombre(), classs.getVariables(), classs.getMetodos(), classs.getClassRelations());
-            buffer.append(umlClass.generarDiagrama()).append("\n").append("\n");
+            PrintClassToUML umlClass = ContextIOC.getInstance().getClassInstance(PrintClassToUML.class);
+            buffer.append(umlClass.generarDiagrama2(classs)).append("\n").append("\n");
         return buffer.toString();
     }
 
