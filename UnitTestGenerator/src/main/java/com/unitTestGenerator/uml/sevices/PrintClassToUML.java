@@ -1,11 +1,9 @@
 package com.unitTestGenerator.uml.sevices;
 
 import com.unitTestGenerator.ioc.anotations.Component;
-import com.unitTestGenerator.pojos.Clase;
-import com.unitTestGenerator.pojos.ClassRelations;
-import com.unitTestGenerator.pojos.Metodo;
-import com.unitTestGenerator.pojos.Variable;
+import com.unitTestGenerator.pojos.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -14,7 +12,7 @@ public class PrintClassToUML {
     private String nombre;
     private List<Variable> atributos;
     private List<Metodo> metodos;
-    private ClassRelations relations; // {Relacion: Clase}
+    private ClassRelations relations;
 
     public PrintClassToUML() {
     }
@@ -88,8 +86,6 @@ public class PrintClassToUML {
         return  buffer.toString();
     }
 
-
-
     private int calculateMaxLength(Clase classs) {
         int maxLength = nombre.length();
         for (Variable variable : classs.getVariables()) {
@@ -102,8 +98,6 @@ public class PrintClassToUML {
         maxLength = Math.max(maxLength, (" " + classs.getClassRelations().toString()).length());
         return maxLength;
     }
-
-
 
     private String repeat(String str, int times) {
         StringBuilder sb = new StringBuilder();
@@ -131,8 +125,137 @@ public class PrintClassToUML {
     }
 
 
+    public String projectToElement(Project project){
+         StringBuffer buffer = new StringBuffer();
+        List<String> listElemet= new ArrayList<>();
+
+        for(int i =0 ; i < project.getClaseList().size(); i++) {
+            Clase classs = project.getClaseList().get(i);
+            if (i != 0) {
+                buffer.append(",");
+            }
+            String element = this.classToElement(classs);
+            buffer.append(element);
+        }
+        return buffer.toString();
+    }
+
+    public String classToElement(Clase classs){
+
+        StringBuffer buffer = new StringBuffer();
+        buffer.append("{");
+        buffer.append("name: ").append("\"").append(classs.getNombre()).append("\"")
+                .append(", ")
+                .append("value:" ).append("\"").append("").append("\"").append(", ");
+
+        buffer.append("variables: [");
+        if (classs.getVariables() != null && !classs.getVariables().isEmpty()) {
+            for(int i =0 ; i < classs.getVariables().size(); i++){
+                Variable variable = classs.getVariables().get(i);
+                if(i != 0){
+                    buffer.append(",");
+                }
+                buffer.append("\"")
+                        .append(uMLTemplate(variable.getAccessModifier(), variable.getNombre(), variable.getTipo())).append("\n")
+                        .append("\"");
+            }
+        }
+        buffer.append("], ");
+
+        buffer.append("method: [");
+        if (classs.getMetodos() != null && !classs.getMetodos().isEmpty()) {
+            for(int i =0 ; i < classs.getMetodos().size(); i++){
+                Metodo metodo = classs.getMetodos().get(i);
+                if(i != 0){
+                    buffer.append(",");
+                }
+                buffer.append("\"")
+               .append(uMLTemplate(metodo.getAccessModifier(), metodo.getMethodSignature(), metodo.getTipoRetorno()))
+               .append("\"");
+            }
+        }
+        buffer.append("], ");
 
 
+        buffer.append("relations: [ ");
+        StringBuffer consteObject = new StringBuffer();
+
+        if (classs.getClassRelations() != null && classs.getClassRelations().check()) {
+
+            if (classs.getClassRelations().getImplementsList() != null && !classs.getClassRelations().getImplementsList().isEmpty()) {
+                buffer.append("\"").append("Implement: ").append("\"").append(",");
+                for(int i =0 ; i < classs.getClassRelations().getImplementsList().size(); i++){
+                    String impl = classs.getClassRelations().getImplementsList().get(i);
+                    if(i != 0){
+                        buffer.append(",");
+                        consteObject.append(",");
+                    }
+                    buffer.append("\t").append("\"").append(impl).append("\"");
+
+                    if (consteObject.length() > 0){
+                        consteObject .append(",");
+                    }
+                    consteObject.append("{").append("connection:").append("\"").append(impl).append("\"")
+                            .append(",").append("move: true }");
+                }
+            }
+
+            if (classs.getClassRelations().getClassExtends() != null && !classs.getClassRelations().getClassExtends().isEmpty()) {
+                buffer.append(",");
+                buffer.append("\"").append("Extends: ").append("\"").append(",");
+                buffer.append("\t").append("\"").append(classs.getClassRelations().getClassExtends()).append("\"").append(",");
+
+                if (consteObject.length() > 0){
+                    consteObject .append(",");
+                }
+                consteObject.append("{").append("connection:").append("\"")
+                        .append(classs.getClassRelations().getClassExtends()).append("\"")
+                        .append(",").append("move: false }");
+            }
+
+            if (classs.getClassRelations().getDependencyInjectionIoC() != null && !classs.getClassRelations().getDependencyInjectionIoC().isEmpty()) {
+                buffer.append(",");
+                buffer.append("\"").append("Ioc: ").append("\"").append(",");
+                for(int i =0 ; i < classs.getClassRelations().getDependencyInjectionIoC().size(); i++){
+                    String ioc = classs.getClassRelations().getDependencyInjectionIoC().get(i);
+                    if(i != 0){
+                        buffer.append(",");
+                        consteObject.append(",");
+                    }
+                    buffer.append("\t").append("\"").append(ioc).append("\"");
+                    if (consteObject.length() > 0){
+                        consteObject .append(",");
+                    }
+                    consteObject.append("{").append("connection:").append("\"").append(ioc).append("\"")
+                            .append(",").append("move: true }");
+                }
+            }
+
+            if (classs.getClassRelations().getStrongDependencyAssociation() != null && !classs.getClassRelations().getStrongDependencyAssociation().isEmpty()) {
+                buffer.append(",");
+                buffer.append("\"").append("Strong Association: ").append("\"").append(",");
+                for(int i =0 ; i < classs.getClassRelations().getStrongDependencyAssociation().size(); i++){
+                    String classAssociated = classs.getClassRelations().getStrongDependencyAssociation().get(i);
+                    if(i != 0){
+                        buffer.append(",");
+                        consteObject.append(",");
+                    }
+                    buffer.append("\t").append("\"").append(classAssociated).append("\"");
+                    if (consteObject.length() > 0){
+                        consteObject .append(",");
+                    }
+                    consteObject.append("{").append("connection:").append("\"").append(classAssociated).append("\"")
+                            .append(",").append("move: true }");
+                }
+            }
+        }
+        buffer.append("], ");
+        buffer.append("conste: [ ");
+        buffer.append(consteObject.toString());
+        buffer.append("]");
+        buffer.append("}");
+        return buffer.toString();
+    }
 
     private String formatLine(String content, int width) {
         int padding = width - content.length();
@@ -182,9 +305,7 @@ public class PrintClassToUML {
         for (Metodo metodo : metodos) {
             maxLength = Math.max(maxLength, ("+ " + metodo.getMethodSignature()).length());
         }
-
         maxLength = Math.max(maxLength, ("+ " + this.relations.toString()).length());
-
         return maxLength;
     }
 

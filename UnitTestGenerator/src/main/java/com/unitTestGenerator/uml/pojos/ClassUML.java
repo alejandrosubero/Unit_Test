@@ -1,6 +1,7 @@
 package com.unitTestGenerator.uml.pojos;
 
 import com.unitTestGenerator.ioc.anotations.Component;
+import com.unitTestGenerator.pojos.Clase;
 
 @Component
 public class ClassUML {
@@ -9,6 +10,14 @@ public class ClassUML {
 
     public ClassUML() {
     }
+
+
+
+
+
+
+
+
 
     public String getClassToUML() {
         return ClassToUML;
