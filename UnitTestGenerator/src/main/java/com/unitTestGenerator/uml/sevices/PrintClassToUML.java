@@ -77,6 +77,13 @@ public class PrintClassToUML {
                     for (String classAssociated : classs.getClassRelations().getStrongDependencyAssociation()) {
                         buffer.append(" -").append(classAssociated).append("\n");
                     }
+
+                    if (classs.getClassRelations().getIdentifieresRelatedClasses() != null && !classs.getClassRelations().getIdentifieresRelatedClasses().isEmpty()) {
+                        for (String classAssociated : classs.getClassRelations().getIdentifieresRelatedClasses()) {
+                            buffer.append(" -").append(classAssociated).append("\n");
+                        }
+                    }
+
                 }
             }
             buffer.append(border).append("\n");
@@ -113,29 +120,36 @@ public class PrintClassToUML {
         return bilder.toString();
     }
 
+    private String uMLTemplate2(String accessModifier, String name, String type) {
+        StringBuilder bilder = new StringBuilder();
+        bilder.append(umlAccessModifier(accessModifier)).append(" ").append(name).append(" : ").append(type);
+        return bilder.toString();
+    }
+
     private String umlAccessModifier(String accessModifier) {
         switch (accessModifier) {
             case "private":
-                return "-";
+                return "(-)";
             case "protected":
-                return "#";
+                return "(#)";
             default:
-                return "+";
+                return "(+)";
         }
     }
 
 
-    public String projectToElement(Project project){
-         StringBuffer buffer = new StringBuffer();
-        List<String> listElemet= new ArrayList<>();
-
-        for(int i =0 ; i < project.getClaseList().size(); i++) {
-            Clase classs = project.getClaseList().get(i);
-            if (i != 0) {
-                buffer.append(",");
+    public String projectToElement(Project project) {
+        StringBuffer buffer = new StringBuffer();
+        List<String> listElemet = new ArrayList<>();
+        if (project != null) {
+            for (int i = 0; i < project.getClaseList().size(); i++) {
+                Clase classs = project.getClaseList().get(i);
+                if (i != 0) {
+                    buffer.append(",");
+                }
+                String element = this.classToElement(classs);
+                buffer.append(element);
             }
-            String element = this.classToElement(classs);
-            buffer.append(element);
         }
         return buffer.toString();
     }
@@ -144,10 +158,8 @@ public class PrintClassToUML {
 
         StringBuffer buffer = new StringBuffer();
         buffer.append("{");
-        buffer.append("name: ").append("\"").append(classs.getNombre()).append("\"")
-                .append(", ")
-                .append("value:" ).append("\"").append("").append("\"").append(", ");
-
+        buffer.append("name: ").append("\"").append(classs.getNombre()).append("\"").append(", ")
+                .append("value:" ).append("\"").append("vf").append("\"").append(", ");
         buffer.append("variables: [");
         if (classs.getVariables() != null && !classs.getVariables().isEmpty()) {
             for(int i =0 ; i < classs.getVariables().size(); i++){
@@ -156,13 +168,11 @@ public class PrintClassToUML {
                     buffer.append(",");
                 }
                 buffer.append("\"")
-                        .append(uMLTemplate(variable.getAccessModifier(), variable.getNombre(), variable.getTipo())).append("\n")
-                        .append("\"");
+                        .append(uMLTemplate2(variable.getAccessModifier(), variable.getNombre(), variable.getTipo())).append("\"");
             }
         }
         buffer.append("], ");
-
-        buffer.append("method: [");
+        buffer.append("method: [");...
         if (classs.getMetodos() != null && !classs.getMetodos().isEmpty()) {
             for(int i =0 ; i < classs.getMetodos().size(); i++){
                 Metodo metodo = classs.getMetodos().get(i);
@@ -170,12 +180,11 @@ public class PrintClassToUML {
                     buffer.append(",");
                 }
                 buffer.append("\"")
-               .append(uMLTemplate(metodo.getAccessModifier(), metodo.getMethodSignature(), metodo.getTipoRetorno()))
+               .append(uMLTemplate2(metodo.getAccessModifier(), metodo.getMethodSignature(), metodo.getTipoRetorno()))
                .append("\"");
             }
         }
         buffer.append("], ");
-
 
         buffer.append("relations: [ ");
         StringBuffer consteObject = new StringBuffer();
@@ -248,6 +257,29 @@ public class PrintClassToUML {
                             .append(",").append("move: true }");
                 }
             }
+
+
+            if (classs.getClassRelations().getIdentifieresRelatedClasses() != null && !classs.getClassRelations().getIdentifieresRelatedClasses().isEmpty()) {
+                buffer.append(",");
+                buffer.append("\"").append("Static and singleton Related: ").append("\"").append(",");
+                for(int i =0 ; i < classs.getClassRelations().getIdentifieresRelatedClasses().size(); i++){
+                    String classAssociated = classs.getClassRelations().getIdentifieresRelatedClasses().get(i);
+                    if(i != 0){
+                        buffer.append(",");
+                        consteObject.append(",");
+                    }
+                    buffer.append("\t").append("\"").append(classAssociated).append("\"");
+                    if (consteObject.length() > 0){
+                        consteObject .append(",");
+                    }
+                    consteObject.append("{").append("connection:").append("\"").append(classAssociated).append("\"")
+                            .append(",").append("move: true }");
+                }
+            }
+
+
+
+
         }
         buffer.append("], ");
         buffer.append("conste: [ ");

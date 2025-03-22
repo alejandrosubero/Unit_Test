@@ -56,16 +56,41 @@ public class ClassRelations {
     }
 
     public Boolean check(){
-        if((this.implementsList != null && !this.implementsList.isEmpty()) ||
-                (this.classExtends != null && !this.classExtends.isEmpty() )||
-                (this.identifieresRelatedClasses != null && !this.identifieresRelatedClasses.isEmpty()) ||
-                (this.dependencyInjectionIoC != null && !this.dependencyInjectionIoC.isEmpty()) ||
-                (this.strongDependencyAssociation != null && !this.strongDependencyAssociation.isEmpty())
-        ){
-            return true;
-        }else {
-            return false;
+
+Boolean flat = false;
+        if(this.implementsList != null && !this.implementsList.isEmpty()) {
+            flat = true;
         }
+
+        if(this.classExtends != null && !this.classExtends.isEmpty()) {
+            flat = true;
+        }
+
+        if(this.identifieresRelatedClasses != null && !this.identifieresRelatedClasses.isEmpty()) {
+            flat = true;
+        }
+
+        if(this.dependencyInjectionIoC != null && !this.dependencyInjectionIoC.isEmpty()) {
+            flat = true;
+        }
+
+        if(this.strongDependencyAssociation != null && !this.strongDependencyAssociation.isEmpty()) {
+            flat = true;
+        }
+
+//        if(
+//                (this.implementsList != null && !this.implementsList.isEmpty()) ||
+//                (this.classExtends != null && !this.classExtends.isEmpty())||
+//                (this.identifieresRelatedClasses != null && !this.identifieresRelatedClasses.isEmpty()) ||
+//                (this.dependencyInjectionIoC != null && !this.dependencyInjectionIoC.isEmpty()) ||
+//                (this.strongDependencyAssociation != null && !this.strongDependencyAssociation.isEmpty())
+//        ){
+//            return true;
+//        }else {
+//            return false;
+//        }
+
+        return flat;
     }
 
     public String getClassType() {
