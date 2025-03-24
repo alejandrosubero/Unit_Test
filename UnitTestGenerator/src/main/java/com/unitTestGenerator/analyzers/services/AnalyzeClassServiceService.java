@@ -26,7 +26,7 @@ public class AnalyzeClassServiceService implements IAnalyzeCassMethodService, IA
     public AnalyzeClassServiceService() {
     }
 
-    public Clase getAnalisisOfVariables(String content){
+    public Clase getAnalisisOfVariables(String content) {
         Clase clase = ContextIOC.getInstance().getClassInstance(Clase.class);
         try {
             clase = analyzeClaseContentString(content);
@@ -36,7 +36,7 @@ public class AnalyzeClassServiceService implements IAnalyzeCassMethodService, IA
         return clase;
     }
 
-    public Clase getAnalisisOfContenidoMetodo(String content){
+    public Clase getAnalisisOfContenidoMetodo(String content) {
         Clase clase = ContextIOC.getInstance().getClassInstance(Clase.class);
         analyzeMethods(content, clase);
         return clase;
@@ -47,10 +47,10 @@ public class AnalyzeClassServiceService implements IAnalyzeCassMethodService, IA
             String content = FileUtils.readFileToString(archivo, "UTF-8");
             String path = archivo.getAbsolutePath();
             Clase classs = analyzeClaseContentString(content);
-           if(archivo != null && classs != null){
-               classs.setClassPath(path);
-               //
-           }
+            if (archivo != null && classs != null) {
+                classs.setClassPath(path);
+                //
+            }
             return classs;
         } catch (Exception e) {
             System.out.println("Error al analizar archivo: " + archivo.getName());
@@ -59,7 +59,7 @@ public class AnalyzeClassServiceService implements IAnalyzeCassMethodService, IA
     }
 
 
-    private Clase analyzeClaseContentString( String content) throws Exception {
+    private Clase analyzeClaseContentString(String content) throws Exception {
         Clase clase = ContextIOC.getInstance().getClassInstance(Clase.class);
         clase.setRawClass(content);
         analyzePackage(content, clase);
@@ -69,7 +69,7 @@ public class AnalyzeClassServiceService implements IAnalyzeCassMethodService, IA
         analyzeVariables(content, clase);
         analyzeControlStructure(content, clase);
         containPatterBuild(content, clase);
-        containLomboxAnotacionBuild(content,clase);
+        containLomboxAnotacionBuild(content, clase);
         this.getRelationsIOCInClass(clase);
 
         return postClassMethodAnalysis(clase);
@@ -107,7 +107,7 @@ public class AnalyzeClassServiceService implements IAnalyzeCassMethodService, IA
     }
 
 
-    private void getSignatureConstructors(Constructor constructor ) {
+    private void getSignatureConstructors(Constructor constructor) {
 //        Pattern patronConstructor = Pattern.compile("public\\s+(\\w+)\\(.*?\\)\\s*(?=\\{)", Pattern.DOTALL);
         Pattern patronConstructor = Pattern.compile("(public|private|protected)\\s+(\\w+)\\(.*?\\)\\s*(?=\\{)", Pattern.DOTALL);
         Matcher matcherConstructor = patronConstructor.matcher(constructor.getRawConstructor());
@@ -149,43 +149,114 @@ public class AnalyzeClassServiceService implements IAnalyzeCassMethodService, IA
         }
     }
 
-    private void analyzeMethods(String contenido, Clase clase){
-    if (clase != null) {
-        if ("class".equals(clase.getTypeClass())) {
-            Pattern patronMetodo = Pattern.compile("(?:@[^\\n]*)*(public|protected|private|void) (\\w+) (\\w+)\\((.*?)\\)", Pattern.DOTALL);
-            Matcher matcherMetodo = patronMetodo.matcher(contenido);
+    private void analyzeMethods(String contenido, Clase clase) {
+        if (clase != null) {
+            if ("class".equals(clase.getTypeClass())) {
+                Pattern patronMetodo = Pattern.compile("(?:@[^\\n]*)*(public|protected|private|void) (\\w+) (\\w+)\\((.*?)\\)", Pattern.DOTALL);
+                Matcher matcherMetodo = patronMetodo.matcher(contenido);
 
-            while (matcherMetodo.find()) {
-                Metodo metodo = ContextIOC.getInstance().getClassInstance(Metodo.class);
-                this.analyzeMethodBasic( metodo, matcherMetodo);
-                this.analyzeMethodParameters( metodo, matcherMetodo);
-                this.analyzeMethodContent(contenido, metodo, matcherMetodo);
-                metodo.setMethodSignature(matcherMetodo.group(0).trim());
-                this.analyzeMethodAnotations(contenido,metodo, metodo.getMethodSignature());
-                clase.addMetodo(metodo);
-                this.analyzeMethod(metodo.getContenido(), clase); // ***
+                while (matcherMetodo.find()) {
+                    Metodo metodo = ContextIOC.getInstance().getClassInstance(Metodo.class);
+                    this.analyzeMethodBasic(metodo, matcherMetodo);
+                    this.analyzeMethodParameters(metodo, matcherMetodo);
+                    this.analyzeMethodContent(contenido, metodo, matcherMetodo);
+                    metodo.setMethodSignature(matcherMetodo.group(0).trim());
+                    this.analyzeMethodAnotations(contenido, metodo, metodo.getMethodSignature());
+                    clase.addMetodo(metodo);
+                    this.analyzeMethod(metodo.getContenido(), clase); // ***
+                }
             }
-        }
 
-        if ("interface".equals(clase.getTypeClass())) {
-            Pattern patronMetodoInterface = Pattern.compile("(?:@[^\\n]*)*(public|protected|private|default) (\\w+(?:<.*?>)?) (\\w+)\\s*\\((.*?)\\)\\s*;", Pattern.DOTALL);
-            Matcher matcherMetodoInterface = patronMetodoInterface.matcher(contenido);
+            if ("interface".equals(clase.getTypeClass())) {
 
-            while (matcherMetodoInterface.find()) {
-                Metodo metodo = ContextIOC.getInstance().getClassInstance(Metodo.class);
-                this.analyzeMethodBasic( metodo, matcherMetodoInterface);
-                this.analyzeMethodParameters( metodo, matcherMetodoInterface);
-                String [] signturePart = matcherMetodoInterface.group(0).trim().split("\\{");
-                String va = signturePart[0];
 
-                metodo.setMethodSignature(va);
-                this.analyzeMethodAnotations(contenido,metodo, metodo.getMethodSignature());
-                clase.addMetodo(metodo);
+//            Pattern patronMetodoInterface = Pattern.compile(
+//                    "(?:@[^\n]*\\s*)*(public\\s+|private\\s+|protected\\s+|default\\s+|void\\s+)" +
+//                            "(static\\s+)?([\\w<>\\[\\]]+|Optional<[\\w<>\\[\\]]+>)\\s+" +
+//                            "(\\w+)\\s*\\((.*?)\\)\\s*;",
+//                    Pattern.DOTALL
+//            );
+
+//            Pattern patronMetodoInterface = Pattern.compile(
+//                    "(?:@[^\n]*\\s*)*(public\\s+|private\\s+|protected\\s+|default\\s+|void\\s+)(static\\s+)?([\\w<>\\[\\]]+)\\s+(\\w+)\\s*\\((.*?)\\)\\s*;",
+//                    Pattern.DOTALL
+//            );
+//                Pattern patronMetodoInterface = Pattern.compile("(?:@[^\\n]*)*(public|protected|private|default) (\\w+(?:<.*?>)?) (\\w+)\\s*\\((.*?)\\)\\s*;", Pattern.DOTALL);
+
+                Pattern patronMetodoInterface = Pattern.compile(
+                        "(?:@[^\\n]*)*(public|protected|private|default)\\s+" + // Access modifier
+                                "(\\w+(?:<.*?>)?)\\s+" + // Return type (including generics)
+                                "(\\w+)\\s*\\((.*?)\\)\\s*;", // Method name and parameters (ends at semicolon)
+                        Pattern.DOTALL
+                );
+
+                Matcher matcherMetodoInterface = patronMetodoInterface.matcher(contenido);
+
+
+                while (matcherMetodoInterface.find()) {
+                    Metodo metodo = ContextIOC.getInstance().getClassInstance(Metodo.class);
+
+                    // Set method name, return type, and access modifier from the regex capture groups
+                    metodo.setNombre(matcherMetodoInterface.group(3));
+                    metodo.setTipoRetorno(matcherMetodoInterface.group(2));
+                    metodo.setAccessModifier(matcherMetodoInterface.group(1));
+
+                    // Process the method parameters (handle edge cases such as empty or malformed parameters)
+                    try {
+                        String[] parametersList = matcherMetodoInterface.group(4).split(",");
+                        if (parametersList != null && parametersList.length > 0) {
+                            for (String parametro : parametersList) {
+                                if (!parametro.trim().isEmpty()) {
+                                    String[] partes = parametro.trim().split("\\s+");
+                                    if (partes.length >= 2) {
+                                        ParametroMetodo parametroMetodo = ParametroMetodo.builder()
+                                                .nombre(partes[1]) // Parameter name
+                                                .tipo(partes[0])   // Parameter type
+                                                .build();
+                                        metodo.agregarParametro(parametroMetodo);
+                                    }
+                                }
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    // Set the method signature (we only want the method signature, not the method body)
+                    String methodSignature = matcherMetodoInterface.group(0).trim();
+                    String signatureWithoutBody = methodSignature.split("\\{")[0]; // Ensures we get only the header, not the body
+                    metodo.setMethodSignature(signatureWithoutBody);
+
+                    // Process annotations (if any)
+                    String[] lineas = contenido.split("\n");
+                    for (int i = 0; i < lineas.length - 1; i++) {
+                        if (lineas[i].trim().startsWith("@") && lineas[i + 1].trim().startsWith(signatureWithoutBody)) {
+                            metodo.setAnotation(lineas[i].trim());
+                        }
+                    }
+
+                    // Add the method to the class
+                    clase.addMetodo(metodo);
+                }
+
+
+
+
+//                while (matcherMetodoInterface.find()) {
+//                    Metodo metodo = ContextIOC.getInstance().getClassInstance(Metodo.class);
+//                    this.analyzeMethodBasic(metodo, matcherMetodoInterface);
+//                    this.analyzeMethodParameters(metodo, matcherMetodoInterface);
+//
+//                    String[] signturePart = matcherMetodoInterface.group(0).trim().split("\\{");
+//                    String va = signturePart[0];
+//                    metodo.setMethodSignature(va);
+//                    this.analyzeMethodAnotations(contenido, metodo, metodo.getMethodSignature());
+//                    clase.addMetodo(metodo);
+//                }
             }
-        }
 
+        }
     }
-}
 
     private void analyzeMethodBasic(Metodo metodo, Matcher matcherMetodo) {
         metodo.setNombre(matcherMetodo.group(3));
@@ -215,7 +286,7 @@ public class AnalyzeClassServiceService implements IAnalyzeCassMethodService, IA
     private void analyzeMethodParameters(Metodo metodo, Matcher matcherMetodo) {
         try {
             String[] parametersList = matcherMetodo.group(4).split(",");
-            if(parametersList !=null && parametersList.length > 0){
+            if (parametersList != null && parametersList.length > 0) {
                 for (String parametro : parametersList) {
                     if (!parametro.trim().isEmpty()) {
                         String[] partes = parametro.trim().split("\\s+");
@@ -229,7 +300,7 @@ public class AnalyzeClassServiceService implements IAnalyzeCassMethodService, IA
                     }
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -266,7 +337,7 @@ public class AnalyzeClassServiceService implements IAnalyzeCassMethodService, IA
         }
     }
 
-    private  Clase postClassMethodAnalysis(Clase classIn) {
+    private Clase postClassMethodAnalysis(Clase classIn) {
         if (classIn.getVariables() != null && !classIn.getVariables().isEmpty() && classIn.getMetodos() != null && !classIn.getMetodos().isEmpty()) {
             try {
                 classIn.getVariables().stream().forEach(variable -> {
@@ -287,7 +358,7 @@ public class AnalyzeClassServiceService implements IAnalyzeCassMethodService, IA
     }
 
 
-    private void containLomboxAnotacionBuild(String contenido, Clase clase){
+    private void containLomboxAnotacionBuild(String contenido, Clase clase) {
         Pattern patronBuilder = Pattern.compile("@Builder");
         Matcher matcherBuilder = patronBuilder.matcher(contenido);
         if (matcherBuilder.find()) {
@@ -296,7 +367,7 @@ public class AnalyzeClassServiceService implements IAnalyzeCassMethodService, IA
     }
 
 
-    private void containPatterBuild(String contenido, Clase clase){
+    private void containPatterBuild(String contenido, Clase clase) {
         Pattern patronMetodoBuilder = Pattern.compile("public static \\w+ builder\\(\\)");
         Pattern patronMetodoBuild = Pattern.compile("public \\w+ build\\(\\)");
 
@@ -306,6 +377,7 @@ public class AnalyzeClassServiceService implements IAnalyzeCassMethodService, IA
         if (matcherMetodoBuilder.find() && matcherMetodoBuild.find()) {
             clase.setApplyBuildMethod(true);
         }
+
     }
 
 

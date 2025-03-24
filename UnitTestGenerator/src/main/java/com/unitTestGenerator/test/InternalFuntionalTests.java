@@ -25,7 +25,7 @@ public class InternalFuntionalTests {
         ContextIOC con = ContextIOC.getInstance(InternalFuntionalTests.class);
         Boolean isAnalisis = false;
         Boolean useMock = false;
-        String me ="/Users/user/Documents/TEST_REPOSITORY/UnitTestGenerator";
+//        String me ="/Users/user/Documents/TEST_REPOSITORY/UnitTestGenerator";
 //        String me ="/Users/alejandrosubero/Documents/TESTREPOSITORY/UnitTestGenerator";
         String nombreClase = "CargoServiceImplement";
         String method = "updateCargo";

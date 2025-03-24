@@ -132,6 +132,8 @@ public class PrintClassToUML {
                 return "(-)";
             case "protected":
                 return "(#)";
+            case "public":
+                return "(+)";
             default:
                 return "(+)";
         }
@@ -172,15 +174,23 @@ public class PrintClassToUML {
             }
         }
         buffer.append("], ");
-        buffer.append("method: [");...
+        buffer.append("method: [");
         if (classs.getMetodos() != null && !classs.getMetodos().isEmpty()) {
             for(int i =0 ; i < classs.getMetodos().size(); i++){
                 Metodo metodo = classs.getMetodos().get(i);
                 if(i != 0){
                     buffer.append(",");
                 }
+
+//                if(classs.getNombre().equals("EmpleadoRepository")){
+//                    String methodSignature2 = metodo.getMethodSignature().replace(";","");
+//                }
+//               if(metodo.getMethodSignature().contains("public List<FichaPermisos>  findByFechaRetornoContaining(Date fechaRetorno)")){
+//                   String methodSignature2 = metodo.getMethodSignature().replace(";","");
+//               }
+                String methodSignature = metodo.getMethodSignature().replace(";","");
                 buffer.append("\"")
-               .append(uMLTemplate2(metodo.getAccessModifier(), metodo.getMethodSignature(), metodo.getTipoRetorno()))
+               .append(uMLTemplate2(metodo.getAccessModifier(), methodSignature, metodo.getTipoRetorno()))
                .append("\"");
             }
         }
