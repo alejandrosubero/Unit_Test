@@ -13,7 +13,7 @@ public class InternalFuntionalTests {
     }
 
     public static void executeTest() {
-        String pathProject = "/Users/alejandrosubero/Documents/TESTREPOSITORY/Employee1";
+//        String pathProject = "/Users/alejandrosubero/Documents/TESTREPOSITORY/Employee1";
 //        String pathProject ="D:\\TEST_REPOSITORIES\\Employee1";
 //        String nombreClase = "EmpleadoServiceImplement";
 //        String method = "updateEmpleado";
@@ -21,7 +21,7 @@ public class InternalFuntionalTests {
 //        String method ="findByFechaEgreso";
 //        String method = "findByTotalHorasFeriadoYear";
 //        AppProjectStarted.getInstance().executeTest(pathProject, isAnalisis, nombreClase, method, useMock);
-//        String pathProject = "/Users/user/Documents/TEST_REPOSITORY/Employee1";
+        String pathProject = "/Users/user/Documents/TEST_REPOSITORY/Employee1";
         ContextIOC con = ContextIOC.getInstance(InternalFuntionalTests.class);
         Boolean isAnalisis = false;
         Boolean useMock = false;
