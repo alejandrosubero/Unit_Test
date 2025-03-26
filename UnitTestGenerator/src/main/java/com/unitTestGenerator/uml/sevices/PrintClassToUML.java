@@ -30,8 +30,12 @@ public class PrintClassToUML {
         StringBuffer buffer = new StringBuffer();
         if (classs != null) {
             int maxLength = calculateMaxLength(classs);
-            String border = repeat("-", maxLength + 2) + "+\n";
+            String borderClass = repeat("*/*", 40 ) + "+\n";
+            String border = repeat("-", (maxLength/2) + 2) ;
 
+
+            buffer.append("\n");
+            buffer.append(borderClass).append("\n");
             buffer.append(border).append("\n");
             buffer.append("Class Name: ").append(classs.getNombre()).append("\n");
             buffer.append(border).append("\n");
@@ -55,32 +59,33 @@ public class PrintClassToUML {
             if (classs.getClassRelations() != null && classs.getClassRelations().check()) {
                 buffer.append("Relations: ").append(nombre).append("\n");
                 if (classs.getClassRelations().getImplementsList() != null && !classs.getClassRelations().getImplementsList().isEmpty()) {
-                    buffer.append("Implement: ").append(nombre).append("\n");
+                    buffer.append("\t").append("Implement: ").append(nombre).append("\n");
                     for (String impl : classs.getClassRelations().getImplementsList()) {
-                        buffer.append(" -").append(impl).append("\n");
+                        buffer.append("\t").append(" -").append(impl).append("\n");
                     }
                 }
                 if (classs.getClassRelations().getClassExtends() != null && !classs.getClassRelations().getClassExtends().isEmpty()) {
-                    buffer.append("Extends: ").append(nombre).append("\n");
-                    buffer.append(" -").append(classs.getClassRelations().getClassExtends()).append("\n");
+                    buffer.append("\t").append("Extends: ").append(nombre).append("\n");
+                    buffer.append("\t").append(" -").append(classs.getClassRelations().getClassExtends()).append("\n");
                 }
 
                 if (classs.getClassRelations().getDependencyInjectionIoC() != null && !classs.getClassRelations().getDependencyInjectionIoC().isEmpty()) {
-                    buffer.append("Ioc: ").append(nombre).append("\n");
+                    buffer.append("\t").append("Ioc: ").append(nombre).append("\n");
                     for (String ioc : classs.getClassRelations().getDependencyInjectionIoC()) {
-                        buffer.append(" -").append(ioc).append("\n");
+                        buffer.append("\t").append(" -").append(ioc).append("\n");
                     }
                 }
 
                 if (classs.getClassRelations().getStrongDependencyAssociation() != null && !classs.getClassRelations().getStrongDependencyAssociation().isEmpty()) {
-                    buffer.append("Strong Association: ").append(nombre).append("\n");
+                    buffer.append("\t").append("Strong Association: ").append(nombre).append("\n");
                     for (String classAssociated : classs.getClassRelations().getStrongDependencyAssociation()) {
-                        buffer.append(" -").append(classAssociated).append("\n");
+                        buffer.append("\t").append(" -").append(classAssociated).append("\n");
                     }
 
                     if (classs.getClassRelations().getIdentifieresRelatedClasses() != null && !classs.getClassRelations().getIdentifieresRelatedClasses().isEmpty()) {
                         for (String classAssociated : classs.getClassRelations().getIdentifieresRelatedClasses()) {
-                            buffer.append(" -").append(classAssociated).append("\n");
+                            buffer.append("\t").append("Association static or patter Build: ").append(nombre).append("\n");
+                            buffer.append("\t").append(" -").append(classAssociated).append("\n");
                         }
                     }
 

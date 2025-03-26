@@ -32,10 +32,10 @@ public class AnalizerProjectService implements IPrintAnalizeImports, IExtendsInI
             this.getInterfaceStructure(project);
             this.getExtendsStructure(project);
             this.projectAnalyzerType(project);
-            String uml = printListClassToUML(project);
+            project.setProjectUml(printListClassToUML(project));
             this.generateImportsMap(project);
+            this.printProjectAnalizeResult(project, isAnalisis);
             String projectToElement =  ContextIOC.getInstance().getClassInstance(PrintClassToUML.class).projectToElement(project);
-            String projectToElement2 = projectToElement.replace(",,", ",");
             this.printProjectAnalize(project,isAnalisis);
         }
         return project;

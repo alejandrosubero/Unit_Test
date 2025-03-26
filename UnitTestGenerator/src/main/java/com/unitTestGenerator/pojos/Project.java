@@ -16,6 +16,7 @@ public class Project {
     private String pathProject;
     private String projectDirectoryTree;
     private String projectClassTree;
+    private  String projectUml;
 
     public Project() {
     }
@@ -121,6 +122,14 @@ public class Project {
 
     public void setGradle(Boolean gradle) {
         isGradle = gradle;
+    }
+
+    public String getProjectUml() {
+        return projectUml;
+    }
+
+    public void setProjectUml(String projectUml) {
+        this.projectUml = projectUml;
     }
 
     private void projectAnalyzerType(String pathProject) {
