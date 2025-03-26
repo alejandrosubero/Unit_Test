@@ -44,7 +44,7 @@ public class AppProjectStarted implements  MainMenue, IInternalTest, IAnalizerPr
 
             switch (opcion) {
                 case 1:
-//                    analizarProyecto(scanner, true);
+                    this.projectHolderLogic( scanner, true);
                     continuar = this.askContinue(scanner);
                     break;
                 case 2:
@@ -52,7 +52,7 @@ public class AppProjectStarted implements  MainMenue, IInternalTest, IAnalizerPr
                     continuar = this.askContinue(scanner);
                     break;
                 case 3:
-                    System.out.println("Goodbye");
+                    System.out.println("Good bye");
                     continuar = false;
                     break;
                 default:
@@ -62,14 +62,17 @@ public class AppProjectStarted implements  MainMenue, IInternalTest, IAnalizerPr
         }
     }
 
+    private void projectHolderLogic(Scanner scanner, Boolean isAnalisis){
+        Project projectAnalized = analizerProjectService.analizerProject(scanner, isAnalisis, this.project);
+        this.projectHolder.setProject(projectAnalized);
+        this.project = projectAnalized;
+    }
 
     private void generateUnitsTest(Scanner scanner) {
-
         if (this.project.getClaseList().isEmpty()) {
-            Project projectAnalized = analizerProjectService.analizerProject(scanner, false, this.project);
-            this.projectHolder.setProject(projectAnalized);
-            this.project = projectAnalized;
+            this.projectHolderLogic( scanner, false);
         }
+
         System.out.println("Enter the class name to test to generate the unit tests:");
         String nombreClase = scanner.next();
         String method = this.questionOfMethodToTest(scanner);
@@ -108,7 +111,6 @@ public class AppProjectStarted implements  MainMenue, IInternalTest, IAnalizerPr
             this.askContinue( new Scanner(System.in));
         }
     }
-
 
     @Override
     public void executeTest(String pathProject, boolean isAnalisis, String nombreClase, String method, Boolean useMock) {

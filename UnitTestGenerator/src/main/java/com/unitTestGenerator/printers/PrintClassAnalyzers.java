@@ -2,9 +2,7 @@ package com.unitTestGenerator.printers;
 
 import com.unitTestGenerator.ioc.anotations.Component;
 import com.unitTestGenerator.ioc.anotations.Singleton;
-import com.unitTestGenerator.pojos.Clase;
-import com.unitTestGenerator.pojos.Metodo;
-import com.unitTestGenerator.pojos.Project;
+import com.unitTestGenerator.pojos.*;
 
 @Component
 @Singleton
@@ -12,25 +10,12 @@ public class PrintClassAnalyzers {
 
     public  PrintClassAnalyzers(){}
 
-
-
-    public void printClassDetail() {
-
-        //        private String nombre;
-//        private String paquete;
-//        private String typeClass;
-//        private String classSignatureLine;
-//        private String classPath;
-//        private String classUml;
-//        private List<Metodo> metodos;
-//        private List<Variable> variables;
-//        private List<Constructor> constructores;
-//        private ClassRelations classRelations = new ClassRelations();
-//        private ImportAnalizePojo imports;
-//        private String structureInterface;
-//        private String structureExtends;
-//        private String classAnotations;
-        
+    public void printClassDetail(Clase classs) {
+        String ANSI_RESET = "\u001B[0m";
+        String ANSI_BLUE = "\u001B[34m";
+        String ANSI_YELLOW = "\u001B[33m";
+        String ANSI_RED = "\u001B[31m";
+        System.out.println(ANSI_YELLOW + classs.getClassDetail()+ ANSI_RESET);
     }
 
 
@@ -60,6 +45,12 @@ public class PrintClassAnalyzers {
         }
     }
 
-
+    private String repeat(String str, int times) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < times; i++) {
+            sb.append(str);
+        }
+        return sb.toString();
+    }
 
 }

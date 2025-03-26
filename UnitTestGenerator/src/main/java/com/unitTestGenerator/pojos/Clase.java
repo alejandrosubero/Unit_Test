@@ -32,6 +32,7 @@ public class Clase {
     private String structureInterface;
     private String structureExtends;
     private String classAnotations;
+    private String classDetail;
 
 
     public Clase() {
@@ -208,6 +209,13 @@ public class Clase {
         this.indexFirmaClass = indexFirmaClass;
     }
 
+    public String getClassDetail() {
+        return classDetail;
+    }
+
+    public void setClassDetail(String classDetail) {
+        this.classDetail = classDetail;
+    }
 
     public String getClassUml() {
         return classUml;

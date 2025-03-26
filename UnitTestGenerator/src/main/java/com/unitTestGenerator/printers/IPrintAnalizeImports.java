@@ -1,5 +1,6 @@
 package com.unitTestGenerator.printers;
 
+import com.unitTestGenerator.analyzers.services.interfaces.IClassDetailBuilder;
 import com.unitTestGenerator.pojos.Clase;
 import com.unitTestGenerator.pojos.ImportAnalizePojo;
 import com.unitTestGenerator.pojos.Project;
@@ -9,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public interface IPrintAnalizeImports {
+public interface IPrintAnalizeImports  {
 
     default Project generateImportsMap(Project project) {
         Optional.ofNullable(project)

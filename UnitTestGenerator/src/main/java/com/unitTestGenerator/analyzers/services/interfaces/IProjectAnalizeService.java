@@ -43,14 +43,6 @@ public interface IProjectAnalizeService {
     }
 
 
-    default void printProjectAnalizeResult(Project projectP, boolean isAnalisis) {
-         String ANSI_RESET = "\u001B[0m";
-         String ANSI_BLUE = "\u001B[34m";
-         String ANSI_YELLOW = "\u001B[33m";
-         String ANSI_RED = "\u001B[31m";
-        System.out.println(ANSI_BLUE + projectP.getProjectUml()+ ANSI_RESET);
-    }
-
 
     default void printProjectAnalize(Project projectP, boolean isAnalisis) {
 

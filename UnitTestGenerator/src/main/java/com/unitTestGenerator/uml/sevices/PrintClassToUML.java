@@ -2,12 +2,13 @@ package com.unitTestGenerator.uml.sevices;
 
 import com.unitTestGenerator.ioc.anotations.Component;
 import com.unitTestGenerator.pojos.*;
+import com.unitTestGenerator.util.IRepeatLogic;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class PrintClassToUML {
+public class PrintClassToUML implements IRepeatLogic {
 
     private String nombre;
     private List<Variable> atributos;
@@ -30,8 +31,8 @@ public class PrintClassToUML {
         StringBuffer buffer = new StringBuffer();
         if (classs != null) {
             int maxLength = calculateMaxLength(classs);
-            String borderClass = repeat("*/*", 40 ) + "+\n";
-            String border = repeat("-", (maxLength/2) + 2) ;
+            String borderClass = this.repeat("*/*", 30 ) + "+\n";
+            String border = this.repeat("-", (maxLength/2) + 2) ;
 
 
             buffer.append("\n");
@@ -51,7 +52,8 @@ public class PrintClassToUML {
             buffer.append("Methods: ").append(nombre).append("\n");
             if (classs.getMetodos() != null && !classs.getMetodos().isEmpty()) {
                 for (Metodo metodo : classs.getMetodos()) {
-                    buffer.append(uMLTemplate(metodo.getAccessModifier(), metodo.getMethodSignature(), metodo.getTipoRetorno())).append("\n");
+                    String signature = metodo.getMethodSignature().replace(";","");
+                    buffer.append(uMLTemplate(metodo.getAccessModifier(), signature, metodo.getTipoRetorno())).append("\n");
                 }
             }
             buffer.append(border).append("\n");
@@ -92,6 +94,7 @@ public class PrintClassToUML {
                 }
             }
             buffer.append(border).append("\n");
+            buffer.append(borderClass).append("\n");
             classs.setClassUml(buffer.toString());
         }
 
@@ -105,19 +108,12 @@ public class PrintClassToUML {
         }
         for (Metodo metodo : classs.getMetodos()) {
             maxLength = Math.max(maxLength, (metodo.getMethodSignature().length()));
-//            maxLength = Math.max(maxLength, (uMLTemplate(metodo.getAccessModifier(), metodo.getMethodSignature(), metodo.getTipoRetorno())).length());
         }
         maxLength = Math.max(maxLength, (" " + classs.getClassRelations().toString()).length());
         return maxLength;
     }
 
-    private String repeat(String str, int times) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < times; i++) {
-            sb.append(str);
-        }
-        return sb.toString();
-    }
+
 
     private String uMLTemplate(String accessModifier, String name, String type) {
         StringBuilder bilder = new StringBuilder();
@@ -147,7 +143,6 @@ public class PrintClassToUML {
 
     public String projectToElement(Project project) {
         StringBuffer buffer = new StringBuffer();
-        List<String> listElemet = new ArrayList<>();
         if (project != null) {
             for (int i = 0; i < project.getClaseList().size(); i++) {
                 Clase classs = project.getClaseList().get(i);
@@ -186,13 +181,6 @@ public class PrintClassToUML {
                 if(i != 0){
                     buffer.append(",");
                 }
-
-//                if(classs.getNombre().equals("EmpleadoRepository")){
-//                    String methodSignature2 = metodo.getMethodSignature().replace(";","");
-//                }
-//               if(metodo.getMethodSignature().contains("public List<FichaPermisos>  findByFechaRetornoContaining(Date fechaRetorno)")){
-//                   String methodSignature2 = metodo.getMethodSignature().replace(";","");
-//               }
                 String methodSignature = metodo.getMethodSignature().replace(";","");
                 buffer.append("\"")
                .append(uMLTemplate2(metodo.getAccessModifier(), methodSignature, metodo.getTipoRetorno()))
@@ -291,10 +279,6 @@ public class PrintClassToUML {
                             .append(",").append("move: true }");
                 }
             }
-
-
-
-
         }
         buffer.append("], ");
         buffer.append("conste: [ ");

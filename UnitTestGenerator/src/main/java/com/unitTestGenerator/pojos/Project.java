@@ -10,13 +10,10 @@ public class Project {
 
     private List<Clase> claseList = new ArrayList<>();
     private Map<String, Clase> mapClass = new HashMap<>();;
-
     private Boolean isMaven;
     private Boolean isGradle;
     private String pathProject;
-    private String projectDirectoryTree;
-    private String projectClassTree;
-    private  String projectUml;
+    private  PrinterProject printerProject= new PrinterProject();
 
     public Project() {
     }
@@ -48,13 +45,7 @@ public class Project {
         this.isGradle = isGradle;
     }
 
-    public String getProjectDirectoryTree() {
-        return projectDirectoryTree;
-    }
 
-    public void setProjectDirectoryTree(String projectDirectoryTree) {
-        this.projectDirectoryTree = projectDirectoryTree;
-    }
 
     public List<Clase> getClaseList() {
         return claseList;
@@ -82,15 +73,6 @@ public class Project {
         return foundClass;
     }
 
-
-
-    public String getProjectClassTree() {
-        return projectClassTree;
-    }
-
-    public void setProjectClassTree(String projectClassTree) {
-        this.projectClassTree = projectClassTree;
-    }
 
     public Map<String, Clase> getMapClass() {
         return mapClass;
@@ -124,12 +106,12 @@ public class Project {
         isGradle = gradle;
     }
 
-    public String getProjectUml() {
-        return projectUml;
+    public PrinterProject getPrinterProject() {
+        return printerProject;
     }
 
-    public void setProjectUml(String projectUml) {
-        this.projectUml = projectUml;
+    public void setPrinterProject(PrinterProject printerProject) {
+        this.printerProject = printerProject;
     }
 
     private void projectAnalyzerType(String pathProject) {

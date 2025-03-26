@@ -41,9 +41,9 @@ public class AnalizadorProyecto implements ITodoDetectorService, IPrintProjectSt
         this.analizarProyectoRecursivo(carpetaProyecto, clases, mapClass, project);
         project.setMapClass(mapClass);
         String  classDirectoryTree = treeBuilder.getTreeString();
-        project.setProjectClassTree(classDirectoryTree.replace(".java", " "));
+        project.getPrinterProject().setProjectClassTree(classDirectoryTree.replace(".java", " "));
         String projectDirectoryTree = getStructure(project.getPathProject());
-        project.setProjectDirectoryTree(projectDirectoryTree);
+        project.getPrinterProject().setProjectDirectoryTree(projectDirectoryTree);
         return clases;
     }
 
@@ -106,6 +106,7 @@ public class AnalizadorProyecto implements ITodoDetectorService, IPrintProjectSt
 
         if(classList != null && clase !=null){
             classList.add(clase);
+            project.getPrinterProject().addToClaseList(clase.getNombre());
         }
 
         if (mapClass != null && clase != null) {
