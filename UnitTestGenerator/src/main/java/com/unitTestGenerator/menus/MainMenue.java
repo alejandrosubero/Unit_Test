@@ -11,7 +11,7 @@ public interface MainMenue {
         buffer.append("Choose an option:").append("\n");
         buffer.append("1. Analyze project").append("\n");
         buffer.append("2. Generate unit tests").append("\n");
-        buffer.append("3. Exit").append("\n");
+        buffer.append("3. Exit*").append("\n");
         System.out.println(buffer.toString());
     }
 

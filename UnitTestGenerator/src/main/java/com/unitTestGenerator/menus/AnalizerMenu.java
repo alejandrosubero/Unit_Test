@@ -9,7 +9,6 @@ import com.unitTestGenerator.pojos.Clase;
 import com.unitTestGenerator.pojos.Project;
 import com.unitTestGenerator.printers.PrintClassAnalyzers;
 import com.unitTestGenerator.printers.PrintProjectAnalyzers;
-import com.unitTestGenerator.uml.sevices.PrintClassToUML;
 import com.unitTestGenerator.util.IBaseModel;
 
 import java.util.Scanner;
@@ -26,61 +25,34 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
     }
 
     public void analizerMenuInitial(Project project){
-
         Scanner scanner = new Scanner(System.in);
-
-        boolean continuar = false;
-
-        while (!continuar) {
             this.AnalysisOptionsMenuV1000();
             int opcion = scanner.nextInt();
 
             switch (opcion) {
                 case 2:
                     methodsOfclass(scanner, project);
-                    continuar = this.askContinue(scanner);
-                    if (continuar) {
-                        this.goToMainMenu();
-                    }
+                    subMenu2( project,  scanner);
                     break;
                 case 3:
                     this.classDetail(scanner, project);
-                    continuar = this.askContinue(scanner);
-                    if (continuar) {
-                        this.goToMainMenu();
-                    }
+                    subMenu2( project,  scanner);
                     break;
                 case 4:
                     this.printProjectFileTree(project);
-                    continuar = this.askContinue(scanner);
-                    if (continuar) {
-                        this.goToMainMenu();
-                    }
+                    subMenu2( project,  scanner);
                     break;
                 case 5:
                     this.printProjectClassTree(project);
-                    continuar = this.askContinue(scanner);
-                    if (continuar) {
-                        this.goToMainMenu();
-                    }
+                    subMenu2( project,  scanner);
                     break;
                 case 6:
-                    continuar = false;
                     this.goToMainMenu();
-                    break;
-                case 7:
-                    System.out.println("Goodbye");
-                    continuar = false;
-                    break;
-                case 8:
-                    System.out.println("Goodbye");
-                    continuar = false;
                     break;
                 default:
                     this.printClassList(project);
                     this.subMenu1(project,scanner);
             }
-        }
     }
 
     public void AnalysisOptionsMenuV1000(){
@@ -102,19 +74,21 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
                 "3. Return to the main menu");
     }
 
-    public void subMenu1(Project project, Scanner scanner) {
+    public void subMenu2V1000(){
+        this.printColummString(
+                "Choose an option:",
+                "1. Exit",
+                "2. Return to the previous menu",
+                "3. Return to the main menu");
+    }
 
+    public void subMenu1(Project project, Scanner scanner) {
             this.subMenu1V1000();
             int opcion = scanner.nextInt();
             switch (opcion) {
                 case 1:
                      methodsOfclass(scanner, project);
-                    boolean userResponse = this.askContinue(scanner);
-                    if (userResponse){
-                        this.goToMainMenu();
-                    }else {
-                        analizerMenuInitial(project);
-                    }
+                    subMenu2( project,  scanner);
                     break;
                 case 2:
                     analizerMenuInitial(project);
@@ -128,7 +102,24 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
             }
     }
 
-
+    public void subMenu2(Project project, Scanner scanner) {
+        this.subMenu2V1000();
+        int opcion = scanner.nextInt();
+        switch (opcion) {
+            case 1:
+                System.out.println("Good bye");
+                break;
+            case 2:
+                analizerMenuInitial(project);
+                break;
+            case 3:
+                this.goToMainMenu();
+                break;
+            default:
+                System.out.println("Invalid option");
+                analizerMenuInitial(project);
+        }
+    }
 
     private void methodsOfclass(Scanner scanner, Project project) {
         System.out.println("Enter the name of the Class");

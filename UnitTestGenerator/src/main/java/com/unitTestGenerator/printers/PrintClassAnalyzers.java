@@ -6,16 +6,12 @@ import com.unitTestGenerator.pojos.*;
 
 @Component
 @Singleton
-public class PrintClassAnalyzers {
+public class PrintClassAnalyzers implements IPrintService {
 
     public  PrintClassAnalyzers(){}
 
     public void printClassDetail(Clase classs) {
-        String ANSI_RESET = "\u001B[0m";
-        String ANSI_BLUE = "\u001B[34m";
-        String ANSI_YELLOW = "\u001B[33m";
-        String ANSI_RED = "\u001B[31m";
-        System.out.println(ANSI_YELLOW + classs.getClassDetail()+ ANSI_RESET);
+        this.service().print_DARKGREEN(classs.getClassDetail());
     }
 
 

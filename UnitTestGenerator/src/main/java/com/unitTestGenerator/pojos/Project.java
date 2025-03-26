@@ -65,7 +65,7 @@ public class Project {
         Clase foundClass = null;
         if (this.claseList != null && !this.claseList.isEmpty() && className != null && !className.equals("")) {
             for (Clase classs : this.claseList) {
-                if (classs.getNombre().equals(className)) {
+                if (classs.getNombre().trim().toLowerCase().equals(className.trim().toLowerCase())) {
                     return classs;
                 }
             }
