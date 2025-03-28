@@ -7,7 +7,7 @@ build:
 	mkdir -p cli
 	cp target/unit-*.jar cli/
 	chmod +x cli/unit
-	unix2dos cli/unit.bat
+	if [ -f cli/hello-cli.bat ]; then unix2dos cli/hello-cli.bat; fi
 
 dist: build
 	zip -r unit-test-dist.zip cli/ Makefile

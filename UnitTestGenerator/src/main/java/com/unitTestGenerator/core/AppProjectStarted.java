@@ -45,7 +45,7 @@ public class AppProjectStarted implements  MainMenue, IInternalTest, IAnalizerPr
             switch (opcion) {
                 case 1:
                     this.projectHolderLogic( scanner, true);
-                    continuar = this.askContinue(scanner);
+//                    continuar = this.askContinue(scanner);
                     break;
                 case 2:
                     generateUnitsTest(scanner);
