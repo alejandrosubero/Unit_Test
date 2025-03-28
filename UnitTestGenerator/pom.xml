@@ -5,12 +5,16 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.unitTestGenerator</groupId>
-    <artifactId>unitTestGenerator</artifactId>
-    <version>1.0</version>
+    <artifactId>unit</artifactId>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
 
-    <name>unitTestGenerator</name>
-    <description>Generador de pruebas unitarias</description>
+
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -26,12 +30,6 @@
             <scope>test</scope>
         </dependency>
 
-<!--        &lt;!&ndash; https://mvnrepository.com/artifact/commons-io/commons-io &ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>commons-io</groupId>-->
-<!--            <artifactId>commons-io</artifactId>-->
-<!--            <version>2.14.0</version>-->
-<!--        </dependency>-->
 
         <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
         <dependency>
@@ -94,42 +92,12 @@
         </dependency>
 
 
-        <!--        &lt;!&ndash; JPA y Hibernate &ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>org.hibernate</groupId>-->
-<!--            <artifactId>hibernate-core</artifactId>-->
-<!--            <version>5.3.20.Final</version>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>javax.persistence</groupId>-->
-<!--            <artifactId>javax.persistence-api</artifactId>-->
-<!--            <version>2.2</version>-->
-<!--        </dependency>-->
-
-<!--        &lt;!&ndash; Driver de SQLite &ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>org.xerial</groupId>-->
-<!--            <artifactId>sqlite-jdbc</artifactId>-->
-<!--            <version>3.41.2.2</version>-->
-<!--        </dependency>-->
-
-<!--        &lt;!&ndash; Logger SLF4J para Hibernate &ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>org.slf4j</groupId>-->
-<!--            <artifactId>slf4j-api</artifactId>-->
-<!--            <version>1.7.30</version>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.slf4j</groupId>-->
-<!--            <artifactId>slf4j-simple</artifactId>-->
-<!--            <version>1.7.30</version>-->
-<!--        </dependency>-->
-
 
     </dependencies>
 
     <build>
         <plugins>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -138,6 +106,28 @@
                     <source>1.8</source>
                     <target>1.8</target>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>com.unitTestGenerator.App</mainClass>
+                        </manifest>
+                    </archive>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
