@@ -71,7 +71,11 @@ public class Data {
 
     @Override
     public String toString() {
-        return "Data{id=" + id + ", name='" + name + "', descripcion='" + descripcion + "', datos='" + datos + "'}";
+        return "" +
+                "id=" + id +
+                ", Name='" + name + '\'' +
+                ", Description='" + descripcion + '\'' +
+                '}';
     }
 }
 

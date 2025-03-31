@@ -63,9 +63,21 @@ public class AppProjectStarted implements  MainMenue, IInternalTest, IAnalizerPr
     }
 
     private void projectHolderLogic(Scanner scanner, Boolean isAnalisis){
+
         Project projectAnalized = analizerProjectService.analizerProject(scanner, isAnalisis, this.project);
         this.projectHolder.setProject(projectAnalized);
         this.project = projectAnalized;
+
+        //TODO: V1.1.0.0  In progress....
+//        Project projectAnalized = null;
+//        if(isAnalisis){
+//            projectAnalized =
+//        }else {
+//            projectAnalized = analizerProjectService.analizerProject(scanner, isAnalisis, this.project);
+//            this.projectHolder.setProject(projectAnalized);
+//        }
+//
+//        this.project = projectAnalized;
     }
 
     private void generateUnitsTest(Scanner scanner) {

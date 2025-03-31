@@ -14,6 +14,8 @@ public class Project {
     private Boolean isGradle;
     private String pathProject;
     private  PrinterProject printerProject= new PrinterProject();
+    private String name;
+    private String description;
 
     public Project() {
     }
@@ -112,6 +114,22 @@ public class Project {
 
     public void setPrinterProject(PrinterProject printerProject) {
         this.printerProject = printerProject;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     private void projectAnalyzerType(String pathProject) {

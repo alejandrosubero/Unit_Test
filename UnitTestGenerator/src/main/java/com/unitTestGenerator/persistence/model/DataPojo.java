@@ -74,4 +74,13 @@ public class DataPojo {
         return Objects.hash(id, name, descripcion, datos);
     }
 
+
+    @Override
+    public String toString() {
+        return "" +
+                "id=" + id +
+                ", Name='" + name + '\'' +
+                ", Description='" + descripcion + '\'' +
+                '}';
+    }
 }
