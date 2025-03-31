@@ -9,6 +9,7 @@ import com.unitTestGenerator.ioc.anotations.Component;
 import com.unitTestGenerator.ioc.anotations.Singleton;
 import com.unitTestGenerator.pojos.Project;
 import com.unitTestGenerator.printers.PrintProjectAnalyzers;
+import com.unitTestGenerator.test.AppTestDatabase;
 import com.unitTestGenerator.util.IBaseModel;
 
 import java.util.Scanner;
@@ -45,7 +46,14 @@ public class AnalizerMenuV1100  implements IAnalizerProjectServiceManager, IBase
                 this.projectHolder.setProject(projectAnalized);
                 break;
             case 2:
-//                analizerMenuInitial(project);
+                Project projectsave = ContextIOC.getInstance(AppTestDatabase.class).getClassInstance(SavedProjectMenu.class).started(scanner);
+
+                if(projectsave == null){
+                    ...
+                }else {
+                    ...
+                }
+
                 break;
             case 3:
                 this.goToMainMenu();
@@ -86,6 +94,15 @@ public class AnalizerMenuV1100  implements IAnalizerProjectServiceManager, IBase
                 "7. Return to the previous menu",
                 "8. Return to the main menu");
     }
+
+
+
+
+
+
+
+
+
 
     public void printClassMenu(){
         this.printColummString(

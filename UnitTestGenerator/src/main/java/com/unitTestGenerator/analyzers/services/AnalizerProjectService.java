@@ -28,6 +28,11 @@ public class AnalizerProjectService implements IPrintAnalizeImports, IExtendsInI
         return projectAnalize(pathProject, isAnalisis, project);
     }
 
+    public Project analizerProjectSaveProject( boolean isAnalisis, Project project) {
+        System.out.println("Enter the project path:");
+        return projectAnalize(project.getPathProject(), isAnalisis, project);
+    }
+
     public Project projectAnalize(String pathProject,  boolean isAnalisis, Project project ){
         if(pathProject != null && project != null){
             project = this.executeProjectAnalize(pathProject, isAnalisis );
