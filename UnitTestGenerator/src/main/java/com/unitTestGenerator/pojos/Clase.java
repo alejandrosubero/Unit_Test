@@ -33,7 +33,7 @@ public class Clase {
     private String structureExtends;
     private String classAnotations;
     private String classDetail;
-
+    private String classTemplate;
 
     public Clase() {
         this.metodos = new ArrayList<>();
@@ -55,6 +55,14 @@ public class Clase {
 
     public ImportAnalizePojo getImports() {
         return imports;
+    }
+
+    public String getClassTemplate() {
+        return classTemplate;
+    }
+
+    public void setClassTemplate(String classTemplate) {
+        this.classTemplate = classTemplate;
     }
 
     public void setImports(ImportAnalizePojo imports) {

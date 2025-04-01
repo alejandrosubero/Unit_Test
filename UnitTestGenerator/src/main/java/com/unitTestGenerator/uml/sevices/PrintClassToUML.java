@@ -29,6 +29,72 @@ public class PrintClassToUML implements IRepeatLogic {
     }
 
 
+    public String getAttributes(Clase classs){
+        StringBuffer buffer = new StringBuffer();
+
+        buffer.append("Attributes: ").append("\n");
+        if (classs.getVariables() != null && !classs.getVariables().isEmpty()) {
+            for (Variable variable : classs.getVariables()) {
+                buffer.append(uMLTemplate(variable.getAccessModifier(), variable.getNombre(), variable.getTipo())).append("\n");
+            }
+        }
+
+        return buffer.toString();
+    }
+
+    public String getMethods(Clase classs) {
+        StringBuffer buffer = new StringBuffer();
+        buffer.append("Methods: ").append(nombre).append("\n");
+        if (classs.getMetodos() != null && !classs.getMetodos().isEmpty()) {
+            for (Metodo metodo : classs.getMetodos()) {
+                String signature = metodo.getMethodSignature().replace(";","");
+                buffer.append(uMLTemplate(metodo.getAccessModifier(), signature, metodo.getTipoRetorno())).append("\n");
+            }
+        }
+        return buffer.toString();
+    }
+
+    public String getRelations(Clase classs) {
+        StringBuffer buffer = new StringBuffer();
+
+        if (classs.getClassRelations() != null && classs.getClassRelations().check()) {
+            buffer.append("Relations: ").append(nombre).append("\n");
+            if (classs.getClassRelations().getImplementsList() != null && !classs.getClassRelations().getImplementsList().isEmpty()) {
+                buffer.append("\t").append("Implement: ").append(nombre).append("\n");
+                for (String impl : classs.getClassRelations().getImplementsList()) {
+                    buffer.append("\t").append(" -").append(impl).append("\n");
+                }
+            }
+            if (classs.getClassRelations().getClassExtends() != null && !classs.getClassRelations().getClassExtends().isEmpty()) {
+                buffer.append("\t").append("Extends: ").append(nombre).append("\n");
+                buffer.append("\t").append(" -").append(classs.getClassRelations().getClassExtends()).append("\n");
+            }
+
+            if (classs.getClassRelations().getDependencyInjectionIoC() != null && !classs.getClassRelations().getDependencyInjectionIoC().isEmpty()) {
+                buffer.append("\t").append("Ioc: ").append(nombre).append("\n");
+                for (String ioc : classs.getClassRelations().getDependencyInjectionIoC()) {
+                    buffer.append("\t").append(" -").append(ioc).append("\n");
+                }
+            }
+
+            if (classs.getClassRelations().getStrongDependencyAssociation() != null && !classs.getClassRelations().getStrongDependencyAssociation().isEmpty()) {
+                buffer.append("\t").append("Strong Association: ").append(nombre).append("\n");
+                for (String classAssociated : classs.getClassRelations().getStrongDependencyAssociation()) {
+                    buffer.append("\t").append(" -").append(classAssociated).append("\n");
+                }
+
+                if (classs.getClassRelations().getIdentifieresRelatedClasses() != null && !classs.getClassRelations().getIdentifieresRelatedClasses().isEmpty()) {
+                    for (String classAssociated : classs.getClassRelations().getIdentifieresRelatedClasses()) {
+                        buffer.append("\t").append("Association static or patter Build: ").append(nombre).append("\n");
+                        buffer.append("\t").append(" -").append(classAssociated).append("\n");
+                    }
+                }
+
+            }
+        }
+        return buffer.toString();
+    }
+
     public String generarDiagrama2(Clase classs) {
 
         StringBuffer buffer = new StringBuffer();
