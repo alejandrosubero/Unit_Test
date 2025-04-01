@@ -3,8 +3,10 @@ package com.unitTestGenerator.core;
 
 import com.unitTestGenerator.analyzers.services.AnalizerProjectService;
 import com.unitTestGenerator.analyzers.services.interfaces.IAnalizerProjectServiceManager;
+import com.unitTestGenerator.ioc.ContextIOC;
 import com.unitTestGenerator.ioc.anotations.Component;
 import com.unitTestGenerator.ioc.anotations.Singleton;
+import com.unitTestGenerator.menus.AnalizerMenu;
 import com.unitTestGenerator.menus.MainMenue;
 import com.unitTestGenerator.test.interfaces.IInternalTest;
 import com.unitTestGenerator.pojos.Clase;
@@ -64,20 +66,22 @@ public class AppProjectStarted implements  MainMenue, IInternalTest, IAnalizerPr
 
     private void projectHolderLogic(Scanner scanner, Boolean isAnalisis){
 
-        Project projectAnalized = analizerProjectService.analizerProject(scanner, isAnalisis, this.project);
-        this.projectHolder.setProject(projectAnalized);
-        this.project = projectAnalized;
+//        Project projectAnalized = analizerProjectService.analizerProject(scanner, isAnalisis, this.project);
+//        this.projectHolder.setProject(projectAnalized);
+//        this.project = projectAnalized;
 
         //TODO: V1.1.0.0  In progress....
-//        Project projectAnalized = null;
-//        if(isAnalisis){
-//            projectAnalized =
-//        }else {
-//            projectAnalized = analizerProjectService.analizerProject(scanner, isAnalisis, this.project);
-//            this.projectHolder.setProject(projectAnalized);
-//        }
-//
-//        this.project = projectAnalized;
+        Project projectAnalized = null;
+        if(isAnalisis){
+            AnalizerMenu analizerMenu =  ContextIOC.getInstance().getClassInstance(AnalizerMenu.class);
+            analizerMenu.analizerMenuStarted(project, new Scanner(System.in));
+            projectAnalized = this.projectHolder.getProject();
+        }else {
+            projectAnalized = analizerProjectService.analizerProject(scanner, isAnalisis, this.project);
+            this.projectHolder.setProject(projectAnalized);
+        }
+
+        this.project = projectAnalized;
     }
 
     private void generateUnitsTest(Scanner scanner) {

@@ -4,7 +4,9 @@ import com.unitTestGenerator.pojos.Clase;
 import com.unitTestGenerator.pojos.Constructor;
 import com.unitTestGenerator.pojos.Project;
 import com.unitTestGenerator.util.IRepeatLogic;
-
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import org.apache.commons.io.IOUtils;
 import java.util.Optional;
 
 public interface IClassDetailBuilder extends IRepeatLogic {
@@ -59,47 +61,62 @@ public interface IClassDetailBuilder extends IRepeatLogic {
 
             buffer.append(border).append("\n");
             if (classs.getConstructores() != null && !classs.getConstructores().isEmpty()) {
-                buffer.append("Class Constructors: ").append("\n");
+                StringBuffer bufferConstructors = new StringBuffer();
+                bufferConstructors.append("Class Constructors: ").append("\n");
                 for (Constructor constructor : classs.getConstructores()) {
-                    buffer.append("\t").append(constructor.getCostructorSignature()).append("\n");
+                    bufferConstructors.append("\t").append(constructor.getCostructorSignature()).append("\n");
                 }
+                buffer.append(bufferConstructors);
             }
 
             buffer.append(border).append("\n");
             buffer.append("Class Imports: ").append("\n");
             if (classs.getImports() != null && !classs.getImports().getProjectImports().isEmpty()) {
                 if (!classs.getImports().getProjectImports().isEmpty()) {
+                    StringBuffer bufferProjectImports = new StringBuffer();
                     buffer.append(border).append("\n");
-                    buffer.append("\t").append("Project Imports: ").append("\n");
+                    bufferProjectImports.append("\t").append("Project Imports: ").append("\n");
                     classs.getImports().getProjectImports().forEach(imports -> {
-                        buffer.append("\t").append(imports).append("\n");
+                        bufferProjectImports.append("\t").append(imports).append("\n");
                     });
+                    buffer.append(bufferProjectImports);
                 }
+
+
                 if (!classs.getImports().getExternalImports().isEmpty()) {
+                    StringBuffer bufferExternalImports = new StringBuffer();
+
                     buffer.append(border).append("\n");
-                    buffer.append("\t").append("External Imports: ").append("\n");
+                    bufferExternalImports.append("\t").append("External Imports: ").append("\n");
                     classs.getImports().getExternalImports().forEach(imports -> {
-                        buffer.append("\t").append(imports).append("\n");
+                        bufferExternalImports.append("\t").append(imports).append("\n");
                     });
+                    buffer.append(bufferExternalImports);
                 }
             }
 
             if(classs.getStructureInterface() != null && !classs.getStructureInterface().equals("")){
+                StringBuffer bufferInterface = new StringBuffer();
                 buffer.append(border).append("\n");
-                buffer.append("Interface Structure: ").append("\n");
-                buffer.append("\t").append(classs.getStructureInterface()).append("\n");
+                bufferInterface.append("Interface Structure: ").append("\n");
+                bufferInterface.append("\t").append(classs.getStructureInterface()).append("\n");
+                buffer.append(bufferInterface);
             }
 
             if(classs.getStructureExtends() != null && !classs.getStructureExtends().equals("")) {
-                buffer.append(border).append("\n");
-                buffer.append("Interface Extends: ").append("\n");
-                buffer.append("\t").append(classs.getStructureExtends()).append("\n");
+                StringBuffer bufferInterfaceExtends = new StringBuffer();
+                bufferInterfaceExtends.append(border).append("\n");
+                bufferInterfaceExtends.append("Interface Extends: ").append("\n");
+                bufferInterfaceExtends.append("\t").append(classs.getStructureExtends()).append("\n");
+                buffer.append(bufferInterfaceExtends);
             }
 
             if(classs.getClassAnotations() != null && !classs.getClassAnotations().equals("")){
+                StringBuffer bufferAnotations = new StringBuffer();
                 buffer.append(border).append("\n");
-                buffer.append("Class Anotations: ").append("\n");
-                buffer.append("\t").append(classs.getClassAnotations()).append("\n");
+                bufferAnotations.append("Class Anotations: ").append("\n");
+                bufferAnotations.append("\t").append(classs.getClassAnotations()).append("\n");
+                buffer.append(bufferAnotations);
             }
 
             buffer.append(border).append("\n");
@@ -109,6 +126,26 @@ public interface IClassDetailBuilder extends IRepeatLogic {
         return buffer.toString();
     }
 
+
+//    String templete = ReadResourceFile();
+
+    default String ReadResourceFile (){
+            // Obtener el archivo como InputStream
+        String contenido ="";
+            try (InputStream inputStream = IClassDetailBuilder.class.getClassLoader().getResourceAsStream("template.html")) {
+
+                if (inputStream == null) {
+                    throw new RuntimeException("Archivo no encontrado: template.html");
+                }
+
+              contenido = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
+                System.out.println(contenido);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+return contenido;
+    }
 
 
 }

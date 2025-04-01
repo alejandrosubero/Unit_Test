@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Plantilla UML Clase</title>
     <style>
+        @page { size: A4; margin: 2cm; }
         .container{
             width: 700px;
             border: 2px solid black;
@@ -38,6 +39,10 @@
             font-weight: bold;
         }
 
+        .costructorElement{
+            margin-left: 10px;
+            padding-top: 2px;
+        }
         .uml-section {
             padding: 8px;
             text-align: start;
@@ -59,22 +64,27 @@
     <div class="uml-title">Detalle de la clase: @NombreClaseTitle@ </div>
     <div class="uml-attributes">
         Package: @paquetico@ <br>
+        Type Class: @typeclass:@ <br>
         Class type: @ClassType@ <br>
+        Class Signature Line:@classsignatureline@<br>
+        Class ClassPath: @classclasspath@
     </div>
-
+    <div class="uml-attributes">
+        Class Constructors:
+        @listConstructors@
+        <div class="costructorElement">
+            @constructors@
+        </div>
+    </div>
     <div class="uml-methods">
         <div class="uml-title-element">Class UML:</div>
         <div class="uml-class">
             <div class="uml-header">@NombreClase@</div>
             <div class="uml-attributes">
-
                 @Atributos@
-
             </div>
             <div class="uml-methods">
-
                 @Metodos@
-
             </div>
         </div>
     </div>
@@ -91,6 +101,16 @@
 
     <div class="uml-section">
         @Structure-Import@
+    </div>
+
+    <div class="uml-section">
+        Class Imports:
+        <div class="costructorElement">
+            @import@
+        </div>
+    </div>
+    <div class="uml-section">
+        @anotations@
     </div>
 
 </div>

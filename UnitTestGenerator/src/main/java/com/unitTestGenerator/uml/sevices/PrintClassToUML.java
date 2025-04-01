@@ -1,7 +1,10 @@
 package com.unitTestGenerator.uml.sevices;
 
+import com.unitTestGenerator.core.AppProjectStarted;
+import com.unitTestGenerator.ioc.ContextIOC;
 import com.unitTestGenerator.ioc.anotations.Component;
 import com.unitTestGenerator.pojos.*;
+import com.unitTestGenerator.uml.pojos.Element;
 import com.unitTestGenerator.util.IRepeatLogic;
 
 import java.util.ArrayList;
@@ -183,8 +186,8 @@ public class PrintClassToUML implements IRepeatLogic {
                 }
                 String methodSignature = metodo.getMethodSignature().replace(";","");
                 buffer.append("\"")
-               .append(uMLTemplate2(metodo.getAccessModifier(), methodSignature, metodo.getTipoRetorno()))
-               .append("\"");
+                        .append(uMLTemplate2(metodo.getAccessModifier(), methodSignature, metodo.getTipoRetorno()))
+                        .append("\"");
             }
         }
         buffer.append("], ");
@@ -287,7 +290,6 @@ public class PrintClassToUML implements IRepeatLogic {
         buffer.append("}");
         return buffer.toString();
     }
-
     private String formatLine(String content, int width) {
         int padding = width - content.length();
         return "| " + content + repeat(" ", padding) + " |\n";

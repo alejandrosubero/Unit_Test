@@ -3,13 +3,10 @@ package com.unitTestGenerator.analyzers.services;
 import com.unitTestGenerator.analyzers.services.interfaces.IClassDetailBuilder;
 import com.unitTestGenerator.analyzers.services.interfaces.IExtendsInInterfacesService;
 import com.unitTestGenerator.analyzers.services.interfaces.IProjectAnalizeService;
-import com.unitTestGenerator.ioc.ContextIOC;
 import com.unitTestGenerator.ioc.anotations.Component;
 import com.unitTestGenerator.ioc.anotations.Singleton;
-import com.unitTestGenerator.menus.AnalizerMenu;
 import com.unitTestGenerator.pojos.Project;
 import com.unitTestGenerator.printers.IPrintAnalizeImports;
-import com.unitTestGenerator.uml.sevices.PrintClassToUML;
 
 import java.util.Scanner;
 
@@ -42,8 +39,7 @@ public class AnalizerProjectService implements IPrintAnalizeImports, IExtendsInI
             project.getPrinterProject().setProjectUml(printListClassToUML(project));
             this.generateImportsMap(project);
             this.generateClassesDetail(project);
-            AnalizerMenu analizerMenu =  ContextIOC.getInstance().getClassInstance(AnalizerMenu.class);
-            analizerMenu.analizerMenuInitial(project);
+
 //            String projectToElement =  ContextIOC.getInstance().getClassInstance(PrintClassToUML.class).projectToElement(project);
 //            this.printProjectAnalize(project,isAnalisis);
         }
