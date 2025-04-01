@@ -26,7 +26,7 @@ public interface IClassDetailBuilder extends IRepeatLogic {
     }
 
 
-
+//TODO : SEPARAR DEL DETAIL Y DETAL HTML TEMPLATE, HAY ERRORES EN HTML QUE CONTINUAR REPARANDO
     default String buildClassDetail(Clase classs) {
 
         String templete = ReadResourceFile();
@@ -71,61 +71,116 @@ public interface IClassDetailBuilder extends IRepeatLogic {
             templete = templete.replace("@NombreClase@", classs.getNombre());
 
             PrintClassToUML printClassToUML =  ContextIOC.getInstance().getClassInstance(PrintClassToUML.class);
+            String atributos = printClassToUML.getAttributes(classs);
+            String metodos =  printClassToUML.getMethods(classs);
+            String relations = printClassToUML.getRelations(classs);
 
-//            @Atributos@
-            templete = templete.replace("@Atributos@", printClassToUML.getAttributes(classs));
-//            @Metodos@
-                    templete = templete.replace("@Metodos@", printClassToUML.getMethods(classs));
-//            @Relations@
-            templete = templete.replace("@Relations@", printClassToUML.getRelations(classs));
+           if( atributos != null && !atributos.equals("")){
+               String temp = atributos;
+               String [] partTemp = temp.split( "\n");
+               StringBuffer bufferAttributes = new StringBuffer();
+
+               for(String attribute: partTemp){
+                       String tempA =  "<div class=\"costructorElement\"> @aTemp@ </div>";
+                       tempA = tempA.replace("@aTemp@", attribute);
+                       bufferAttributes.append(tempA);
+               }
+               templete = templete.replace("@Atributos@", bufferAttributes.toString());
+           } else {
+               templete =  templete.replace("@Atributos@", "");
+           }
+
+            if( metodos != null && !metodos.equals("")){
+                String temp = metodos;
+                String [] partTemp = temp.split( "\n");
+//               "Methods: "
+                StringBuffer bufferAttributes = new StringBuffer();
+
+                for(String attribute: partTemp){
+                        String tempA =  "<div class=\"costructorElement\"> @aTemp@ </div>";
+                        tempA = tempA.replace("@aTemp@", attribute);
+                        bufferAttributes.append(tempA);
+                }
+                templete = templete.replace("@Metodos@", bufferAttributes.toString());
+            } else {
+                templete =  templete.replace("@Metodos@", "");
+            }
+
+//            templete = atributos != null && !atributos.equals("")?templete.replace("@Atributos@", printClassToUML.getAttributes(classs)):templete.replace("@Atributos@", "");
+//            templete = metodos != null && !metodos.equals("")?templete.replace("@Metodos@", printClassToUML.getMethods(classs)):templete.replace("@Metodos@", "");
+
+            ...
+            templete = relations != null && !relations.equals("")? templete.replace("@Relations@", printClassToUML.getRelations(classs)):  templete.replace("@Relations@", "");
 
 
             buffer.append(border).append("\n");
+            String line = "<div class=\"costructorElement\"> + @constructors@ </div>";
             if (classs.getConstructores() != null && !classs.getConstructores().isEmpty()) {
                 StringBuffer bufferConstructors = new StringBuffer();
                 bufferConstructors.append("Class Constructors: ").append("\n");
                 for (Constructor constructor : classs.getConstructores()) {
                     bufferConstructors.append("\t").append(constructor.getCostructorSignature()).append("\n");
                 }
-                templete = templete.replace("@constructors@",bufferConstructors.toString());
+                line = line.replace("@constructors@",bufferConstructors.toString());
+                templete = templete.replace("@listConstructors@",line);
+
                 buffer.append(bufferConstructors);
+            }else {
+                templete = templete.replace("@listConstructors@","");
             }
+
 
             buffer.append(border).append("\n");
             buffer.append("Class Imports: ").append("\n");
+
             if (classs.getImports() != null && !classs.getImports().getProjectImports().isEmpty()) {
+                StringBuffer importsTemplate = new StringBuffer();
                 if (!classs.getImports().getProjectImports().isEmpty()) {
-                    StringBuffer bufferProjectImports = new StringBuffer();
+                    StringBuffer bufferProjectImportsTemp = new StringBuffer();
                     buffer.append(border).append("\n");
-                    bufferProjectImports.append("\t").append("Project Imports: ").append("\n");
-                    classs.getImports().getProjectImports().forEach(imports -> {
-                        bufferProjectImports.append("\t").append(imports).append("\n");
-                    });
-                    templete = templete.replace("@@",bufferProjectImports.toString());
-                    buffer.append(bufferProjectImports);
+                    buffer.append("\t").append("Project Imports: ").append("\n");
+                    bufferProjectImportsTemp.append("\t").append("Project Imports: ").append("\n");
+
+                    for ( String imports : classs.getImports().getProjectImports()){
+                        buffer.append("\t").append(imports).append("\n");
+                        String externalImport =  "<div class=\"costructorElement\"> @import@ </div>";
+                        externalImport = externalImport.replace("@import@",imports);
+                        bufferProjectImportsTemp.append(externalImport).append("\n");
+                    }
+                    importsTemplate.append(bufferProjectImportsTemp);
                 }
 
 
                 if (!classs.getImports().getExternalImports().isEmpty()) {
-                    StringBuffer bufferExternalImports = new StringBuffer();
-
+                    StringBuffer bufferExternalImportsTemp = new StringBuffer();
                     buffer.append(border).append("\n");
-                    bufferExternalImports.append("\t").append("External Imports: ").append("\n");
-                    classs.getImports().getExternalImports().forEach(imports -> {
-                        bufferExternalImports.append("\t").append(imports).append("\n");
-                    });
-                    templete = templete.replace("@@",);
-                    buffer.append(bufferExternalImports);
+                    buffer.append("\t").append("External Imports: ").append("\n");
+                    bufferExternalImportsTemp.append("\t").append("External Imports: ").append("\n");
+
+                    for ( String imports : classs.getImports().getExternalImports()){
+                        buffer.append("\t").append(imports).append("\n");
+                        String externalImport =  "<div class=\"costructorElement\"> @import@ </div>";
+                         externalImport = externalImport.replace("@import@",imports);
+                        bufferExternalImportsTemp.append(externalImport).append("\n");
+                    }
+                    importsTemplate.append(bufferExternalImportsTemp);
                 }
+                templete = templete.replace("@ClassImports@",importsTemplate);
+            }else{
+                templete = templete.replace("@ClassImports@","");
             }
+
+
 
             if(classs.getStructureInterface() != null && !classs.getStructureInterface().equals("")){
                 StringBuffer bufferInterface = new StringBuffer();
                 buffer.append(border).append("\n");
                 bufferInterface.append("Interface Structure: ").append("\n");
                 bufferInterface.append("\t").append(classs.getStructureInterface()).append("\n");
-                templete = templete.replace("@@",);
+                templete = templete.replace("@Structure-Import@",classs.getStructureInterface());
                 buffer.append(bufferInterface);
+            }else{
+                templete = templete.replace("@Structure-Import@","");
             }
 
             if(classs.getStructureExtends() != null && !classs.getStructureExtends().equals("")) {
@@ -133,8 +188,10 @@ public interface IClassDetailBuilder extends IRepeatLogic {
                 bufferInterfaceExtends.append(border).append("\n");
                 bufferInterfaceExtends.append("Interface Extends: ").append("\n");
                 bufferInterfaceExtends.append("\t").append(classs.getStructureExtends()).append("\n");
-                templete = templete.replace("@@",);
+                templete = templete.replace("@Structure-Extends@",classs.getStructureExtends());
                 buffer.append(bufferInterfaceExtends);
+            }else {
+                templete = templete.replace("@Structure-Extends@","");
             }
 
             if(classs.getClassAnotations() != null && !classs.getClassAnotations().equals("")){
@@ -142,10 +199,13 @@ public interface IClassDetailBuilder extends IRepeatLogic {
                 buffer.append(border).append("\n");
                 bufferAnotations.append("Class Anotations: ").append("\n");
                 bufferAnotations.append("\t").append(classs.getClassAnotations()).append("\n");
-                templete = templete.replace("@@",);
+                templete = templete.replace("@anotations@",classs.getClassAnotations());
                 buffer.append(bufferAnotations);
+            }else {
+                templete = templete.replace("@anotations@","");
             }
 
+            classs.setClassTemplate(templete);
             buffer.append(border).append("\n");
             buffer.append(borderClass).append("\n");
         }

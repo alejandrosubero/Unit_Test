@@ -38,7 +38,6 @@ public class PrintClassToUML implements IRepeatLogic {
                 buffer.append(uMLTemplate(variable.getAccessModifier(), variable.getNombre(), variable.getTipo())).append("\n");
             }
         }
-
         return buffer.toString();
     }
 
