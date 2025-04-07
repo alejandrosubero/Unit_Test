@@ -3,6 +3,8 @@ package com.unitTestGenerator.analyzers;
 import com.unitTestGenerator.analyzers.services.AnalyzeClassServiceService;
 import com.unitTestGenerator.analyzers.services.ImportAnalizeService;
 import com.unitTestGenerator.analyzers.services.interfaces.ITodoDetectorService;
+import com.unitTestGenerator.builders.TemplateBuilder;
+import com.unitTestGenerator.ioc.ContextIOC;
 import com.unitTestGenerator.ioc.anotations.Component;
 import com.unitTestGenerator.ioc.anotations.Inyect;
 import com.unitTestGenerator.ioc.anotations.Singleton;
@@ -10,6 +12,7 @@ import com.unitTestGenerator.pojos.Clase;
 import com.unitTestGenerator.pojos.Project;
 import com.unitTestGenerator.printers.DirectoryTreeBuilder;
 import com.unitTestGenerator.printers.IPrintProjectStructure;
+import com.unitTestGenerator.uml.sevices.PrintClassToUML;
 
 import java.io.File;
 import java.util.*;
@@ -67,7 +70,7 @@ public class AnalizadorProyecto implements ITodoDetectorService, IPrintProjectSt
                               clase.setTodoNoteInClass(this.getTodo(clase.getRawClass()));
                               this.treeBuilder.addPath(clase.getClassPath());
                               this.importAnalizeService.importAnalize(clase);
-
+                              ContextIOC.getInstance().getClassInstance(TemplateBuilder.class).buildClassDetailHtml(clase);
                           }
                           this.setContainers(clase, classList, mapClass, project);
                       }

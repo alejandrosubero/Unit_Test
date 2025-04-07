@@ -18,6 +18,7 @@ public interface IProjectAnalizeService {
             Project project = new Project(pathProject);
             List<Clase> clases = ContextIOC.getInstance().getClassInstance(AnalizadorProyecto.class).analizarProyecto(pathProject, project);
             if (clases != null) {
+                ContextIOC.getInstance().getClassInstance(PrintClassToUML.class);
                 project.setClaseList(clases);
             }
             return project;

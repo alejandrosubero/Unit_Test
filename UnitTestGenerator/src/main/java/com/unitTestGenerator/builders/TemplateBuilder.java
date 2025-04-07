@@ -18,6 +18,70 @@ public class TemplateBuilder {
     }
 
 
+    public void buildClassDetailHtml(Clase classs) {
+
+        String templete = ReadResourceFile();
+
+        if (classs != null) {
+            templete = this.getStructureBase(templete, classs);
+            templete = this.umlData(templete, classs);
+            templete = this.costructorElement(templete, classs);
+            templete = this.getImports(templete, classs);
+            templete = this.getStructureInterface(templete, classs);
+            templete = this.getStructureExtends(templete, classs);
+            templete = this.getClassAnotations(templete, classs);
+            classs.setClassTemplate(templete);
+        }
+    }
+
+
+    private String relationHtml(String retation){
+        StringBuffer relationBuffer = new StringBuffer();
+        String temp = retation;
+        String[] partTemp = temp.split("\n");
+
+        for(String attribute: partTemp){
+            String tempA =  "<div class=\"Element\"> @aTemp@ </div>";
+            tempA = tempA.replace("@aTemp@", attribute);
+            relationBuffer.append(tempA);
+        }
+        return relationBuffer.toString();
+    }
+
+    private String ReadResourceFile (){
+        // Obtener el archivo como InputStream
+        String contenido ="";
+        try (InputStream inputStream = IClassDetailBuilder.class.getClassLoader().getResourceAsStream("template.html")) {
+
+            if (inputStream == null) {
+                throw new RuntimeException("Archivo no encontrado: template.html");
+            }
+            contenido = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return contenido;
+    }
+
+    private String getStructureBase( String templete, Clase classs){
+        templete = templete.replace("@NombreClaseTitle@", classs.getNombre());
+        templete = templete.replace("@paquetico@", classs.getPaquete());
+        templete = templete.replace("@ClassType@", classs.getTypeClass());
+        String signature = classs.getClassSignatureLine().replace("{","");
+        templete = templete.replace("@classsignatureline@", signature);
+        templete = templete.replace("@classclasspath@", classs.getClassPath());
+        templete = templete.replace("@NombreClase@", classs.getNombre());
+        return templete;
+    }
+
+    private String umlData( String templete, Clase classs){
+        PrintClassToUML printClassToUML =  ContextIOC.getInstance().getClassInstance(PrintClassToUML.class);
+        templete = getAttributesUml(printClassToUML, templete,classs);
+        templete = getMethodsUml(printClassToUML, templete,classs);
+        templete = getClassRelationsUml(printClassToUML, templete,classs);
+        return templete;
+    }
+
     private String getAttributesUml( PrintClassToUML printClassToUML, String templete, Clase classs){
 
         String atributos = printClassToUML.getAttributes(classs);
@@ -106,14 +170,6 @@ public class TemplateBuilder {
         return templete;
     }
 
-    private String umlData( String templete, Clase classs){
-        PrintClassToUML printClassToUML =  ContextIOC.getInstance().getClassInstance(PrintClassToUML.class);
-        templete = getAttributesUml(printClassToUML, templete,classs);
-        templete = getMethodsUml(printClassToUML, templete,classs);
-        templete = getClassRelationsUml(printClassToUML, templete,classs);
-        return templete;
-    }
-
     private String costructorElement( String templete, Clase classs){
         String line = "<div class=\"Element\"> + @constructors@ </div>";
         if (classs.getConstructores() != null && !classs.getConstructores().isEmpty()) {
@@ -165,94 +221,40 @@ public class TemplateBuilder {
         return templete;
     }
 
-
-
-
-    separar en varias clases ...
-    public void buildClassDetailHtml(Clase classs) {
-
-        String templete = ReadResourceFile();
-
-        if (classs != null) {
-
-            templete = templete.replace("@NombreClaseTitle@", classs.getNombre());
-            templete = templete.replace("@paquetico@", classs.getPaquete());
-            templete = templete.replace("@ClassType@", classs.getTypeClass());
-            String signature = classs.getClassSignatureLine().replace("{","");
-            templete = templete.replace("@classsignatureline@", signature);
-            templete = templete.replace("@classclasspath@", classs.getClassPath());
-            templete = templete.replace("@NombreClase@", classs.getNombre());
-
-            templete = this.umlData(templete, classs);
-            templete = this.costructorElement(templete, classs);
-            templete = this.getImports(templete, classs);
-
-            
-
-            if(classs.getStructureInterface() != null && !classs.getStructureInterface().equals("")){
-                StringBuffer bufferInterface = new StringBuffer();
-                bufferInterface.append("Interface Structure: ").append("\n");
-                bufferInterface.append("\t").append(classs.getStructureInterface()).append("\n");
-                templete = templete.replace("@Structure-Import@",bufferInterface.toString());
-            }else{
-                templete = templete.replace("@Structure-Import@","");
-            }
-
-
-            if(classs.getStructureExtends() != null && !classs.getStructureExtends().equals("")) {
-                StringBuffer bufferInterfaceExtends = new StringBuffer();
-                bufferInterfaceExtends.append("Interface Extends: ").append("\n");
-                bufferInterfaceExtends.append("\t").append(classs.getStructureExtends()).append("\n");
-                templete = templete.replace("@Structure-Extends@",bufferInterfaceExtends.toString());
-            }else {
-                templete = templete.replace("@Structure-Extends@","");
-            }
-
-
-            if(classs.getClassAnotations() != null && !classs.getClassAnotations().equals("")){
-                StringBuffer bufferAnotations = new StringBuffer();
-                bufferAnotations.append("Class Anotations: ").append("\n");
-                bufferAnotations.append("\t").append(classs.getClassAnotations()).append("\n");
-                templete = templete.replace("@anotations@",bufferAnotations.toString());
-            }else {
-                templete = templete.replace("@anotations@","");
-            }
-
-            classs.setClassTemplate(templete);
+    private String getStructureInterface( String templete, Clase classs){
+        if(classs.getStructureInterface() != null && !classs.getStructureInterface().equals("")){
+            StringBuffer bufferInterface = new StringBuffer();
+            bufferInterface.append("Interface Structure: ").append("\n");
+            bufferInterface.append("\t").append(classs.getStructureInterface()).append("\n");
+            templete = templete.replace("@Structure-Import@",bufferInterface.toString());
+        }else{
+            templete = templete.replace("@Structure-Import@","");
         }
+        return templete;
     }
 
-
-
-    private String relationHtml(String retation){
-        StringBuffer relationBuffer = new StringBuffer();
-        String temp = retation;
-        String[] partTemp = temp.split("\n");
-
-        for(String attribute: partTemp){
-            String tempA =  "<div class=\"Element\"> @aTemp@ </div>";
-            tempA = tempA.replace("@aTemp@", attribute);
-            relationBuffer.append(tempA);
+    private String getStructureExtends( String templete, Clase classs){
+        if(classs.getStructureExtends() != null && !classs.getStructureExtends().equals("")) {
+            StringBuffer bufferInterfaceExtends = new StringBuffer();
+            bufferInterfaceExtends.append("Interface Extends: ").append("\n");
+            bufferInterfaceExtends.append("\t").append(classs.getStructureExtends()).append("\n");
+            templete = templete.replace("@Structure-Extends@",bufferInterfaceExtends.toString());
+        }else {
+            templete = templete.replace("@Structure-Extends@","");
         }
-        return relationBuffer.toString();
+        return templete;
     }
 
-    private String ReadResourceFile (){
-        // Obtener el archivo como InputStream
-        String contenido ="";
-        try (InputStream inputStream = IClassDetailBuilder.class.getClassLoader().getResourceAsStream("template.html")) {
-
-            if (inputStream == null) {
-                throw new RuntimeException("Archivo no encontrado: template.html");
-            }
-
-            contenido = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
-            System.out.println(contenido);
-
-        } catch (Exception e) {
-            e.printStackTrace();
+    private String getClassAnotations( String templete, Clase classs){
+        if(classs.getClassAnotations() != null && !classs.getClassAnotations().equals("")){
+            StringBuffer bufferAnotations = new StringBuffer();
+            bufferAnotations.append("Class Anotations: ").append("\n");
+            bufferAnotations.append("\t").append(classs.getClassAnotations()).append("\n");
+            templete = templete.replace("@anotations@",bufferAnotations.toString());
+        }else {
+            templete = templete.replace("@anotations@","");
         }
-        return contenido;
+        return templete;
     }
 
 }
