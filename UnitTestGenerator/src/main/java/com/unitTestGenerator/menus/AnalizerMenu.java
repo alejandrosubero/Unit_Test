@@ -2,6 +2,7 @@ package com.unitTestGenerator.menus;
 
 import com.unitTestGenerator.analyzers.services.AnalizerProjectService;
 import com.unitTestGenerator.analyzers.services.interfaces.IAnalizerProjectServiceManager;
+import com.unitTestGenerator.builders.PDFGenerator;
 import com.unitTestGenerator.core.AppProjectStarted;
 import com.unitTestGenerator.core.ProjectHolder;
 import com.unitTestGenerator.ioc.ContextIOC;
@@ -9,6 +10,7 @@ import com.unitTestGenerator.ioc.anotations.Component;
 import com.unitTestGenerator.ioc.anotations.Singleton;
 import com.unitTestGenerator.pojos.Clase;
 import com.unitTestGenerator.pojos.Project;
+import com.unitTestGenerator.printers.IPrintService;
 import com.unitTestGenerator.printers.PrintClassAnalyzers;
 import com.unitTestGenerator.printers.PrintProjectAnalyzers;
 import com.unitTestGenerator.util.IBaseModel;
@@ -19,19 +21,19 @@ import java.util.Scanner;
 
 @Component
 @Singleton
-public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel, PrintProjectAnalyzers {
+public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel, PrintProjectAnalyzers, IPrintService {
 
     private ProjectHolder projectHolder;
     private AnalizerProjectService analizerProjectService;
     private PrintClassAnalyzers printClassAnalyzers;
+    private PDFGenerator pdfGenerator;
 
-    public AnalizerMenu(ProjectHolder projectHolder, AnalizerProjectService analizerProjectService, PrintClassAnalyzers printClassAnalyzers) {
+    public AnalizerMenu(ProjectHolder projectHolder, AnalizerProjectService analizerProjectService, PrintClassAnalyzers printClassAnalyzers, PDFGenerator pdfGenerator) {
         this.projectHolder = projectHolder;
         this.analizerProjectService = analizerProjectService;
         this.printClassAnalyzers = printClassAnalyzers;
+        this.pdfGenerator = pdfGenerator;
     }
-
-
 
     public void analizerMenu(){
         this.printColummString("Analyze project Module",
@@ -49,6 +51,7 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
             case 1:
                 Project projectAnalized  = analizerProjectService.analizerProject(scanner, true, project);
                 this.projectHolder.setProject(projectAnalized);
+                this.analizerMenuInitial(projectAnalized);
                 break;
             case 2:
                 Project projectsave = ContextIOC.getInstance().getClassInstance(SavedProjectMenu.class).started(scanner);
@@ -106,7 +109,7 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
                 subMenu2( project,  scanner);
                 break;
             case 6:
-               // pdf menu
+               this.generateFileMenu(project, scanner);
                 break;
             case 7:
                 this.analizerMenuStarted( project,scanner);
@@ -120,7 +123,7 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
         }
     }
 
-    public void subMenu2V1000(){
+    public void subMenu2Txt(){
         this.printColummString(
                 "Choose an option:",
                 "1. Exit",
@@ -129,7 +132,7 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
     }
 
     public void subMenu2(Project project, Scanner scanner) {
-        this.subMenu2V1000();
+        this.subMenu2Txt();
         int opcion = scanner.nextInt();
         switch (opcion) {
             case 1:
@@ -147,7 +150,7 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
         }
     }
 
-    public void subMenu1V1000(){
+    public void subMenu1Txt(){
         this.printColummString(
                 "Choose an option:",
                 "1. Print  methods of one class",
@@ -156,7 +159,7 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
     }
 
     public void subMenu1(Project project, Scanner scanner) {
-        this.subMenu1V1000();
+        this.subMenu1Txt();
         int opcion = scanner.nextInt();
         switch (opcion) {
             case 1:
@@ -187,8 +190,7 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
     }
 
     private void goToMainMenu(){
-        AppProjectStarted appProjectStarted =  ContextIOC.getInstance().getClassInstance(AppProjectStarted.class);
-        appProjectStarted.start();
+        ContextIOC.getInstance().getClassInstance(AppProjectStarted.class).start();
     }
 
 
@@ -212,7 +214,7 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
     }
 
 
-    public void generateFileMenu1(){
+    public void generateFileMenuTxt(){
         this.printColummString(
                 "Generate File Menu: ",
                 "Choose an option:",
@@ -224,19 +226,19 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
 
 
     public void generateFileMenu(Project project, Scanner scanner) {
-        this.generateFileMenu1();
+        this.generateFileMenuTxt();
         int opcion = scanner.nextInt();
         switch (opcion) {
             case 1:
-               // cass report
+                this.reportClass(scanner, project);
                 subMenu2( project,  scanner);
                 break;
             case 2:
-//                Generate Protect Report
+                this.pdfGenerator.converterProjectOrClasInpdf(project,null);
+                subMenu2( project,  scanner);
                 break;
             case 3:
                 this.analizerMenuInitial(project);
-//                this.goToMainMenu();
                 break;
             default:
                 System.out.println("Invalid option");
@@ -246,13 +248,12 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
 
 
     private void reportClass(Scanner scanner, Project project) {
-        System.out.println("Enter the name of the Class");
+       this.service().print_BLUE("Enter the name of the Class");
         String response = scanner.next().toLowerCase();
         if(response != null && !response.equals("")){
             Clase classs = project.getClass(response);
             if(classs != null && classs.getClassDetail() != null && !classs.getClassDetail().isEmpty()){
-//                .......
-
+                this.pdfGenerator.converterProjectOrClasInpdf(null,classs);
             }
         }
     }

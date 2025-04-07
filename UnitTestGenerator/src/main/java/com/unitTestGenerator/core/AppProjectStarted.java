@@ -3,6 +3,7 @@ package com.unitTestGenerator.core;
 
 import com.unitTestGenerator.analyzers.services.AnalizerProjectService;
 import com.unitTestGenerator.analyzers.services.interfaces.IAnalizerProjectServiceManager;
+import com.unitTestGenerator.interfaces.IPorjectName;
 import com.unitTestGenerator.ioc.ContextIOC;
 import com.unitTestGenerator.ioc.anotations.Component;
 import com.unitTestGenerator.ioc.anotations.Singleton;
@@ -18,7 +19,7 @@ import java.util.Scanner;
 
 @Component
 @Singleton
-public class AppProjectStarted implements  MainMenue, IInternalTest, IAnalizerProjectServiceManager {
+public class AppProjectStarted implements IPorjectName, MainMenue, IInternalTest, IAnalizerProjectServiceManager {
 
     private AnalizerProjectService analizerProjectService;
     private GeneradorPruebasUnitarias generadorPruebasUnitarias;
@@ -29,6 +30,7 @@ public class AppProjectStarted implements  MainMenue, IInternalTest, IAnalizerPr
         this.projectHolder = projectHolder;
         this.generadorPruebasUnitarias = generadorPruebasUnitarias;
         this.project = this.projectHolder.getProject();
+        this.project.setName(this.getArtifatOrFileName());
         if(!this.project.getClaseList().isEmpty() && this.project.getClaseList().get(0) != null && this.project.getClaseList().get(0).getNombre() == null){
             this.project.getClaseList().remove(0);
         }
@@ -48,6 +50,7 @@ public class AppProjectStarted implements  MainMenue, IInternalTest, IAnalizerPr
                 case 1:
                     this.projectHolderLogic( scanner, true);
 //                    continuar = this.askContinue(scanner);
+                        continuar = false;
                     break;
                 case 2:
                     generateUnitsTest(scanner);
@@ -74,13 +77,12 @@ public class AppProjectStarted implements  MainMenue, IInternalTest, IAnalizerPr
         Project projectAnalized = null;
         if(isAnalisis){
             AnalizerMenu analizerMenu =  ContextIOC.getInstance().getClassInstance(AnalizerMenu.class);
-            analizerMenu.analizerMenuStarted(project, new Scanner(System.in));
+            analizerMenu.analizerMenuStarted(this.project, new Scanner(System.in));
             projectAnalized = this.projectHolder.getProject();
         }else {
             projectAnalized = analizerProjectService.analizerProject(scanner, isAnalisis, this.project);
             this.projectHolder.setProject(projectAnalized);
         }
-
         this.project = projectAnalized;
     }
 
