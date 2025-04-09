@@ -1,0 +1,662 @@
+package com.diagram;
+
+import javafx.animation.AnimationTimer;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.util.Pair;
+
+import java.io.IOException;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
+
+
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
+import javafx.scene.layout.Pane;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+
+public class AppController {
+
+    @FXML
+    private Pane container;
+
+    @FXML
+    private Canvas linesCanvas;
+
+    @FXML
+    private Button addElementBtn;
+
+    private ObservableList<DiagramElement> elements = FXCollections.observableArrayList();
+    private DiagramElement selectedElement;
+    private double dragOffsetX;
+    private double dragOffsetY;
+
+    private final BooleanProperty isDragging = new SimpleBooleanProperty(false);
+
+    @FXML
+    public void initialize2() {
+        // Establecer el color de fondo del container a negro
+        container.setStyle("-fx-background-color: black;");
+
+        // Inicializar elementos predefinidos (puedes ajustar la cantidad para pruebas)
+        for (int i = 0; i < 50; i++) {
+            createAndAddElement(100 + i * 50, 100, "Elemento " + i, String.valueOf(i), Arrays.asList("var"), Arrays.asList("method"), Arrays.asList(), new ArrayList<>());
+        }
+        resolveConnections();
+        elements.forEach(this::addDraggableElement);
+        container.widthProperty().addListener((obs, oldVal, newVal) -> redrawConnections());
+        container.heightProperty().addListener((obs, oldVal, newVal) -> redrawConnections());
+
+        // Iniciar un AnimationTimer para redibujar las conexiones solo cuando no se está arrastrando activamente
+        AnimationTimer redrawTimer = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                if (!isDragging.get()) {
+                    redrawConnections();
+                }
+            }
+        };
+        redrawTimer.start();
+    }
+
+
+    @FXML
+    public void initialize1() {
+        // Establecer el color de fondo del container a negro
+        container.setStyle("-fx-background-color: black;");
+
+        // Inicializar elementos predefinidos con sus relaciones
+        createAndAddElement(100, 100, "Inicio", "A", Arrays.asList("var1", "var2"), Arrays.asList("met1"), Arrays.asList("Proceso", "Fin"),
+                Arrays.asList(new ElementConnection(null, false), new ElementConnection(null, true), new ElementConnection(null, true)));
+        createAndAddElement(250, 100, "Proceso", "B", Arrays.asList("data", "count"), Arrays.asList("process", "validate"), Arrays.asList("Decisión", "Fin"),
+                Arrays.asList(new ElementConnection(null, false), new ElementConnection(null, false)));
+        createAndAddElement(400, 100, "Decisión", "C", Arrays.asList("flag"), Arrays.asList("checkCondition", "method1()", "method2()"), Arrays.asList("Proceso", "Fin"),
+                Arrays.asList(new ElementConnection(null, false), new ElementConnection(null, true)));
+
+        resolveConnections(); // Llamar a resolveConnections para establecer los objetivos de las conexiones
+
+        elements.forEach(this::addDraggableElement);
+        container.widthProperty().addListener((obs, oldVal, newVal) -> redrawConnections());
+        container.heightProperty().addListener((obs, oldVal, newVal) -> redrawConnections());
+
+        // Iniciar un AnimationTimer para redibujar las conexiones solo cuando no se está arrastrando activamente
+        AnimationTimer redrawTimer = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                if (!isDragging.get()) {
+                    redrawConnections();
+                }
+            }
+        };
+        redrawTimer.start();
+    }
+
+
+    @FXML
+    public void initialize() {
+        // Establecer el color de fondo del container a negro
+        container.setStyle("-fx-background-color: black;");
+
+        // Inicializar elementos predefinidos con sus relaciones
+        createAndAddElement(100, 100, "Inicio", "A", Arrays.asList("var1", "var2"), Arrays.asList("met1"), Arrays.asList("Proceso", "Fin"),
+                Arrays.asList(new ElementConnection(null, false), new ElementConnection(null, true), new ElementConnection(null, true)));
+        createAndAddElement(250, 100, "Proceso", "B", Arrays.asList("data", "count"), Arrays.asList("process", "validate"), Arrays.asList("Decisión", "Fin"),
+                Arrays.asList(new ElementConnection(null, false), new ElementConnection(null, false)));
+        createAndAddElement(400, 100, "Decisión", "C", Arrays.asList("flag"), Arrays.asList("checkCondition", "method1()", "method2()"), Arrays.asList("Proceso", "Fin"),
+                Arrays.asList(new ElementConnection(null, false), new ElementConnection(null, true)));
+
+        resolveConnections(); // Llamar a resolveConnections para establecer los objetivos de las conexiones
+
+        elements.forEach(this::addDraggableElement);
+        container.widthProperty().addListener((obs, oldVal, newVal) -> redrawConnections());
+        container.heightProperty().addListener((obs, oldVal, newVal) -> redrawConnections());
+        redrawConnections();
+
+    }
+
+
+    private void createAndAddElement(double x, double y, String name, String value, List<String> variables, List<String> methods, List<String> relations, List<ElementConnection> connectionsData) {
+        DiagramElement newElement = new DiagramElement(name, value, variables, methods, relations, x, y);
+        elements.add(newElement);
+        // Las conexiones se resuelven en resolveConnections() después de que todos los elementos son creados
+        for (int i = 0; i < Math.min(relations.size(), connectionsData.size()); i++) {
+            newElement.getConnections().add(new ElementConnection(null, false)); // Inicialmente sin objetivo
+        }
+    }
+
+    private void resolveConnections() {
+        for (DiagramElement element : elements) {
+            for (int i = 0; i < element.getConnections().size(); i++) {
+                if (i < element.getRelations().size()) {
+                    String targetName = element.getRelations().get(i);
+                    DiagramElement targetElement = elements.stream().filter(e -> e.getName().equals(targetName)).findFirst().orElse(null);
+                    element.getConnections().get(i).setTarget(targetElement);
+                }
+            }
+        }
+    }
+
+    public ObservableList<DiagramElement> getElements() {
+        return elements;
+    }
+
+    @FXML
+    private void onAddElementButtonClick() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("new_element_dialog.fxml"));
+            Parent root = loader.load();
+            NewElementDialog controller = loader.getController();
+            controller.setAppController(this);
+
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Nuevo Elemento");
+            dialogStage.initModality(Modality.APPLICATION_MODAL);
+            dialogStage.setScene(new Scene(root));
+            dialogStage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void addElement(String name, String value, List<String> variables, List<String> methods, List<String> relations, List<ElementConnectionData> connectionsDataList, double x, double y) {
+        DiagramElement newElement = new DiagramElement(name, value, variables, methods, relations, x, y);
+        for (ElementConnectionData data : connectionsDataList) {
+            DiagramElement target = elements.stream().filter(e -> e.getName().equals(data.getConnection())).findFirst().orElse(null);
+            if (target != null) {
+                newElement.getConnections().add(new ElementConnection(target, data.isMove()));
+            }
+        }
+        elements.add(newElement);
+        addDraggableElement(newElement);
+        redrawConnections();
+    }
+
+    private void showEditDialog(DiagramElement elementToEdit) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("new_element_dialog.fxml"));
+            Parent root = loader.load();
+            NewElementDialog controller = loader.getController();
+            controller.setAppController(this);
+            controller.setElementToEdit(elementToEdit);
+            controller.populateFields(elementToEdit);
+
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Editar Elemento");
+            dialogStage.initModality(Modality.APPLICATION_MODAL);
+            dialogStage.setScene(new Scene(root));
+            dialogStage.showAndWait();
+            redrawConnections();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateElement(DiagramElement elementToUpdate, String name, String value, List<String> variables, List<String> methods, List<String> relations, List<ElementConnectionData> connectionsDataList) {
+        elementToUpdate.setName(name);
+        elementToUpdate.setValue(value);
+        elementToUpdate.getVariables().setAll(variables);
+        elementToUpdate.getMethods().setAll(methods);
+        elementToUpdate.getRelations().setAll(relations);
+        elementToUpdate.getConnections().clear();
+        for (ElementConnectionData data : connectionsDataList) {
+            DiagramElement target = elements.stream().filter(e -> e.getName().equals(data.getConnection())).findFirst().orElse(null);
+            if (target != null) {
+                elementToUpdate.getConnections().add(new ElementConnection(target, data.isMove()));
+            }
+        }
+        container.getChildren().stream()
+                .filter(node -> node instanceof Pane && ((Pane) node).layoutXProperty().isEqualTo(elementToUpdate.xProperty()).get() && ((Pane) node).layoutYProperty().isEqualTo(elementToUpdate.yProperty()).get())
+                .findFirst()
+                .ifPresent(node -> {
+                    Pane elementPane = (Pane) node;
+                    ((javafx.scene.control.Label) elementPane.getChildren().get(0)).setText(elementToUpdate.getName());
+                    ((javafx.scene.control.Label) elementPane.getChildren().get(1)).setText(elementToUpdate.getValue() != null ? "value: " + elementToUpdate.getValue() : "");
+                });
+        redrawConnections();
+    }
+
+    private void addDraggableElement1(DiagramElement element) {
+        Pane elementPane = new Pane();
+        elementPane.setStyle("-fx-background-color: white; -fx-border-color: black; -fx-padding: 10px; -fx-text-align: center;");
+        elementPane.setPrefWidth(120);
+        elementPane.setPrefHeight(80);
+
+        javafx.scene.control.Label nameLabel = new javafx.scene.control.Label(element.getName());
+        javafx.scene.control.Label valueLabel = new javafx.scene.control.Label(element.getValue() != null ? "value: " + element.getValue() : "");
+        valueLabel.setLayoutY(20);
+
+        elementPane.getChildren().addAll(nameLabel, valueLabel);
+        elementPane.layoutXProperty().bind(element.xProperty());
+        elementPane.layoutYProperty().bind(element.yProperty());
+        elementPane.setCursor(javafx.scene.Cursor.HAND);
+
+        final AtomicReference<Double> mousePressX = new AtomicReference<>();
+        final AtomicReference<Double> mousePressY = new AtomicReference<>();
+
+        elementPane.setOnMousePressed(event -> {
+            selectedElement = element;
+            dragOffsetX = event.getSceneX() - element.getX();
+            dragOffsetY = event.getSceneY() - element.getY();
+            mousePressX.set(event.getSceneX());
+            mousePressY.set(event.getSceneY());
+            isDragging.set(true); // Indicar que se está arrastrando
+        });
+
+        elementPane.setOnMouseDragged(event -> {
+            if (selectedElement == element) {
+                element.setX(event.getSceneX() - dragOffsetX);
+                element.setY(event.getSceneY() - dragOffsetY);
+                // No redibujar las conexiones aquí durante el arrastre intenso
+            }
+        });
+
+        elementPane.setOnMouseReleased(event -> {
+            if (selectedElement == element) {
+                double deltaX = Math.abs(event.getSceneX() - mousePressX.get());
+                double deltaY = Math.abs(event.getSceneY() - mousePressY.get());
+                double clickThreshold = 5.0;
+
+                if (deltaX < clickThreshold && deltaY < clickThreshold) {
+                    showEditDialog(element);
+                }
+                selectedElement = null;
+                isDragging.set(false); // Indicar que se ha terminado de arrastrar
+                redrawConnections(); // Redibujar las conexiones al final del arrastre
+            }
+        });
+
+        container.getChildren().add(elementPane);
+    }
+
+    private void addDraggableElement2(DiagramElement element) {
+        Pane elementPane = new Pane();
+        elementPane.setStyle("-fx-background-color: white; -fx-border-color: black; -fx-padding: 10px; -fx-text-align: center;");
+        elementPane.setPrefWidth(120);
+        elementPane.setPrefHeight(80);
+
+        javafx.scene.control.Label nameLabel = new javafx.scene.control.Label(element.getName());
+        javafx.scene.control.Label valueLabel = new javafx.scene.control.Label(element.getValue() != null ? "value: " + element.getValue() : "");
+        valueLabel.setLayoutY(20);
+
+        elementPane.getChildren().addAll(nameLabel, valueLabel);
+        elementPane.layoutXProperty().bind(element.xProperty());
+        elementPane.layoutYProperty().bind(element.yProperty());
+        elementPane.setCursor(javafx.scene.Cursor.HAND);
+
+        final AtomicReference<Double> mousePressX = new AtomicReference<>();
+        final AtomicReference<Double> mousePressY = new AtomicReference<>();
+
+        elementPane.setOnMousePressed(event -> {
+            selectedElement = element;
+            dragOffsetX = event.getSceneX() - element.getX();
+            dragOffsetY = event.getSceneY() - element.getY();
+            mousePressX.set(event.getSceneX());
+            mousePressY.set(event.getSceneY());
+        });
+
+        elementPane.setOnMouseDragged(event -> {
+            if (selectedElement == element) {
+                element.setX(event.getSceneX() - dragOffsetX);
+                element.setY(event.getSceneY() - dragOffsetY);
+                redrawConnections(); // Redibujar las conexiones en cada arrastre
+            }
+        });
+
+        elementPane.setOnMouseReleased(event -> {
+            if (selectedElement == element) {
+                double deltaX = Math.abs(event.getSceneX() - mousePressX.get());
+                double deltaY = Math.abs(event.getSceneY() - mousePressY.get());
+                double clickThreshold = 5.0;
+
+                if (deltaX < clickThreshold && deltaY < clickThreshold) {
+                    showEditDialog(element);
+                }
+                selectedElement = null;
+            }
+        });
+
+        container.getChildren().add(elementPane);
+    }
+
+    private void addDraggableElement(DiagramElement element) {
+        Pane elementPane = new Pane();
+        elementPane.setStyle("-fx-background-color: white; -fx-border-color: black; -fx-padding: 10px; -fx-text-align: center;");
+        elementPane.setPrefWidth(120);
+        elementPane.setPrefHeight(80);
+
+        javafx.scene.control.Label nameLabel = new javafx.scene.control.Label(element.getName());
+        javafx.scene.control.Label valueLabel = new javafx.scene.control.Label(element.getValue() != null ? "value: " + element.getValue() : "");
+        valueLabel.setLayoutY(20);
+
+        elementPane.getChildren().addAll(nameLabel, valueLabel);
+        elementPane.layoutXProperty().bind(element.xProperty());
+        elementPane.layoutYProperty().bind(element.yProperty());
+        elementPane.setCursor(javafx.scene.Cursor.HAND);
+
+        final AtomicReference<Double> mousePressX = new AtomicReference<>();
+        final AtomicReference<Double> mousePressY = new AtomicReference<>();
+        final List<ElementConnection> relevantConnections = new ArrayList<>();
+
+        elementPane.setOnMousePressed(event -> {
+            selectedElement = element;
+            dragOffsetX = event.getSceneX() - element.getX();
+            dragOffsetY = event.getSceneY() - element.getY();
+            mousePressX.set(event.getSceneX());
+            mousePressY.set(event.getSceneY());
+
+            relevantConnections.clear();
+            // Recopilar las conexiones donde este elemento es la fuente
+            relevantConnections.addAll(element.getConnections());
+            // Recopilar las conexiones donde este elemento es el destino
+            for (DiagramElement otherElement : elements) {
+                for (ElementConnection conn : otherElement.getConnections()) {
+                    if (conn.getTarget() == element) {
+                        relevantConnections.add(conn);
+                    }
+                }
+            }
+        });
+
+
+
+        elementPane.setOnMouseDragged(event -> {
+            if (selectedElement == element) {
+                element.setX(event.getSceneX() - dragOffsetX);
+                element.setY(event.getSceneY() - dragOffsetY);
+                redrawRelevantConnections(relevantConnections); // Redibujar solo las relevantes
+            }
+        });
+
+//        elementPane.setOnMouseReleased(event -> {
+//            if (selectedElement == element) {
+//                double deltaX = Math.abs(event.getSceneX() - mousePressX.get());
+//                double deltaY = Math.abs(event.getSceneY() - mousePressY.get());
+//                double clickThreshold = 5.0;
+//
+//                if (deltaX < clickThreshold && deltaY < clickThreshold) {
+//                    showEditDialog(element);
+//                }
+//                selectedElement = null;
+//                redrawConnections(); // Asegurar el redibujo completo al final
+//            }
+//        });
+
+        elementPane.setOnMouseReleased(event -> {
+            if (selectedElement == element) {
+                double deltaX = Math.abs(event.getSceneX() - mousePressX.get());
+                double deltaY = Math.abs(event.getSceneY() - mousePressY.get());
+                double clickThreshold = 5.0;
+
+                if (deltaX < clickThreshold && deltaY < clickThreshold) {
+                    showEditDialog(element);
+                }
+                selectedElement = null;
+                redrawConnections(); // Volver a redibujar todas las conexiones al soltar
+            }
+        });
+
+        container.getChildren().add(elementPane);
+    }
+
+
+    private void redrawConnections1() {
+        GraphicsContext gc = linesCanvas.getGraphicsContext2D();
+        gc.clearRect(0, 0, linesCanvas.getWidth(), linesCanvas.getHeight());
+        gc.setStroke(Color.WHITE);
+        gc.setLineWidth(2);
+
+        for (DiagramElement element : elements) {
+            Pane sourcePane = findElementPane(element);
+            if (sourcePane == null) continue;
+            double x1 = element.getX() + sourcePane.getWidth() / 2;
+            double y1 = element.getY() + sourcePane.getHeight() / 2;
+
+            for (ElementConnection connection : element.getConnections()) {
+                DiagramElement targetElement = connection.getTarget();
+                if (targetElement != null) {
+                    Pane targetPane = findElementPane(targetElement);
+                    if (targetPane == null) continue;
+                    double x2 = targetElement.getX() + targetPane.getWidth() / 2;
+                    double y2 = targetElement.getY() + targetPane.getHeight() / 2;
+                    gc.strokeLine(x1, y1, x2, y2);
+
+                    // Dibujar marcadores (flechas o cuadrados)
+                    double dx = x2 - x1;
+                    double dy = y2 - y1;
+                    double length = Math.sqrt(dx * dx + dy * dy);
+                    if (length > 0) {
+                        double markerX = x1 + dx * 0.5;
+                        double markerY = y1 + dy * 0.5;
+
+                        if (connection.canMove()) {
+                            // Dibujar flecha
+                            double angle = Math.atan2(dy, dx);
+                            double arrowSize = 10;
+                            gc.setFill(Color.BLUE);
+                            gc.setStroke(Color.WHITE);
+                            gc.setLineWidth(1);
+                            gc.beginPath();
+                            gc.moveTo(markerX + arrowSize * Math.cos(angle), markerY + arrowSize * Math.sin(angle));
+                            gc.lineTo(markerX - arrowSize * Math.cos(angle) - arrowSize * Math.sin(angle), markerY - arrowSize * Math.sin(angle) + arrowSize * Math.cos(angle));
+                            gc.lineTo(markerX - arrowSize * Math.cos(angle) + arrowSize * Math.sin(angle), markerY - arrowSize * Math.sin(angle) - arrowSize * Math.cos(angle));
+                            gc.closePath();
+                            gc.fill();
+                            gc.stroke();
+                        } else {
+                            // Dibujar cuadrado
+                            double squareSize = 7;
+                            gc.setFill(Color.RED);
+                            gc.setStroke(Color.WHITE);
+                            gc.fillRect(markerX - squareSize, markerY - squareSize, 2 * squareSize, 2 * squareSize);
+                            gc.strokeRect(markerX - squareSize, markerY - squareSize, 2 * squareSize, 2 * squareSize);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+    private void redrawConnections() {
+        GraphicsContext gc = linesCanvas.getGraphicsContext2D();
+        gc.clearRect(0, 0, linesCanvas.getWidth(), linesCanvas.getHeight());
+        gc.setStroke(Color.WHITE);
+        gc.setLineWidth(2);
+
+        for (DiagramElement element : elements) {
+            Pane sourcePane = findElementPane(element);
+            if (sourcePane == null) continue;
+            double x1 = element.getX() + sourcePane.getWidth() / 2;
+            double y1 = element.getY() + sourcePane.getHeight() / 2;
+
+            for (ElementConnection connection : element.getConnections()) {
+                DiagramElement targetElement = connection.getTarget();
+                if (targetElement != null) {
+                    Pane targetPane = findElementPane(targetElement);
+                    if (targetPane == null) continue;
+                    double x2 = targetElement.getX() + targetPane.getWidth() / 2;
+                    double y2 = targetElement.getY() + targetPane.getHeight() / 2;
+                    gc.strokeLine(x1, y1, x2, y2);
+
+                    // Dibujar marcadores (flechas o cuadrados)
+                    double dx = x2 - x1;
+                    double dy = y2 - y1;
+                    double length = Math.sqrt(dx * dx + dy * dy);
+                    if (length > 0) {
+                        double markerX = x1 + dx * 0.5;
+                        double markerY = y1 + dy * 0.5;
+
+                        if (connection.canMove()) {
+                            // Dibujar flecha
+                            double angle = Math.atan2(dy, dx);
+                            double arrowSize = 10;
+                            gc.setFill(Color.BLUE);
+                            gc.setStroke(Color.WHITE);
+                            gc.setLineWidth(1);
+                            gc.beginPath();
+                            gc.moveTo(markerX + arrowSize * Math.cos(angle), markerY + arrowSize * Math.sin(angle));
+                            gc.lineTo(markerX - arrowSize * Math.cos(angle) - arrowSize * Math.sin(angle), markerY - arrowSize * Math.sin(angle) + arrowSize * Math.cos(angle));
+                            gc.lineTo(markerX - arrowSize * Math.cos(angle) + arrowSize * Math.sin(angle), markerY - arrowSize * Math.sin(angle) - arrowSize * Math.cos(angle));
+                            gc.closePath();
+                            gc.fill();
+                            gc.stroke();
+                        } else {
+                            // Dibujar cuadrado
+                            double squareSize = 7;
+                            gc.setFill(Color.RED);
+                            gc.setStroke(Color.WHITE);
+                            gc.fillRect(markerX - squareSize, markerY - squareSize, 2 * squareSize, 2 * squareSize);
+                            gc.strokeRect(markerX - squareSize, markerY - squareSize, 2 * squareSize, 2 * squareSize);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+    private void redrawRelevantConnections(List<ElementConnection> connectionsToRedraw) {
+        GraphicsContext gc = linesCanvas.getGraphicsContext2D();
+        // Limpiar todo el canvas para asegurar que las líneas se actualicen correctamente
+        gc.clearRect(0, 0, linesCanvas.getWidth(), linesCanvas.getHeight());
+
+        gc.setStroke(Color.WHITE);
+        gc.setLineWidth(2);
+
+        Set<Pair<Long, Long>> processedConnections = new HashSet<>();
+
+        for (ElementConnection connection : connectionsToRedraw) {
+            DiagramElement sourceElement = null;
+            for (DiagramElement elem : elements) {
+                if (elem.getConnections().contains(connection)) {
+                    sourceElement = elem;
+                    break;
+                }
+            }
+            DiagramElement targetElement = connection.getTarget();
+
+            if (sourceElement != null && targetElement != null) {
+                long sourceId = sourceElement.getId();
+                long targetId = targetElement.getId();
+                Pair<Long, Long> connectionPair = Pair.of(Math.min(sourceId, targetId), Math.max(sourceId, targetId));
+
+                if (processedConnections.contains(connectionPair)) {
+                    continue;
+                }
+                processedConnections.add(connectionPair);
+
+                Pane sourcePane = findElementPane(sourceElement);
+                Pane targetPane = findElementPane(targetElement);
+
+                if (sourcePane != null && targetPane != null) {
+                    double x1 = sourceElement.getX() + sourcePane.getWidth() / 2;
+                    double y1 = sourceElement.getY() + sourcePane.getHeight() / 2;
+                    double x2 = targetElement.getX() + targetPane.getWidth() / 2;
+                    double y2 = targetElement.getY() + targetPane.getHeight() / 2;
+                    gc.strokeLine(x1, y1, x2, y2);
+
+                    // Dibujar marcadores (flechas o cuadrados)
+                    double dx = x2 - x1;
+                    double dy = y2 - y1;
+                    double length = Math.sqrt(dx * dx + dy * dy);
+                    if (length > 0) {
+                        double markerX = x1 + dx * 0.5;
+                        double markerY = y1 + dy * 0.5;
+
+                        if (connection.canMove()) {
+                            // Dibujar flecha
+                            double angle = Math.atan2(dy, dx);
+                            double arrowSize = 10;
+                            gc.setFill(Color.WHITE);
+                            gc.setStroke(Color.WHITE);
+                            gc.setLineWidth(1);
+                            gc.beginPath();
+                            gc.moveTo(markerX + arrowSize * Math.cos(angle), markerY + arrowSize * Math.sin(angle));
+                            gc.lineTo(markerX - arrowSize * Math.cos(angle) - arrowSize * Math.sin(angle), markerY - arrowSize * Math.sin(angle) + arrowSize * Math.cos(angle));
+                            gc.lineTo(markerX - arrowSize * Math.cos(angle) + arrowSize * Math.sin(angle), markerY - arrowSize * Math.sin(angle) - arrowSize * Math.cos(angle));
+                            gc.closePath();
+                            gc.fill();
+                            gc.stroke();
+                        } else {
+                            // Dibujar cuadrado
+                            double squareSize = 7;
+                            gc.setFill(Color.RED);
+                            gc.setStroke(Color.WHITE);
+                            gc.fillRect(markerX - squareSize, markerY - squareSize, 2 * squareSize, 2 * squareSize);
+                            gc.strokeRect(markerX - squareSize, markerY - squareSize, 2 * squareSize, 2 * squareSize);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+
+    private Pane findElementPane(DiagramElement element) {
+        return container.getChildren().stream()
+                .filter(node -> node instanceof Pane && ((Pane) node).layoutXProperty().isEqualTo(element.xProperty()).get() && ((Pane) node).layoutYProperty().isEqualTo(element.yProperty()).get())
+                .findFirst()
+                .map(node -> (Pane) node)
+                .orElse(null);
+    }
+
+
+
+    public static class Pair<K, V> {
+
+        private final K key;
+        private final V value;
+
+        public Pair(K key, V value) {
+            this.key = key;
+            this.value = value;
+        }
+
+        public K getKey() {
+            return key;
+        }
+
+        public V getValue() {
+            return value;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Pair<?, ?> pair = (Pair<?, ?>) o;
+            return (key == null ? pair.key == null : key.equals(pair.key)) &&
+                    (value == null ? pair.value == null : value.equals(pair.value));
+        }
+
+        @Override
+        public int hashCode() {
+            int result = key != null ? key.hashCode() : 0;
+            result = 31 * result + (value != null ? value.hashCode() : 0);
+            return result;
+        }
+
+        public static <K, V> Pair<K, V> of(K key, V value) {
+            return new Pair<>(key, value);
+        }
+    }
+
+}

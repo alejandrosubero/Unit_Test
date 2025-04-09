@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="10" prefWidth="300" xmlns="http://javafx.com/javafx/17.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.diagram.NewElementDialog" style="-fx-padding: 15px;">
+    <Label text="Nombre:" />
+    <TextField fx:id="newName" />
+
+    <Label text="Valor:" />
+    <TextField fx:id="newValue" />
+
+    <Label text="Variables (separadas por comas):" />
+    <TextField fx:id="newVariables" />
+
+    <Label text="Métodos (separados por comas):" />
+    <TextField fx:id="newMethods" />
+
+    <Label text="Relaciones (separadas por comas):" />
+    <TextField fx:id="newRelations" />
+
+    <Label text="Conexiones:" />
+    <ScrollPane fitToWidth="true" prefHeight="150">
+        <VBox fx:id="consteContainer" spacing="5" />
+    </ScrollPane>
+    <Button text="+ Agregar Conexión" onAction="#addConnectionEntry" />
+
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button text="Guardar" onAction="#handleSave" />
+        <Button text="Cancelar" onAction="#handleCancel" />
+    </HBox>
+</VBox>
