@@ -131,7 +131,13 @@ public class NewElementDialog {
         closeDialog();
     }
 
-    private void closeDialog() {
+    private void closeDialog1() {
         ((Stage) newName.getScene().getWindow()).close();
+    }
+
+    private void closeDialog() {
+        Stage stage = (Stage) newName.getScene().getWindow();
+        stage.close();
+        stage.hide(); // Asegura la liberación de recursos
     }
 }

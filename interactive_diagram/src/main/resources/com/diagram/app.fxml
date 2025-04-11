@@ -4,16 +4,23 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.ScrollPane?>
 
-<BorderPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.diagram.AppController">
+
+<BorderPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.diagram.AppController">
+
     <center>
-        <Pane fx:id="container">
-            <children>
-                <Canvas fx:id="linesCanvas" width="800.0" height="600.0" />
-            </children>
-        </Pane>
+        <ScrollPane fx:id="scrollPane" hbarPolicy="NEVER" vbarPolicy="NEVER">
+            <content>
+                <Pane fx:id="container">
+                    <Canvas fx:id="linesCanvas" />
+                </Pane>
+            </content>
+        </ScrollPane>
     </center>
+
     <top>
         <Button fx:id="addElementBtn" mnemonicParsing="false" onAction="#onAddElementButtonClick" text="Agregar Elemento" />
     </top>
 </BorderPane>
+

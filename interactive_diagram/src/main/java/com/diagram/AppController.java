@@ -12,12 +12,13 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.util.Pair;
 
+import javafx.geometry.Bounds;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
@@ -43,94 +44,65 @@ public class AppController {
     @FXML
     private Button addElementBtn;
 
+    @FXML
+    private ScrollPane scrollPane;
+
     private ObservableList<DiagramElement> elements = FXCollections.observableArrayList();
     private DiagramElement selectedElement;
     private double dragOffsetX;
     private double dragOffsetY;
 
     private final BooleanProperty isDragging = new SimpleBooleanProperty(false);
-
-    @FXML
-    public void initialize2() {
-        // Establecer el color de fondo del container a negro
-        container.setStyle("-fx-background-color: black;");
-
-        // Inicializar elementos predefinidos (puedes ajustar la cantidad para pruebas)
-        for (int i = 0; i < 50; i++) {
-            createAndAddElement(100 + i * 50, 100, "Elemento " + i, String.valueOf(i), Arrays.asList("var"), Arrays.asList("method"), Arrays.asList(), new ArrayList<>());
-        }
-        resolveConnections();
-        elements.forEach(this::addDraggableElement);
-        container.widthProperty().addListener((obs, oldVal, newVal) -> redrawConnections());
-        container.heightProperty().addListener((obs, oldVal, newVal) -> redrawConnections());
-
-        // Iniciar un AnimationTimer para redibujar las conexiones solo cuando no se está arrastrando activamente
-        AnimationTimer redrawTimer = new AnimationTimer() {
-            @Override
-            public void handle(long now) {
-                if (!isDragging.get()) {
-                    redrawConnections();
-                }
-            }
-        };
-        redrawTimer.start();
-    }
-
-
-    @FXML
-    public void initialize1() {
-        // Establecer el color de fondo del container a negro
-        container.setStyle("-fx-background-color: black;");
-
-        // Inicializar elementos predefinidos con sus relaciones
-        createAndAddElement(100, 100, "Inicio", "A", Arrays.asList("var1", "var2"), Arrays.asList("met1"), Arrays.asList("Proceso", "Fin"),
-                Arrays.asList(new ElementConnection(null, false), new ElementConnection(null, true), new ElementConnection(null, true)));
-        createAndAddElement(250, 100, "Proceso", "B", Arrays.asList("data", "count"), Arrays.asList("process", "validate"), Arrays.asList("Decisión", "Fin"),
-                Arrays.asList(new ElementConnection(null, false), new ElementConnection(null, false)));
-        createAndAddElement(400, 100, "Decisión", "C", Arrays.asList("flag"), Arrays.asList("checkCondition", "method1()", "method2()"), Arrays.asList("Proceso", "Fin"),
-                Arrays.asList(new ElementConnection(null, false), new ElementConnection(null, true)));
-
-        resolveConnections(); // Llamar a resolveConnections para establecer los objetivos de las conexiones
-
-        elements.forEach(this::addDraggableElement);
-        container.widthProperty().addListener((obs, oldVal, newVal) -> redrawConnections());
-        container.heightProperty().addListener((obs, oldVal, newVal) -> redrawConnections());
-
-        // Iniciar un AnimationTimer para redibujar las conexiones solo cuando no se está arrastrando activamente
-        AnimationTimer redrawTimer = new AnimationTimer() {
-            @Override
-            public void handle(long now) {
-                if (!isDragging.get()) {
-                    redrawConnections();
-                }
-            }
-        };
-        redrawTimer.start();
-    }
-
+    private Map<DiagramElement, Pane> elementPaneMap = new HashMap<>();
 
     @FXML
     public void initialize() {
+
+
+        // Vincular tamaño del Canvas al contenedor
+        container.layoutBoundsProperty().addListener((obs, oldVal, newVal) -> {
+            linesCanvas.setWidth(newVal.getWidth());
+            linesCanvas.setHeight(newVal.getHeight());
+            redrawConnections();
+        });
+
+
+        scrollPane.hvalueProperty().addListener((obs, oldVal, newVal) -> redrawConnections());
+        scrollPane.vvalueProperty().addListener((obs, oldVal, newVal) -> redrawConnections());
+
         // Establecer el color de fondo del container a negro
         container.setStyle("-fx-background-color: black;");
 
-        // Inicializar elementos predefinidos con sus relaciones
-        createAndAddElement(100, 100, "Inicio", "A", Arrays.asList("var1", "var2"), Arrays.asList("met1"), Arrays.asList("Proceso", "Fin"),
-                Arrays.asList(new ElementConnection(null, false), new ElementConnection(null, true), new ElementConnection(null, true)));
-        createAndAddElement(250, 100, "Proceso", "B", Arrays.asList("data", "count"), Arrays.asList("process", "validate"), Arrays.asList("Decisión", "Fin"),
-                Arrays.asList(new ElementConnection(null, false), new ElementConnection(null, false)));
-        createAndAddElement(400, 100, "Decisión", "C", Arrays.asList("flag"), Arrays.asList("checkCondition", "method1()", "method2()"), Arrays.asList("Proceso", "Fin"),
-                Arrays.asList(new ElementConnection(null, false), new ElementConnection(null, true)));
+        // Vincular el tamaño del Canvas al ScrollPane
+        scrollPane.viewportBoundsProperty().addListener((obs, oldVal, newVal) -> {
+            linesCanvas.setWidth(newVal.getWidth());
+            linesCanvas.setHeight(newVal.getHeight());
+            redrawConnections();
+        });
 
+        // Escuchar cambios de tamaño del contenedor
+        container.layoutBoundsProperty().addListener((obs, oldVal, newVal) -> {
+            linesCanvas.setWidth(newVal.getWidth());
+            linesCanvas.setHeight(newVal.getHeight());
+            redrawConnections();
+        });
+
+        // Inicializar elementos predefinidos con sus relaciones
+        addElement(Element.geDdiagramElementList());
         resolveConnections(); // Llamar a resolveConnections para establecer los objetivos de las conexiones
 
         elements.forEach(this::addDraggableElement);
         container.widthProperty().addListener((obs, oldVal, newVal) -> redrawConnections());
         container.heightProperty().addListener((obs, oldVal, newVal) -> redrawConnections());
-        redrawConnections();
-
+//        redrawConnections();
+        javafx.application.Platform.runLater(this::redrawConnections);
     }
 
+    public void addElement(List<DiagramElement> diagramElements) {
+        for(DiagramElement  newElement : diagramElements){
+            this.elements.add(newElement);
+        }
+    }
 
     private void createAndAddElement(double x, double y, String name, String value, List<String> variables, List<String> methods, List<String> relations, List<ElementConnection> connectionsData) {
         DiagramElement newElement = new DiagramElement(name, value, variables, methods, relations, x, y);
@@ -166,8 +138,8 @@ public class AppController {
             controller.setAppController(this);
 
             Stage dialogStage = new Stage();
-            dialogStage.setTitle("Nuevo Elemento");
-            dialogStage.initModality(Modality.APPLICATION_MODAL);
+            dialogStage.initOwner(addElementBtn.getScene().getWindow()); // <--- Vincula al stage principal
+            dialogStage.initModality(Modality.WINDOW_MODAL); // <--- Usa modalidad de ventana
             dialogStage.setScene(new Scene(root));
             dialogStage.showAndWait();
         } catch (IOException e) {
@@ -185,7 +157,8 @@ public class AppController {
         }
         elements.add(newElement);
         addDraggableElement(newElement);
-        redrawConnections();
+        javafx.application.Platform.runLater(this::redrawConnections);
+//        redrawConnections();
     }
 
     private void showEditDialog(DiagramElement elementToEdit) {
@@ -198,11 +171,11 @@ public class AppController {
             controller.populateFields(elementToEdit);
 
             Stage dialogStage = new Stage();
+            dialogStage.initOwner(container.getScene().getWindow()); // <--- Vincula al stage principal
+            dialogStage.initModality(Modality.WINDOW_MODAL);
             dialogStage.setTitle("Editar Elemento");
-            dialogStage.initModality(Modality.APPLICATION_MODAL);
             dialogStage.setScene(new Scene(root));
             dialogStage.showAndWait();
-            redrawConnections();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -229,7 +202,358 @@ public class AppController {
                     ((javafx.scene.control.Label) elementPane.getChildren().get(0)).setText(elementToUpdate.getName());
                     ((javafx.scene.control.Label) elementPane.getChildren().get(1)).setText(elementToUpdate.getValue() != null ? "value: " + elementToUpdate.getValue() : "");
                 });
+        javafx.application.Platform.runLater(this::redrawConnections);
+//        redrawConnections();
+    }
+
+    private void addDraggableElement(DiagramElement element) {
+        Pane elementPane = new Pane();
+
+        elementPane.setStyle("-fx-background-color: white; -fx-border-color: black; -fx-padding: 10px; -fx-text-align: center;");
+        elementPane.setPrefWidth(120);
+        elementPane.setPrefHeight(80);
+
+        javafx.scene.control.Label nameLabel = new javafx.scene.control.Label(element.getName());
+        javafx.scene.control.Label valueLabel = new javafx.scene.control.Label(element.getValue() != null ? "value: " + element.getValue() : "");
+        valueLabel.setLayoutY(20);
+
+        elementPane.getChildren().addAll(nameLabel, valueLabel);
+        elementPane.layoutXProperty().bind(element.xProperty());
+        elementPane.layoutYProperty().bind(element.yProperty());
+        elementPane.setCursor(javafx.scene.Cursor.HAND);
+
+        final AtomicReference<Double> mousePressX = new AtomicReference<>();
+        final AtomicReference<Double> mousePressY = new AtomicReference<>();
+        final List<ElementConnection> relevantConnections = new ArrayList<>();
+
+        // Agregar al mapa aquí
+        elementPaneMap.put(element, elementPane);
+
+        elementPane.setOnMousePressed(event -> {
+            selectedElement = element;
+            dragOffsetX = event.getSceneX() - element.getX();
+            dragOffsetY = event.getSceneY() - element.getY();
+            mousePressX.set(event.getSceneX());
+            mousePressY.set(event.getSceneY());
+
+            relevantConnections.clear();
+            // Recopilar las conexiones donde este elemento es la fuente
+            relevantConnections.addAll(element.getConnections());
+            // Recopilar las conexiones donde este elemento es el destino
+            for (DiagramElement otherElement : elements) {
+                for (ElementConnection conn : otherElement.getConnections()) {
+                    if (conn.getTarget() == element) {
+                        relevantConnections.add(conn);
+                    }
+                }
+            }
+            System.out.println("Pressed: SceneX=" + event.getSceneX() + ", SceneY=" + event.getSceneY());
+
+        });
+
+        elementPane.setOnMouseDragged(event -> {
+            if (selectedElement == element) {
+                element.setX(event.getSceneX() - dragOffsetX);
+                element.setY(event.getSceneY() - dragOffsetY);
+                redrawRelevantConnections(relevantConnections); // Redibujar solo las relevantes
+//                redrawConnections(); // Forzar redibujado en tiempo real
+            }
+        });
+
+
+        elementPane.setOnMouseReleased(event -> {
+            if (selectedElement == element) {
+                double deltaX = Math.abs(event.getSceneX() - mousePressX.get());
+                double deltaY = Math.abs(event.getSceneY() - mousePressY.get());
+//                double clickThreshold = 5.0;
+                double clickThreshold = 10.0; // Aumenta el umbral (ejemplo)
+                if (deltaX < clickThreshold && deltaY < clickThreshold) {
+                    showEditDialog(element);
+                }
+                selectedElement = null;
+                javafx.application.Platform.runLater(this::redrawConnections);
+//                redrawConnections(); // Volver a redibujar todas las conexiones al soltar
+            }
+        });
+
+
+        container.getChildren().add(elementPane);
+    }
+
+    public void redrawConnections() {
+        GraphicsContext gc = linesCanvas.getGraphicsContext2D();
+        gc.clearRect(0, 0, linesCanvas.getWidth(), linesCanvas.getHeight());
+        gc.setStroke(Color.WHITE);
+        gc.setLineWidth(2);
+
+        for (DiagramElement element : elements) {
+            Pane sourcePane = findElementPane(element);
+            if (sourcePane == null) continue;
+
+            // Coordenadas absolutas en el contenedor
+            double x1 = element.getX() + sourcePane.getWidth() / 2;
+            double y1 = element.getY() + sourcePane.getHeight() / 2;
+
+            for (ElementConnection connection : element.getConnections()) {
+                DiagramElement target = connection.getTarget();
+                if (target == null) continue;
+
+                Pane targetPane = findElementPane(target);
+                if (targetPane == null) continue;
+
+                double x2 = target.getX() + targetPane.getWidth() / 2;
+                double y2 = target.getY() + targetPane.getHeight() / 2;
+
+                // Dibujar sin ajustar el desplazamiento
+                gc.strokeLine(x1, y1, x2, y2);
+                drawMarker(gc, x1, y1, x2, y2, connection.canMove());
+            }
+        }
+    }
+
+    private void drawMarker(GraphicsContext gc, double x1, double y1, double x2, double y2, boolean canMove) {
+        double dx = x2 - x1;
+        double dy = y2 - y1;
+        double length = Math.sqrt(dx * dx + dy * dy);
+
+        if (length > 0) {
+            double markerX = x1 + dx * 0.5;
+            double markerY = y1 + dy * 0.5;
+
+            if (canMove) {
+                // Dibujar flecha
+                double angle = Math.atan2(dy, dx);
+                double arrowSize = 10;
+                gc.setFill(Color.BLUE);
+                gc.setStroke(Color.WHITE);
+                gc.setLineWidth(1);
+                gc.beginPath();
+                gc.moveTo(markerX + arrowSize * Math.cos(angle), markerY + arrowSize * Math.sin(angle));
+                gc.lineTo(markerX - arrowSize * Math.cos(angle) - arrowSize * Math.sin(angle), markerY - arrowSize * Math.sin(angle) + arrowSize * Math.cos(angle));
+                gc.lineTo(markerX - arrowSize * Math.cos(angle) + arrowSize * Math.sin(angle), markerY - arrowSize * Math.sin(angle) - arrowSize * Math.cos(angle));
+                gc.closePath();
+                gc.fill();
+                gc.stroke();
+            } else {
+                // Dibujar cuadrado
+                double squareSize = 7;
+                gc.setFill(Color.RED);
+                gc.setStroke(Color.WHITE);
+                gc.fillRect(markerX - squareSize, markerY - squareSize, 2 * squareSize, 2 * squareSize);
+                gc.strokeRect(markerX - squareSize, markerY - squareSize, 2 * squareSize, 2 * squareSize);
+            }
+        }
+    }
+
+    private void redrawRelevantConnections(List<ElementConnection> connectionsToRedraw) {
+        GraphicsContext gc = linesCanvas.getGraphicsContext2D();
+        // Limpiar todo el canvas para asegurar que las líneas se actualicen correctamente
+        gc.clearRect(0, 0, linesCanvas.getWidth(), linesCanvas.getHeight());
+
+        gc.setStroke(Color.WHITE);
+        gc.setLineWidth(2);
+
+//        Set<Pair<Long, Long>> processedConnections = new HashSet<>();
+        Set<AppController.Pair<Long, Long>> processedConnections = new HashSet<>();
+
+        for (ElementConnection connection : connectionsToRedraw) {
+            DiagramElement sourceElement = null;
+            for (DiagramElement elem : elements) {
+                if (elem.getConnections().contains(connection)) {
+                    sourceElement = elem;
+                    break;
+                }
+            }
+            DiagramElement targetElement = connection.getTarget();
+
+            if (sourceElement != null && targetElement != null) {
+                long sourceId = sourceElement.getId();
+                long targetId = targetElement.getId();
+                AppController.Pair<Long, Long> connectionPair = Pair.of(Math.min(sourceId, targetId), Math.max(sourceId, targetId));
+//                Pair<Long, Long> connectionPair = Pair.of(Math.min(sourceId, targetId), Math.max(sourceId, targetId));
+
+                if (processedConnections.contains(connectionPair)) {
+                    continue;
+                }
+                processedConnections.add(connectionPair);
+
+                Pane sourcePane = findElementPane(sourceElement);
+                Pane targetPane = findElementPane(targetElement);
+
+                if (sourcePane != null && targetPane != null) {
+                    double x1 = sourceElement.getX() + sourcePane.getWidth() / 2;
+                    double y1 = sourceElement.getY() + sourcePane.getHeight() / 2;
+                    double x2 = targetElement.getX() + targetPane.getWidth() / 2;
+                    double y2 = targetElement.getY() + targetPane.getHeight() / 2;
+                    gc.strokeLine(x1, y1, x2, y2);
+
+                    // Dibujar marcadores (flechas o cuadrados)
+                    double dx = x2 - x1;
+                    double dy = y2 - y1;
+                    double length = Math.sqrt(dx * dx + dy * dy);
+                    if (length > 0) {
+                        double markerX = x1 + dx * 0.5;
+                        double markerY = y1 + dy * 0.5;
+
+                        if (connection.canMove()) {
+                            // Dibujar flecha
+                            double angle = Math.atan2(dy, dx);
+                            double arrowSize = 10;
+                            gc.setFill(Color.WHITE);
+                            gc.setStroke(Color.WHITE);
+                            gc.setLineWidth(1);
+                            gc.beginPath();
+                            gc.moveTo(markerX + arrowSize * Math.cos(angle), markerY + arrowSize * Math.sin(angle));
+                            gc.lineTo(markerX - arrowSize * Math.cos(angle) - arrowSize * Math.sin(angle), markerY - arrowSize * Math.sin(angle) + arrowSize * Math.cos(angle));
+                            gc.lineTo(markerX - arrowSize * Math.cos(angle) + arrowSize * Math.sin(angle), markerY - arrowSize * Math.sin(angle) - arrowSize * Math.cos(angle));
+                            gc.closePath();
+                            gc.fill();
+                            gc.stroke();
+                        } else {
+                            // Dibujar cuadrado
+                            double squareSize = 7;
+                            gc.setFill(Color.RED);
+                            gc.setStroke(Color.WHITE);
+                            gc.fillRect(markerX - squareSize, markerY - squareSize, 2 * squareSize, 2 * squareSize);
+                            gc.strokeRect(markerX - squareSize, markerY - squareSize, 2 * squareSize, 2 * squareSize);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private Pane findElementPane(DiagramElement element) {
+        return elementPaneMap.get(element);
+    }
+
+    public static class Pair<K, V> {
+
+        private final K key;
+        private final V value;
+
+        public Pair(K key, V value) {
+            this.key = key;
+            this.value = value;
+        }
+
+        public K getKey() {
+            return key;
+        }
+
+        public V getValue() {
+            return value;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Pair<?, ?> pair = (Pair<?, ?>) o;
+            return (key == null ? pair.key == null : key.equals(pair.key)) &&
+                    (value == null ? pair.value == null : value.equals(pair.value));
+        }
+
+        @Override
+        public int hashCode() {
+            int result = key != null ? key.hashCode() : 0;
+            result = 31 * result + (value != null ? value.hashCode() : 0);
+            return result;
+        }
+
+        public static <K, V> Pair<K, V> of(K key, V value) {
+            return new Pair<>(key, value);
+        }
+    }
+
+
+
+
+    @FXML
+    public void initialize2() {
+        // Establecer el color de fondo del container a negro
+        container.setStyle("-fx-background-color: black;");
+
+        // Inicializar elementos predefinidos (puedes ajustar la cantidad para pruebas)
+        for (int i = 0; i < 50; i++) {
+            createAndAddElement(100 + i * 50, 100, "Elemento " + i, String.valueOf(i), Arrays.asList("var"), Arrays.asList("method"), Arrays.asList(), new ArrayList<>());
+        }
+        resolveConnections();
+        elements.forEach(this::addDraggableElement);
+        container.widthProperty().addListener((obs, oldVal, newVal) -> redrawConnections());
+        container.heightProperty().addListener((obs, oldVal, newVal) -> redrawConnections());
+
+        // Iniciar un AnimationTimer para redibujar las conexiones solo cuando no se está arrastrando activamente
+        AnimationTimer redrawTimer = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                if (!isDragging.get()) {
+
+                }
+            }
+        };
+        redrawTimer.start();
+    }
+
+    @FXML
+    public void initialize1() {
+        // Establecer el color de fondo del container a negro
+        container.setStyle("-fx-background-color: black;");
+
+        // Inicializar elementos predefinidos con sus relaciones
+        createAndAddElement(100, 100, "Inicio", "A", Arrays.asList("var1", "var2"), Arrays.asList("met1"), Arrays.asList("Proceso", "Fin"),
+                Arrays.asList(new ElementConnection(null, false), new ElementConnection(null, true), new ElementConnection(null, true)));
+        createAndAddElement(250, 100, "Proceso", "B", Arrays.asList("data", "count"), Arrays.asList("process", "validate"), Arrays.asList("Decisión", "Fin"),
+                Arrays.asList(new ElementConnection(null, false), new ElementConnection(null, false)));
+        createAndAddElement(400, 100, "Decisión", "C", Arrays.asList("flag"), Arrays.asList("checkCondition", "method1()", "method2()"), Arrays.asList("Proceso", "Fin"),
+                Arrays.asList(new ElementConnection(null, false), new ElementConnection(null, true)));
+
+        resolveConnections(); // Llamar a resolveConnections para establecer los objetivos de las conexiones
+
+        elements.forEach(this::addDraggableElement);
+        container.widthProperty().addListener((obs, oldVal, newVal) -> redrawConnections());
+        container.heightProperty().addListener((obs, oldVal, newVal) -> redrawConnections());
+
+        // Iniciar un AnimationTimer para redibujar las conexiones solo cuando no se está arrastrando activamente
+        AnimationTimer redrawTimer = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                if (!isDragging.get()) {
+                    redrawConnections();
+                }
+            }
+        };
+        redrawTimer.start();
         redrawConnections();
+    }
+
+    private void createAndAddElement( DiagramElement recibeElement) {
+        DiagramElement newElement = new DiagramElement(recibeElement.getName(), recibeElement.getValue(),
+                recibeElement.getVariables(), recibeElement.getMethods(), recibeElement.getRelations(), recibeElement.getX(), recibeElement.getY());
+        elements.add(newElement);
+
+        // Las conexiones se resuelven en resolveConnections() después de que todos los elementos son creados
+        for (int i = 0; i < Math.min(recibeElement.getRelations().size(), recibeElement.getConnections().size()); i++) {
+            newElement.getConnections().add(new ElementConnection(null, false)); // Inicialmente sin objetivo
+        }
+    }
+
+    @FXML
+    private void onAddElementButtonClick1() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("new_element_dialog.fxml"));
+            Parent root = loader.load();
+            NewElementDialog controller = loader.getController();
+            controller.setAppController(this);
+
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Nuevo Elemento");
+            dialogStage.initModality(Modality.APPLICATION_MODAL);
+            dialogStage.setScene(new Scene(root));
+            dialogStage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void addDraggableElement1(DiagramElement element) {
@@ -278,7 +602,8 @@ public class AppController {
                 }
                 selectedElement = null;
                 isDragging.set(false); // Indicar que se ha terminado de arrastrar
-                redrawConnections(); // Redibujar las conexiones al final del arrastre
+//                redrawConnections(); // Redibujar las conexiones al final del arrastre
+                javafx.application.Platform.runLater(this::redrawConnections);
             }
         });
 
@@ -315,7 +640,8 @@ public class AppController {
             if (selectedElement == element) {
                 element.setX(event.getSceneX() - dragOffsetX);
                 element.setY(event.getSceneY() - dragOffsetY);
-                redrawConnections(); // Redibujar las conexiones en cada arrastre
+//                redrawConnections(); // Redibujar las conexiones en cada arrastre
+                javafx.application.Platform.runLater(this::redrawConnections);
             }
         });
 
@@ -335,7 +661,7 @@ public class AppController {
         container.getChildren().add(elementPane);
     }
 
-    private void addDraggableElement(DiagramElement element) {
+    private void addDraggableElement3(DiagramElement element) {
         Pane elementPane = new Pane();
         elementPane.setStyle("-fx-background-color: white; -fx-border-color: black; -fx-padding: 10px; -fx-text-align: center;");
         elementPane.setPrefWidth(120);
@@ -408,14 +734,13 @@ public class AppController {
                     showEditDialog(element);
                 }
                 selectedElement = null;
-                redrawConnections(); // Volver a redibujar todas las conexiones al soltar
+//                redrawConnections(); // Volver a redibujar todas las conexiones al soltar
+                javafx.application.Platform.runLater(this::redrawConnections);
             }
         });
 
         container.getChildren().add(elementPane);
     }
-
-
     private void redrawConnections1() {
         GraphicsContext gc = linesCanvas.getGraphicsContext2D();
         gc.clearRect(0, 0, linesCanvas.getWidth(), linesCanvas.getHeight());
@@ -472,190 +797,246 @@ public class AppController {
             }
         }
     }
+    private void showEditDialog1(DiagramElement elementToEdit) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("new_element_dialog.fxml"));
+            Parent root = loader.load();
+            NewElementDialog controller = loader.getController();
+            controller.setAppController(this);
+            controller.setElementToEdit(elementToEdit);
+            controller.populateFields(elementToEdit);
+
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Editar Elemento");
+            dialogStage.initModality(Modality.APPLICATION_MODAL);
+            dialogStage.setScene(new Scene(root));
+            dialogStage.showAndWait();
+//            redrawConnections();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //    private Pane findElementPane(DiagramElement element) {
+//        return container.getChildren().stream()
+//                .filter(node -> node instanceof Pane && ((Pane) node).layoutXProperty().isEqualTo(element.xProperty()).get() && ((Pane) node).layoutYProperty().isEqualTo(element.yProperty()).get())
+//                .findFirst()
+//                .map(node -> (Pane) node)
+//                .orElse(null);
+//    }
+
+    //    private void redrawConnections1() {
+//        long startTime = System.nanoTime();
+//        System.out.println("Redrawing connections START...");
+//
+//        GraphicsContext gc = linesCanvas.getGraphicsContext2D();
+//        gc.clearRect(0, 0, linesCanvas.getWidth(), linesCanvas.getHeight());
+//        gc.setStroke(Color.WHITE);
+//        gc.setLineWidth(2);
+//
+//        for (DiagramElement element : elements) {
+//            Pane sourcePane = findElementPane(element);
+//            if (sourcePane == null) continue;
+//            double x1 = element.getX() + sourcePane.getWidth() / 2;
+//            double y1 = element.getY() + sourcePane.getHeight() / 2;
+//
+//            for (ElementConnection connection : element.getConnections()) {
+//                DiagramElement targetElement = connection.getTarget();
+//                if (targetElement != null) {
+//                    Pane targetPane = findElementPane(targetElement);
+//                    if (targetPane == null) continue;
+//                    double x2 = targetElement.getX() + targetPane.getWidth() / 2;
+//                    double y2 = targetElement.getY() + targetPane.getHeight() / 2;
+//                    gc.strokeLine(x1, y1, x2, y2);
+//
+//                    // Dibujar marcadores (flechas o cuadrados)
+//                    double dx = x2 - x1;
+//                    double dy = y2 - y1;
+//                    double length = Math.sqrt(dx * dx + dy * dy);
+//                    if (length > 0) {
+//                        double markerX = x1 + dx * 0.5;
+//                        double markerY = y1 + dy * 0.5;
+//
+//                        if (connection.canMove()) {
+//                            // Dibujar flecha
+//                            double angle = Math.atan2(dy, dx);
+//                            double arrowSize = 10;
+//                            gc.setFill(Color.BLUE);
+//                            gc.setStroke(Color.WHITE);
+//                            gc.setLineWidth(1);
+//                            gc.beginPath();
+//                            gc.moveTo(markerX + arrowSize * Math.cos(angle), markerY + arrowSize * Math.sin(angle));
+//                            gc.lineTo(markerX - arrowSize * Math.cos(angle) - arrowSize * Math.sin(angle), markerY - arrowSize * Math.sin(angle) + arrowSize * Math.cos(angle));
+//                            gc.lineTo(markerX - arrowSize * Math.cos(angle) + arrowSize * Math.sin(angle), markerY - arrowSize * Math.sin(angle) - arrowSize * Math.cos(angle));
+//                            gc.closePath();
+//                            gc.fill();
+//                            gc.stroke();
+//                        } else {
+//                            // Dibujar cuadrado
+//                            double squareSize = 7;
+//                            gc.setFill(Color.RED);
+//                            gc.setStroke(Color.WHITE);
+//                            gc.fillRect(markerX - squareSize, markerY - squareSize, 2 * squareSize, 2 * squareSize);
+//                            gc.strokeRect(markerX - squareSize, markerY - squareSize, 2 * squareSize, 2 * squareSize);
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//
+//        System.out.println("Redrawing connections END.");
+//        long endTime = System.nanoTime();
+//        System.out.println("Redraw time: " + (endTime - startTime) / 1_000_000 + " ms");
+//    }
 
 
-    private void redrawConnections() {
+    private void redrawConnections39() {
+        GraphicsContext gc = linesCanvas.getGraphicsContext2D();
+        gc.clearRect(0, 0, linesCanvas.getWidth(), linesCanvas.getHeight());
+
+        // Dibujar todas las conexiones
+        for (DiagramElement element : elements) {
+            Pane sourcePane = findElementPane(element);
+            if (sourcePane == null) continue;
+
+            // Coordenadas relativas al contenedor (no a la pantalla)
+            double x1 = element.getX() + sourcePane.getWidth() / 2;
+            double y1 = element.getY() + sourcePane.getHeight() / 2;
+
+            for (ElementConnection connection : element.getConnections()) {
+                DiagramElement target = connection.getTarget();
+                if (target != null) {
+                    Pane targetPane = findElementPane(target);
+                    if (targetPane == null) continue;
+
+                    double x2 = target.getX() + targetPane.getWidth() / 2;
+                    double y2 = target.getY() + targetPane.getHeight() / 2;
+
+                    // Dibujar línea
+                    gc.setStroke(Color.WHITE);
+                    gc.strokeLine(x1, y1, x2, y2);
+                }
+            }
+        }
+    }
+
+    private void redrawConnections22() {
         GraphicsContext gc = linesCanvas.getGraphicsContext2D();
         gc.clearRect(0, 0, linesCanvas.getWidth(), linesCanvas.getHeight());
         gc.setStroke(Color.WHITE);
         gc.setLineWidth(2);
 
+        // Obtener el desplazamiento actual del ScrollPane
+        double scrollX = scrollPane.getHvalue();
+        double scrollY = scrollPane.getVvalue();
+        double viewportWidth = scrollPane.getViewportBounds().getWidth();
+        double viewportHeight = scrollPane.getViewportBounds().getHeight();
+
         for (DiagramElement element : elements) {
             Pane sourcePane = findElementPane(element);
             if (sourcePane == null) continue;
-            double x1 = element.getX() + sourcePane.getWidth() / 2;
-            double y1 = element.getY() + sourcePane.getHeight() / 2;
+
+            // Calcular coordenadas relativas al viewport
+            double x1 = element.getX() + sourcePane.getWidth() / 2 - (scrollX * (container.getWidth() - viewportWidth));
+            double y1 = element.getY() + sourcePane.getHeight() / 2 - (scrollY * (container.getHeight() - viewportHeight));
 
             for (ElementConnection connection : element.getConnections()) {
                 DiagramElement targetElement = connection.getTarget();
                 if (targetElement != null) {
                     Pane targetPane = findElementPane(targetElement);
                     if (targetPane == null) continue;
-                    double x2 = targetElement.getX() + targetPane.getWidth() / 2;
-                    double y2 = targetElement.getY() + targetPane.getHeight() / 2;
+
+                    double x2 = targetElement.getX() + targetPane.getWidth() / 2 - (scrollX * (container.getWidth() - viewportWidth));
+                    double y2 = targetElement.getY() + targetPane.getHeight() / 2 - (scrollY * (container.getHeight() - viewportHeight));
+
                     gc.strokeLine(x1, y1, x2, y2);
-
-                    // Dibujar marcadores (flechas o cuadrados)
-                    double dx = x2 - x1;
-                    double dy = y2 - y1;
-                    double length = Math.sqrt(dx * dx + dy * dy);
-                    if (length > 0) {
-                        double markerX = x1 + dx * 0.5;
-                        double markerY = y1 + dy * 0.5;
-
-                        if (connection.canMove()) {
-                            // Dibujar flecha
-                            double angle = Math.atan2(dy, dx);
-                            double arrowSize = 10;
-                            gc.setFill(Color.BLUE);
-                            gc.setStroke(Color.WHITE);
-                            gc.setLineWidth(1);
-                            gc.beginPath();
-                            gc.moveTo(markerX + arrowSize * Math.cos(angle), markerY + arrowSize * Math.sin(angle));
-                            gc.lineTo(markerX - arrowSize * Math.cos(angle) - arrowSize * Math.sin(angle), markerY - arrowSize * Math.sin(angle) + arrowSize * Math.cos(angle));
-                            gc.lineTo(markerX - arrowSize * Math.cos(angle) + arrowSize * Math.sin(angle), markerY - arrowSize * Math.sin(angle) - arrowSize * Math.cos(angle));
-                            gc.closePath();
-                            gc.fill();
-                            gc.stroke();
-                        } else {
-                            // Dibujar cuadrado
-                            double squareSize = 7;
-                            gc.setFill(Color.RED);
-                            gc.setStroke(Color.WHITE);
-                            gc.fillRect(markerX - squareSize, markerY - squareSize, 2 * squareSize, 2 * squareSize);
-                            gc.strokeRect(markerX - squareSize, markerY - squareSize, 2 * squareSize, 2 * squareSize);
-                        }
-                    }
+                    drawMarker(gc, x1, y1, x2, y2, connection.canMove());
                 }
             }
         }
     }
 
-
-    private void redrawRelevantConnections(List<ElementConnection> connectionsToRedraw) {
+    private void redrawConnections23() {
         GraphicsContext gc = linesCanvas.getGraphicsContext2D();
-        // Limpiar todo el canvas para asegurar que las líneas se actualicen correctamente
         gc.clearRect(0, 0, linesCanvas.getWidth(), linesCanvas.getHeight());
-
         gc.setStroke(Color.WHITE);
         gc.setLineWidth(2);
 
-        Set<Pair<Long, Long>> processedConnections = new HashSet<>();
+        // Obtener el área visible del ScrollPane
+        Bounds viewportBounds = scrollPane.getViewportBounds();
+        double containerWidth = container.getWidth();
+        double containerHeight = container.getHeight();
 
-        for (ElementConnection connection : connectionsToRedraw) {
-            DiagramElement sourceElement = null;
-            for (DiagramElement elem : elements) {
-                if (elem.getConnections().contains(connection)) {
-                    sourceElement = elem;
-                    break;
-                }
-            }
-            DiagramElement targetElement = connection.getTarget();
+        for (DiagramElement element : elements) {
+            Pane sourcePane = findElementPane(element);
+            if (sourcePane == null) continue;
 
-            if (sourceElement != null && targetElement != null) {
-                long sourceId = sourceElement.getId();
-                long targetId = targetElement.getId();
-                Pair<Long, Long> connectionPair = Pair.of(Math.min(sourceId, targetId), Math.max(sourceId, targetId));
+            // Calcular coordenadas absolutas
+            double x1 = element.getX() + sourcePane.getWidth() / 2;
+            double y1 = element.getY() + sourcePane.getHeight() / 2;
 
-                if (processedConnections.contains(connectionPair)) {
-                    continue;
-                }
-                processedConnections.add(connectionPair);
+            for (ElementConnection connection : element.getConnections()) {
+                DiagramElement target = connection.getTarget();
+                if (target == null) continue;
 
-                Pane sourcePane = findElementPane(sourceElement);
-                Pane targetPane = findElementPane(targetElement);
+                Pane targetPane = findElementPane(target);
+                if (targetPane == null) continue;
 
-                if (sourcePane != null && targetPane != null) {
-                    double x1 = sourceElement.getX() + sourcePane.getWidth() / 2;
-                    double y1 = sourceElement.getY() + sourcePane.getHeight() / 2;
-                    double x2 = targetElement.getX() + targetPane.getWidth() / 2;
-                    double y2 = targetElement.getY() + targetPane.getHeight() / 2;
-                    gc.strokeLine(x1, y1, x2, y2);
+                double x2 = target.getX() + targetPane.getWidth() / 2;
+                double y2 = target.getY() + targetPane.getHeight() / 2;
 
-                    // Dibujar marcadores (flechas o cuadrados)
-                    double dx = x2 - x1;
-                    double dy = y2 - y1;
-                    double length = Math.sqrt(dx * dx + dy * dy);
-                    if (length > 0) {
-                        double markerX = x1 + dx * 0.5;
-                        double markerY = y1 + dy * 0.5;
+                // Ajustar al viewport
+                double adjustedX1 = x1 - (scrollPane.getHvalue() * (containerWidth - viewportBounds.getWidth()));
+                double adjustedY1 = y1 - (scrollPane.getVvalue() * (containerHeight - viewportBounds.getHeight()));
+                double adjustedX2 = x2 - (scrollPane.getHvalue() * (containerWidth - viewportBounds.getWidth()));
+                double adjustedY2 = y2 - (scrollPane.getVvalue() * (containerHeight - viewportBounds.getHeight()));
 
-                        if (connection.canMove()) {
-                            // Dibujar flecha
-                            double angle = Math.atan2(dy, dx);
-                            double arrowSize = 10;
-                            gc.setFill(Color.WHITE);
-                            gc.setStroke(Color.WHITE);
-                            gc.setLineWidth(1);
-                            gc.beginPath();
-                            gc.moveTo(markerX + arrowSize * Math.cos(angle), markerY + arrowSize * Math.sin(angle));
-                            gc.lineTo(markerX - arrowSize * Math.cos(angle) - arrowSize * Math.sin(angle), markerY - arrowSize * Math.sin(angle) + arrowSize * Math.cos(angle));
-                            gc.lineTo(markerX - arrowSize * Math.cos(angle) + arrowSize * Math.sin(angle), markerY - arrowSize * Math.sin(angle) - arrowSize * Math.cos(angle));
-                            gc.closePath();
-                            gc.fill();
-                            gc.stroke();
-                        } else {
-                            // Dibujar cuadrado
-                            double squareSize = 7;
-                            gc.setFill(Color.RED);
-                            gc.setStroke(Color.WHITE);
-                            gc.fillRect(markerX - squareSize, markerY - squareSize, 2 * squareSize, 2 * squareSize);
-                            gc.strokeRect(markerX - squareSize, markerY - squareSize, 2 * squareSize, 2 * squareSize);
-                        }
-                    }
-                }
+                gc.strokeLine(adjustedX1, adjustedY1, adjustedX2, adjustedY2);
+                drawMarker(gc, adjustedX1, adjustedY1, adjustedX2, adjustedY2, connection.canMove());
             }
         }
     }
 
+    public void redrawConnections24() {
+        GraphicsContext gc = linesCanvas.getGraphicsContext2D();
+        gc.clearRect(0, 0, linesCanvas.getWidth(), linesCanvas.getHeight());
+        gc.setStroke(Color.WHITE);
+        gc.setLineWidth(2);
 
+        Bounds viewportBounds = scrollPane.getViewportBounds();
+        double containerWidth = container.getWidth();
+        double containerHeight = container.getHeight();
 
-    private Pane findElementPane(DiagramElement element) {
-        return container.getChildren().stream()
-                .filter(node -> node instanceof Pane && ((Pane) node).layoutXProperty().isEqualTo(element.xProperty()).get() && ((Pane) node).layoutYProperty().isEqualTo(element.yProperty()).get())
-                .findFirst()
-                .map(node -> (Pane) node)
-                .orElse(null);
-    }
+        // Calcular ancho/alto del viewport
+        double viewportWidth = viewportBounds.getMaxX() - viewportBounds.getMinX();
+        double viewportHeight = viewportBounds.getMaxY() - viewportBounds.getMinY();
 
+        for (DiagramElement element : elements) {
+            Pane sourcePane = findElementPane(element);
+            if (sourcePane == null) continue;
 
+            double x1 = element.getX() + sourcePane.getWidth() / 2;
+            double y1 = element.getY() + sourcePane.getHeight() / 2;
 
-    public static class Pair<K, V> {
+            for (ElementConnection connection : element.getConnections()) {
+                DiagramElement target = connection.getTarget();
+                if (target == null) continue;
 
-        private final K key;
-        private final V value;
+                Pane targetPane = findElementPane(target);
+                if (targetPane == null) continue;
 
-        public Pair(K key, V value) {
-            this.key = key;
-            this.value = value;
-        }
+                double x2 = target.getX() + targetPane.getWidth() / 2;
+                double y2 = target.getY() + targetPane.getHeight() / 2;
 
-        public K getKey() {
-            return key;
-        }
+                // Aplicar corrección del viewport
+                double adjustedX1 = x1 - (scrollPane.getHvalue() * (containerWidth - viewportWidth));
+                double adjustedY1 = y1 - (scrollPane.getVvalue() * (containerHeight - viewportHeight));
+                double adjustedX2 = x2 - (scrollPane.getHvalue() * (containerWidth - viewportWidth));
+                double adjustedY2 = y2 - (scrollPane.getVvalue() * (containerHeight - viewportHeight));
 
-        public V getValue() {
-            return value;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            Pair<?, ?> pair = (Pair<?, ?>) o;
-            return (key == null ? pair.key == null : key.equals(pair.key)) &&
-                    (value == null ? pair.value == null : value.equals(pair.value));
-        }
-
-        @Override
-        public int hashCode() {
-            int result = key != null ? key.hashCode() : 0;
-            result = 31 * result + (value != null ? value.hashCode() : 0);
-            return result;
-        }
-
-        public static <K, V> Pair<K, V> of(K key, V value) {
-            return new Pair<>(key, value);
+                gc.strokeLine(adjustedX1, adjustedY1, adjustedX2, adjustedY2);
+                drawMarker(gc, adjustedX1, adjustedY1, adjustedX2, adjustedY2, connection.canMove());
+            }
         }
     }
 

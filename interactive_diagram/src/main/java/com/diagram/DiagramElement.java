@@ -35,6 +35,20 @@ public class DiagramElement {
         this.y = new SimpleDoubleProperty(y);
     }
 
+
+    public DiagramElement(String name, String value, List<String> variables, List<String> methods, List<String> relations, List<ElementConnection> connections, double x, double y) {
+        this.id = nextId++;
+        this.name = new SimpleStringProperty(name);
+        this.value = new SimpleStringProperty(value);
+        this.variables = FXCollections.observableArrayList(variables);
+        this.methods = FXCollections.observableArrayList(methods);
+        this.relations = FXCollections.observableArrayList(relations);
+        this.connections = FXCollections.observableArrayList(connections);
+        this.x = new SimpleDoubleProperty(x);
+        this.y = new SimpleDoubleProperty(y);
+    }
+
+
     public long getId() {
         return id;
     }
