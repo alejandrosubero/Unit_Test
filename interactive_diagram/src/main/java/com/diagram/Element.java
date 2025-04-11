@@ -7,8 +7,7 @@ import java.util.Objects;
 
 public class Element {
 
-
-    public static List<DiagramElement> geDdiagramElementList(){
+    public static List<DiagramElement> getDiagramElementList() {
 
         List<DiagramElement> elementos = new ArrayList<>();
 
