@@ -8,6 +8,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -244,9 +245,20 @@ public class AppController {
         elementPane.setPrefWidth(120);
         elementPane.setPrefHeight(80);
 
+        // Dentro de addDraggableElement:
         javafx.scene.control.Label nameLabel = new javafx.scene.control.Label(element.getName());
         javafx.scene.control.Label valueLabel = new javafx.scene.control.Label(element.getValue() != null ? "value: " + element.getValue() : "");
-        valueLabel.setLayoutY(20);
+
+// Margen interno adicional para los labels
+        nameLabel.setPadding(new Insets(0, 0, 5, 0)); // 5px debajo del título
+        valueLabel.setPadding(new Insets(0, 0, 0, 0));
+
+// Posición dentro del Pane (considerando el padding)
+        nameLabel.setLayoutX(10); // Margen izquierdo de 10px
+        nameLabel.setLayoutY(10); // Margen superior de 10px
+
+        valueLabel.setLayoutX(10);
+        valueLabel.setLayoutY(30); // Debajo del título, con margen superior
 
         elementPane.getChildren().addAll(nameLabel, valueLabel);
         elementPane.layoutXProperty().bind(element.xProperty());
@@ -282,14 +294,6 @@ public class AppController {
 
         });
 
-//        elementPane.setOnMouseDragged(event -> {
-//            if (selectedElement == element) {
-//                element.setX(event.getSceneX() - dragOffsetX);
-//                element.setY(event.getSceneY() - dragOffsetY);
-//                redrawRelevantConnections(relevantConnections); // Redibujar solo las relevantes
-////                redrawConnections(); // Forzar redibujado en tiempo real
-//            }
-//        });
 
 
         elementPane.setOnMouseDragged(event -> {
