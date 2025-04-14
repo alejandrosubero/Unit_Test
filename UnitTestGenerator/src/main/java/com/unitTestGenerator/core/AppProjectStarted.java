@@ -37,11 +37,19 @@ public class AppProjectStarted implements MainMenue, IInternalTest, IAnalizerPro
         this.analizerProjectService = getInstanceAPSI();
     }
 
+
+    private void checkProyect(){
+        Project temp = this.projectHolder.getProject();
+        if(temp != null && temp.getPathProject() != null && !temp.getPathProject().equals("") && !temp.getClaseList().isEmpty()){
+            this.project = temp;
+        }
+    }
+
     public void start() {
         ICleanConsole.clearConsoleOs();
         Scanner scanner = new Scanner(System.in);
         boolean continuar = true;
-
+        this.checkProyect();
         while (continuar) {
             this.welcomeMenu();
             int opcion = scanner.nextInt();
@@ -74,11 +82,13 @@ public class AppProjectStarted implements MainMenue, IInternalTest, IAnalizerPro
             AnalizerMenu analizerMenu =  ContextIOC.getInstance().getClassInstance(AnalizerMenu.class);
             analizerMenu.analizerMenuStarted(this.project, new Scanner(System.in));
             projectAnalized = this.projectHolder.getProject();
+            this.project = projectAnalized;
         }else {
             projectAnalized = analizerProjectService.analizerProject(scanner, isAnalisis, this.project);
             this.projectHolder.setProject(projectAnalized);
+            this.project = projectAnalized;
         }
-        this.project = projectAnalized;
+
     }
 
     private void generateUnitsTest(Scanner scanner) {

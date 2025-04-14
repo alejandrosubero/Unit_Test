@@ -36,7 +36,7 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
     }
 
     public void analizerMenu(){
-        this.printColummString("Analyze project Module",
+        this.printColummStringY("Analyze project Module",
                 "Choose an option:",
                 "1. Analyze project",
                 "2. Load a Previous Saved Project",
@@ -66,13 +66,13 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
                 this.goToMainMenu();
                 break;
             default:
-                System.out.println("Invalid option");
-                analizerMenuStarted(project, scanner);
+                this.service().print_RED("Invalid option");
+                this.analizerMenuStarted(project, scanner);
         }
     }
 
     public void AnalysisOptionsMenu(){
-        this.printColummString("Analyzer Options Menu:",
+       this.printColummStringY("Analyzer Options Menu:",
                 "Choose an option:",
                 "1. Print the list of classes",
                 "2. Print Methods of one class",
@@ -124,7 +124,7 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
     }
 
     public void subMenu2Txt(){
-        this.printColummString(
+        this.printColummStringY(
                 "Choose an option:",
                 "1. Exit",
                 "2. Return to the previous menu",
@@ -151,7 +151,7 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
     }
 
     public void subMenu1Txt(){
-        this.printColummString(
+        this.printColummStringY(
                 "Choose an option:",
                 "1. Print  methods of one class",
                 "2. Return to the previous menu",
@@ -215,7 +215,7 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
 
 
     public void generateFileMenuTxt(){
-        this.printColummString(
+        this.printColummStringY(
                 "Generate File Menu: ",
                 "Choose an option:",
                 "1. Class Report",

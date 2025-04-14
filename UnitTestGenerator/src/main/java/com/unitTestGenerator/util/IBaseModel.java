@@ -106,6 +106,12 @@ public interface IBaseModel extends IConstantModel {
 		System.out.println(listStringToColummString(paths));
 	}
 
+	default void printColummStringY(String... paths){
+		System.out.println("\u001B[33m" + listStringToColummString(paths));
+	}
+
+
+
 	default String listStringStructureToColummString(List<String> parameters) {
 		StringBuilder stringColumm = new StringBuilder(BREAK_LINE);
 		if (parameters != null && parameters.size() > 0) {
