@@ -73,6 +73,9 @@ public class AnalizadorProyecto implements ITodoDetectorService, IPrintProjectSt
                                 this.importAnalizeService.importAnalize(clase);
                               }
                               ContextIOC.getInstance().getClassInstance(TemplateBuilder.class).buildClassDetailHtml(clase);
+                            if(clase.getMainClass()){
+                                project.setMainClassName(clase.getNombre());
+                            }
                           }
                           this.setContainers(clase, classList, mapClass, project);
                       }

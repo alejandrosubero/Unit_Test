@@ -18,6 +18,7 @@ public class Metodo {
     private String accessModifier;
     private String anotation;
     private String methodSignature;
+    private Boolean isMain;
 
 
     public String getContenido() {
@@ -29,6 +30,16 @@ public class Metodo {
     }
 
     public Metodo() {
+        this.isMain = false;
+    }
+
+
+    public Boolean getMain() {
+        return isMain;
+    }
+
+    public void setMain(Boolean main) {
+        isMain = main;
     }
 
     public String getAnotation() {

@@ -16,6 +16,7 @@ public class Project {
     private  PrinterProject printerProject= new PrinterProject();
     private String name;
     private String description;
+    private String mainClassName;
 
     public Project() {
     }
@@ -47,7 +48,13 @@ public class Project {
         this.isGradle = isGradle;
     }
 
+    public String getMainClassName() {
+        return mainClassName;
+    }
 
+    public void setMainClassName(String mainClassName) {
+        this.mainClassName = mainClassName;
+    }
 
     public List<Clase> getClaseList() {
         return claseList;

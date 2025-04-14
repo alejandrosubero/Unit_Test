@@ -49,7 +49,6 @@ public class AnalyzeClassServiceService implements IAnalyzeCassMethodService, IA
             Clase classs = analyzeClaseContentString(content);
             if (archivo != null && classs != null) {
                 classs.setClassPath(path);
-                //
             }
             return classs;
         } catch (Exception e) {
@@ -149,11 +148,31 @@ public class AnalyzeClassServiceService implements IAnalyzeCassMethodService, IA
         }
     }
 
+    private void matcherMetodoMain(String contenido, Clase clase){
+        Pattern patronMain = Pattern.compile("(?:@\\w+\\s*)*\\bpublic\\s+static\\s+void\\s+main\\s*\\(\\s*String\\s*\\[?\\s*\\]?\\s+\\w+\\s*\\)", Pattern.DOTALL);
+        Matcher matcherMetodoMain = patronMain.matcher(contenido);
+
+        if (matcherMetodoMain.find()) {
+            Metodo metodo = ContextIOC.getInstance().getClassInstance(Metodo.class);
+            String main = matcherMetodoMain.group(0).trim();
+            if(main != null){
+                metodo.setMain(main.toLowerCase().trim().contains("main"));
+                metodo.setNombre("main");
+                metodo.setTipoRetorno("void");
+                metodo.setAccessModifier("public");
+                metodo.setMethodSignature(main);
+                clase.addMetodo(metodo);
+                clase.setMainClass(metodo.getMain());
+            }
+        }
+    }
+
     private void analyzeMethods(String contenido, Clase clase) {
         if (clase != null) {
             if ("class".equals(clase.getTypeClass())) {
                 Pattern patronMetodo = Pattern.compile("(?:@[^\\n]*)*(public|protected|private|void) (\\w+) (\\w+)\\((.*?)\\)", Pattern.DOTALL);
                 Matcher matcherMetodo = patronMetodo.matcher(contenido);
+                this.matcherMetodoMain( contenido, clase);
 
                 while (matcherMetodo.find()) {
                     Metodo metodo = ContextIOC.getInstance().getClassInstance(Metodo.class);
@@ -168,20 +187,6 @@ public class AnalyzeClassServiceService implements IAnalyzeCassMethodService, IA
             }
 
             if ("interface".equals(clase.getTypeClass())) {
-
-
-//            Pattern patronMetodoInterface = Pattern.compile(
-//                    "(?:@[^\n]*\\s*)*(public\\s+|private\\s+|protected\\s+|default\\s+|void\\s+)" +
-//                            "(static\\s+)?([\\w<>\\[\\]]+|Optional<[\\w<>\\[\\]]+>)\\s+" +
-//                            "(\\w+)\\s*\\((.*?)\\)\\s*;",
-//                    Pattern.DOTALL
-//            );
-
-//            Pattern patronMetodoInterface = Pattern.compile(
-//                    "(?:@[^\n]*\\s*)*(public\\s+|private\\s+|protected\\s+|default\\s+|void\\s+)(static\\s+)?([\\w<>\\[\\]]+)\\s+(\\w+)\\s*\\((.*?)\\)\\s*;",
-//                    Pattern.DOTALL
-//            );
-//                Pattern patronMetodoInterface = Pattern.compile("(?:@[^\\n]*)*(public|protected|private|default) (\\w+(?:<.*?>)?) (\\w+)\\s*\\((.*?)\\)\\s*;", Pattern.DOTALL);
 
                 Pattern patronMetodoInterface = Pattern.compile(
                         "(?:@[^\\n]*)*(public|protected|private|default)\\s+" + // Access modifier

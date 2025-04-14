@@ -34,7 +34,7 @@ public class Clase {
     private String classAnotations;
     private String classDetail;
     private String classTemplate;
-
+    private Boolean isMainClass;
     public Clase() {
         this.metodos = new ArrayList<>();
         this.variables = new ArrayList<>();
@@ -43,6 +43,15 @@ public class Clase {
         this.constructores = new ArrayList<>();
         this.useLomboxBuild = false;
         this.applyBuildMethod = false;
+        this.isMainClass = false;
+    }
+
+    public Boolean getMainClass() {
+        return isMainClass;
+    }
+
+    public void setMainClass(Boolean mainClass) {
+        isMainClass = mainClass;
     }
 
     public String getStructureExtends() {
