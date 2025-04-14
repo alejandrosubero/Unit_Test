@@ -16,4 +16,10 @@ public interface IPorjectName {
             return projectName[projectName.length - 1];
     }
 
+
+    default String getArtifatOrFileName(String pathProject){
+        String[] projectName = pathProject.split(IConstantModel.Separator);
+        return projectName[projectName.length - 1];
+    }
+
 }

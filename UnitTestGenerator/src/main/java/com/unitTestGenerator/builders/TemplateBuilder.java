@@ -65,7 +65,9 @@ public class TemplateBuilder {
 
     private String getStructureBase( String templete, Clase classs){
         templete = templete.replace("@NombreClaseTitle@", classs.getNombre());
-        templete = templete.replace("@paquetico@", classs.getPaquete());
+        if(classs != null && (classs.getPaquete() !=null &&  !classs.getPaquete().equals(""))) {
+            templete = templete.replace("@paquetico@", classs.getPaquete());
+        }
         templete = templete.replace("@ClassType@", classs.getTypeClass());
         String signature = classs.getClassSignatureLine().replace("{","");
         templete = templete.replace("@classsignatureline@", signature);

@@ -12,6 +12,7 @@ import com.unitTestGenerator.menus.MainMenue;
 import com.unitTestGenerator.test.interfaces.IInternalTest;
 import com.unitTestGenerator.pojos.Clase;
 import com.unitTestGenerator.pojos.Project;
+import com.unitTestGenerator.util.ICleanConsole;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +20,7 @@ import java.util.Scanner;
 
 @Component
 @Singleton
-public class AppProjectStarted implements IPorjectName, MainMenue, IInternalTest, IAnalizerProjectServiceManager {
+public class AppProjectStarted implements MainMenue, IInternalTest, IAnalizerProjectServiceManager {
 
     private AnalizerProjectService analizerProjectService;
     private GeneradorPruebasUnitarias generadorPruebasUnitarias;
@@ -30,18 +31,17 @@ public class AppProjectStarted implements IPorjectName, MainMenue, IInternalTest
         this.projectHolder = projectHolder;
         this.generadorPruebasUnitarias = generadorPruebasUnitarias;
         this.project = this.projectHolder.getProject();
-        this.project.setName(this.getArtifatOrFileName());
         if(!this.project.getClaseList().isEmpty() && this.project.getClaseList().get(0) != null && this.project.getClaseList().get(0).getNombre() == null){
             this.project.getClaseList().remove(0);
         }
         this.analizerProjectService = getInstanceAPSI();
     }
 
-
     public void start() {
-
+        ICleanConsole.clearConsoleOs();
         Scanner scanner = new Scanner(System.in);
         boolean continuar = true;
+
         while (continuar) {
             this.welcomeMenu();
             int opcion = scanner.nextInt();
@@ -69,11 +69,6 @@ public class AppProjectStarted implements IPorjectName, MainMenue, IInternalTest
 
     private void projectHolderLogic(Scanner scanner, Boolean isAnalisis){
 
-//        Project projectAnalized = analizerProjectService.analizerProject(scanner, isAnalisis, this.project);
-//        this.projectHolder.setProject(projectAnalized);
-//        this.project = projectAnalized;
-
-        //TODO: V1.1.0.0  In progress....
         Project projectAnalized = null;
         if(isAnalisis){
             AnalizerMenu analizerMenu =  ContextIOC.getInstance().getClassInstance(AnalizerMenu.class);
