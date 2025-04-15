@@ -5,6 +5,7 @@ import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.unitTestGenerator.analyzers.services.interfaces.IClassDetailBuilder;
 import com.unitTestGenerator.ioc.anotations.Component;
 
 import java.io.FileNotFoundException;
@@ -14,10 +15,12 @@ import com.unitTestGenerator.pojos.Clase;
 import com.unitTestGenerator.pojos.Project;
 import com.unitTestGenerator.printers.IPrintService;
 import com.unitTestGenerator.util.IConstantModel;
+import org.apache.commons.io.IOUtils;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 import org.apache.pdfbox.io.MemoryUsageSetting;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,16 +39,38 @@ public class PDFGenerator implements IPrintService {
         }
     }
 
+
+    private String ReadResourceFile (String fileName){
+        String contenido ="";
+        try (InputStream inputStream = IClassDetailBuilder.class.getClassLoader().getResourceAsStream("templateBase.html")) {
+            if (inputStream == null) {
+                throw new RuntimeException("file don't fount: "+fileName);
+            }
+            contenido = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return contenido;
+    }
+
     private void projectPdfGeneration(Project project){
         try {
             List<byte[]> pdfsEnMemoria = new ArrayList<>();
             String fileName = project.getName()+IConstantModel.PDF_Extention;
+            String templateBase = ReadResourceFile ("templateBase.html");
+            templateBase = templateBase.replace("@NombreProyect@", project.getName());
+
+            if( project.getPrinterProject() !=null && (project.getPrinterProject().getProjectClassTree() !=null || project.getPrinterProject().getProjectDirectoryTree() !=null)){
+                templateBase = templateBase.replace(" @Structure-file@", project.getPrinterProject().getProjectDirectoryTree());
+                templateBase = templateBase.replace("@Structure-class@",project.getPrinterProject().getProjectClassTree());
+            }
+            pdfsEnMemoria.add(this.convertHtmlToPdfBytes(templateBase));
 
             for(Clase classs: project.getClaseList()){
-                pdfsEnMemoria.add(this.convertHtmlToPdfBytes(classs.getTestMethod()));
+                pdfsEnMemoria.add(this.convertHtmlToPdfBytes(classs.getClassTemplate()));
             }
-
-            this.mergePdfBytes(pdfsEnMemoria, fileName);
+            String outputPath = project.getPathProject() + IConstantModel.Separator + fileName;
+            this.mergePdfBytes(pdfsEnMemoria, outputPath);
             this.service().print_YELLOW("¡successfully generated PDF!");
 
         } catch (IOException e) {
@@ -58,7 +83,7 @@ public class PDFGenerator implements IPrintService {
             try {
                 List<byte[]> pdfsEnMemoria = new ArrayList<>();
                 String fileName = classs.getNombre() + IConstantModel.PDF_Extention;;
-                pdfsEnMemoria.add(this.convertHtmlToPdfBytes(classs.getTestMethod()));
+                pdfsEnMemoria.add(this.convertHtmlToPdfBytes(classs.getClassTemplate()));
                 this.mergePdfBytes(pdfsEnMemoria, fileName);
                 this.service().print_YELLOW("¡successfully generated PDF!");
             } catch (IOException e) {

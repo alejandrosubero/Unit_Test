@@ -69,7 +69,10 @@ public class GeneradorPruebasUnitarias implements IManageMavenGadleAppProperties
                classSingne.append("@AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)").append("\n");
            } else {
                classSingne.append("\n").append("\t").append("@ExtendWith(SpringExtension.class)").append("\n");
-               classSingne.append("\t").append("@SpringBootTest").append("\n");
+
+               String mainClass = this.project.getMainClassName();
+               classSingne.append("\t").append("@SpringBootTest(classes =").append(mainClass).append(".class)").append("\n");
+//               classSingne.append("\t").append("@SpringBootTest").append("\n");
                classSingne.append("\t").append("@ActiveProfiles(\"test\")").append("\n");
            }
         }

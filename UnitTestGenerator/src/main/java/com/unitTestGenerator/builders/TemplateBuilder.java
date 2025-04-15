@@ -35,6 +35,17 @@ public class TemplateBuilder {
     }
 
 
+    public static String elementSpecialChars(String element) {
+        if(element.contains("&") || element.contains("<") || element.contains(">") ){
+            return element
+                    .replace("&", "&amp;")
+                    .replace("<", "&lt;")
+                    .replace(">", "&gt;");
+        }
+        return element;
+    }
+
+
     private String relationHtml(String retation){
         StringBuffer relationBuffer = new StringBuffer();
         String temp = retation;
@@ -42,7 +53,7 @@ public class TemplateBuilder {
 
         for(String attribute: partTemp){
             String tempA =  "<div class=\"Element\"> @aTemp@ </div>";
-            tempA = tempA.replace("@aTemp@", attribute);
+            tempA = tempA.replace("@aTemp@", elementSpecialChars(attribute));
             relationBuffer.append(tempA);
         }
         return relationBuffer.toString();
@@ -70,7 +81,7 @@ public class TemplateBuilder {
         }
         templete = templete.replace("@ClassType@", classs.getTypeClass());
         String signature = classs.getClassSignatureLine().replace("{","");
-        templete = templete.replace("@classsignatureline@", signature);
+        templete = templete.replace("@classsignatureline@", this.elementSpecialChars(signature));
         templete = templete.replace("@classclasspath@", classs.getClassPath());
         templete = templete.replace("@NombreClase@", classs.getNombre());
         return templete;
@@ -95,7 +106,7 @@ public class TemplateBuilder {
 
             for(String attribute: partTemp){
                 String tempA =  "<div class=\"Element\"> @aTemp@ </div>";
-                tempA = tempA.replace("@aTemp@", attribute);
+                tempA = tempA.replace("@aTemp@", this.elementSpecialChars(attribute));
                 bufferAttributes.append(tempA);
             }
             templete = templete.replace("@Atributos@", bufferAttributes.toString());
@@ -116,7 +127,7 @@ public class TemplateBuilder {
 
             for(String attribute: partTemp){
                 String tempA =  "<div class=\"Element\"> @aTemp@ </div>";
-                tempA = tempA.replace("@aTemp@", attribute);
+                tempA = tempA.replace("@aTemp@", this.elementSpecialChars(attribute));
                 bufferAttributes.append(tempA);
             }
             templete = templete.replace("@Metodos@", bufferAttributes.toString());
@@ -180,7 +191,7 @@ public class TemplateBuilder {
             for (Constructor constructor : classs.getConstructores()) {
                 bufferConstructors.append("\t").append(constructor.getCostructorSignature()).append("\n");
             }
-            line = line.replace("@constructors@",bufferConstructors.toString());
+            line = line.replace("@constructors@", elementSpecialChars(bufferConstructors.toString()) );
             templete = templete.replace("@listConstructors@",line);
 
         }else {
@@ -199,7 +210,8 @@ public class TemplateBuilder {
 
                 for ( String imports : classs.getImports().getProjectImports()){
                     String externalImport =  "<div class=\"Element\"> @import@ </div>";
-                    externalImport = externalImport.replace("@import@",imports);
+
+                    externalImport = externalImport.replace("@import@",elementSpecialChars(imports));
                     bufferProjectImportsTemp.append(externalImport).append("\n");
                 }
                 importsTemplate.append(bufferProjectImportsTemp);
@@ -211,7 +223,7 @@ public class TemplateBuilder {
 
                 for ( String imports : classs.getImports().getExternalImports()){
                     String externalImport =  "<div class=\"Element\"> @import@ </div>";
-                    externalImport = externalImport.replace("@import@",imports);
+                    externalImport = externalImport.replace("@import@",elementSpecialChars(imports));
                     bufferExternalImportsTemp.append(externalImport).append("\n");
                 }
                 importsTemplate.append(bufferExternalImportsTemp);
