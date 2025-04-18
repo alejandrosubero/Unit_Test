@@ -24,6 +24,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+
 @Component
 public class PDFGenerator implements IPrintService {
 
@@ -40,18 +43,6 @@ public class PDFGenerator implements IPrintService {
     }
 
 
-    private String ReadResourceFile (String fileName){
-        String contenido ="";
-        try (InputStream inputStream = IClassDetailBuilder.class.getClassLoader().getResourceAsStream("templateBase.html")) {
-            if (inputStream == null) {
-                throw new RuntimeException("file don't fount: "+fileName);
-            }
-            contenido = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return contenido;
-    }
 
     private void projectPdfGeneration(Project project){
         try {
@@ -64,6 +55,7 @@ public class PDFGenerator implements IPrintService {
                 templateBase = templateBase.replace(" @Structure-file@", project.getPrinterProject().getProjectDirectoryTree());
                 templateBase = templateBase.replace("@Structure-class@",project.getPrinterProject().getProjectClassTree());
             }
+
             pdfsEnMemoria.add(this.convertHtmlToPdfBytes(templateBase));
 
             for(Clase classs: project.getClaseList()){
@@ -116,6 +108,21 @@ public class PDFGenerator implements IPrintService {
         merger.mergeDocuments(MemoryUsageSetting.setupMainMemoryOnly());
     }
 
+
+    private String ReadResourceFile (String fileName){
+        String contenido ="";
+        try (InputStream inputStream = IClassDetailBuilder.class.getClassLoader().getResourceAsStream("templateBase.html")) {
+            if (inputStream == null) {
+                throw new RuntimeException("file don't fount: "+fileName);
+            }
+            contenido = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return contenido;
+    }
+
+
     public void execute (String text, String outpath) {
         try {
             crearPDF(outpath, text);
@@ -141,6 +148,35 @@ public class PDFGenerator implements IPrintService {
         }
 
     }
+
+
+    public static byte[] convertirStringABytes(String texto, String charsetName)
+            throws UnsupportedEncodingException {
+        return texto.getBytes(charsetName);
+    }
+
+    // Versión usando StandardCharsets (recomendado para Java 7+)
+    public static byte[] convertirStringABytes(String texto) {
+        return texto.getBytes(StandardCharsets.UTF_8); // Codificación UTF-8 por defecto
+    }
+
+
+//    public static void main(String[] args) {
+//        try {
+//            String texto = "Hola mundo!";
+//
+//            // Conversión con charset específico
+//            byte[] bytesISO = convertirStringABytes(texto, "ISO-8859-1");
+//            System.out.println("Bytes ISO-8859-1: " + Arrays.toString(bytesISO));
+//
+//            // Conversión con UTF-8 (método simplificado)
+//            byte[] bytesUTF8 = convertirStringABytes(texto);
+//            System.out.println("Bytes UTF-8: " + Arrays.toString(bytesUTF8));
+//
+//        } catch (UnsupportedEncodingException e) {
+//            System.err.println("Charset no soportado: " + e.getMessage());
+//        }
+//    }
 
 
 }
