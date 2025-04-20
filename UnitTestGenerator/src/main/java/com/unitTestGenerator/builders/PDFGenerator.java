@@ -19,6 +19,7 @@ import org.apache.commons.io.IOUtils;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 import org.apache.pdfbox.io.MemoryUsageSetting;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
+import org.apache.pdfbox.pdmodel.PDDocument;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -49,14 +50,15 @@ public class PDFGenerator implements IPrintService {
             List<byte[]> pdfsEnMemoria = new ArrayList<>();
             String fileName = project.getName()+IConstantModel.PDF_Extention;
             String templateBase = ReadResourceFile ("templateBase.html");
-            templateBase = templateBase.replace("@NombreProyect@", project.getName());
+//            templateBase = templateBase.replace("@NombreProyect@", project.getName());
 
-            if( project.getPrinterProject() !=null && (project.getPrinterProject().getProjectClassTree() !=null || project.getPrinterProject().getProjectDirectoryTree() !=null)){
-                templateBase = templateBase.replace(" @Structure-file@", project.getPrinterProject().getProjectDirectoryTree());
-                templateBase = templateBase.replace("@Structure-class@",project.getPrinterProject().getProjectClassTree());
+
+            if (project.getPrinterProject() != null && (project.getPrinterProject().getProjectClassTree() != null || project.getPrinterProject().getProjectDirectoryTree() != null)) {
+//                templateBase = templateBase.replace(" @Structure-file@", project.getPrinterProject().getProjectDirectoryTree());
+//                templateBase = templateBase.replace("@Structure-class@",project.getPrinterProject().getProjectClassTree());
             }
 
-            pdfsEnMemoria.add(this.convertHtmlToPdfBytes(templateBase));
+//            pdfsEnMemoria.add(this.convertHtmlToPdfBytes(templateBase));
 
             for(Clase classs: project.getClaseList()){
                 pdfsEnMemoria.add(this.convertHtmlToPdfBytes(classs.getClassTemplate()));
@@ -149,34 +151,25 @@ public class PDFGenerator implements IPrintService {
 
     }
 
+    ...
+    public static void appendPdf(String existingPdfPath, String newPdfPath, String outputPath) {
+        try (
+                // Cargar documentos existentes
+                PDDocument existingDoc = PDDocument.load(new File(existingPdfPath));
+                PDDocument newDoc = PDDocument.load(new File(newPdfPath))
+        ) {
+            // Agregar todas las páginas del nuevo PDF al existente
+            for (int i = 0; i < newDoc.getNumberOfPages(); i++) {
+                existingDoc.addPage(newDoc.getPage(i));
+            }
 
-    public static byte[] convertirStringABytes(String texto, String charsetName)
-            throws UnsupportedEncodingException {
-        return texto.getBytes(charsetName);
+            // Guardar el PDF combinado
+            existingDoc.save(outputPath);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
-
-    // Versión usando StandardCharsets (recomendado para Java 7+)
-    public static byte[] convertirStringABytes(String texto) {
-        return texto.getBytes(StandardCharsets.UTF_8); // Codificación UTF-8 por defecto
-    }
-
-
-//    public static void main(String[] args) {
-//        try {
-//            String texto = "Hola mundo!";
-//
-//            // Conversión con charset específico
-//            byte[] bytesISO = convertirStringABytes(texto, "ISO-8859-1");
-//            System.out.println("Bytes ISO-8859-1: " + Arrays.toString(bytesISO));
-//
-//            // Conversión con UTF-8 (método simplificado)
-//            byte[] bytesUTF8 = convertirStringABytes(texto);
-//            System.out.println("Bytes UTF-8: " + Arrays.toString(bytesUTF8));
-//
-//        } catch (UnsupportedEncodingException e) {
-//            System.err.println("Charset no soportado: " + e.getMessage());
-//        }
-//    }
 
 
 }
