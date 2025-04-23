@@ -39,7 +39,23 @@ public class PDFGenerator implements IPrintService {
             this.classPdfGeneration(classs);
         }
         if(project != null && classs == null){
-            this.projectPdfGeneration(project);
+            createTempOne(project);
+//            this.projectPdfGeneration(project);
+        }
+    }
+
+    private void createTempOne(Project project){
+
+        if (project.getPrinterProject() != null && (project.getPrinterProject().getProjectClassTree() != null || project.getPrinterProject().getProjectDirectoryTree() != null)) {
+
+            String pathBase = project.getPathProject() + IConstantModel.Separator;
+            String path1 = pathBase + "DirectoryTree.pdf";
+            String path2 = pathBase + "ClassTree.pdf";
+
+
+            execute (project.getPrinterProject().getProjectDirectoryTree(), path1);
+            execute (project.getPrinterProject().getProjectClassTree(), path2);
+            appendPdf(path1, path2, "tree.pdf");
         }
     }
 
@@ -49,16 +65,6 @@ public class PDFGenerator implements IPrintService {
         try {
             List<byte[]> pdfsEnMemoria = new ArrayList<>();
             String fileName = project.getName()+IConstantModel.PDF_Extention;
-            String templateBase = ReadResourceFile ("templateBase.html");
-//            templateBase = templateBase.replace("@NombreProyect@", project.getName());
-
-
-            if (project.getPrinterProject() != null && (project.getPrinterProject().getProjectClassTree() != null || project.getPrinterProject().getProjectDirectoryTree() != null)) {
-//                templateBase = templateBase.replace(" @Structure-file@", project.getPrinterProject().getProjectDirectoryTree());
-//                templateBase = templateBase.replace("@Structure-class@",project.getPrinterProject().getProjectClassTree());
-            }
-
-//            pdfsEnMemoria.add(this.convertHtmlToPdfBytes(templateBase));
 
             for(Clase classs: project.getClaseList()){
                 pdfsEnMemoria.add(this.convertHtmlToPdfBytes(classs.getClassTemplate()));
@@ -71,6 +77,8 @@ public class PDFGenerator implements IPrintService {
             e.printStackTrace();
         }
     }
+
+
 
     private void classPdfGeneration(Clase classs) {
         if (classs != null) {
@@ -129,12 +137,12 @@ public class PDFGenerator implements IPrintService {
         try {
             crearPDF(outpath, text);
             System.out.println("PDF generated in: " + outpath);
-        } catch (FileNotFoundException | DocumentException e) {
+        } catch (DocumentException | IOException e) {
             e.printStackTrace();
         }
     }
 
-    public static void crearPDF(String text, String outpath) throws FileNotFoundException, DocumentException {
+    public static void crearPDF1(String text, String outpath) throws FileNotFoundException, DocumentException {
         Document document = new Document();
         try {
             PdfWriter.getInstance(document, new FileOutputStream(outpath));
@@ -151,7 +159,55 @@ public class PDFGenerator implements IPrintService {
 
     }
 
-    ...
+
+    public static Boolean crearPDF(String text, String outpath) throws IOException, DocumentException {
+        if (outpath == null || outpath.trim().isEmpty()) {
+            throw new IllegalArgumentException("La ruta no puede estar vacía o nula.");
+        }
+
+        Document document = new Document();
+        PdfWriter writer = null;
+        try {
+            File file = new File(outpath);
+            File parentDir = file.getParentFile();
+
+            // Validar y crear directorios padre
+            if (parentDir != null && !parentDir.exists()) {
+                if (!parentDir.mkdirs()) {
+                    throw new IOException("Error al crear directorios para: " + parentDir.getAbsolutePath());
+                }
+            }
+
+            // Validar si el archivo se puede crear
+            if (!file.createNewFile()) {
+                throw new IOException("No se pudo crear el archivo: " + outpath);
+            }
+
+            writer = PdfWriter.getInstance(document, new FileOutputStream(file));
+            document.open();
+            document.add(new Paragraph(text));
+
+        } finally {
+            if (document != null && document.isOpen()) {
+                document.close();
+            }
+            if (writer != null) {
+                writer.close();
+            }
+
+            File parentDir = file.getParentFile();
+            if (parentDir != null) {
+                if (!parentDir.exists() && !parentDir.mkdirs()) {
+                    throw new IOException("No se pudo crear el directorio: " + parentDir.getAbsolutePath());
+                }
+            }
+
+            return ;
+
+        }
+    }
+
+
     public static void appendPdf(String existingPdfPath, String newPdfPath, String outputPath) {
         try (
                 // Cargar documentos existentes
