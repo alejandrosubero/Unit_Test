@@ -115,49 +115,4 @@ public interface IFileManager extends IBaseModel {
         String pathOfTest = this.stringEnsamble(pathProject,basePath, packagePath, Separator, claseName, "Test.java");
         return pathOfTest;
     }
-
-
-    // Método usando NIO (Java 7+ - recomendado)
-    public static boolean deleteFileNIO(String filePath) {
-        if (filePath == null || filePath.trim().isEmpty()) {
-            throw new IllegalArgumentException("La ruta del archivo no puede ser nula o vacía");
-        }
-
-        try {
-            Path path = Paths.get(filePath);
-            // Verificar que es un archivo regular y existe
-            if (!Files.isRegularFile(path)) {
-                System.err.println("La ruta no corresponde a un archivo regular: " + filePath);
-                return false;
-            }
-            // Eliminar el archivo
-            return Files.deleteIfExists(path);
-
-        } catch (SecurityException e) {
-            System.err.println("Error de permisos al eliminar: " + e.getMessage());
-            return false;
-        } catch (Exception e) {
-            System.err.println("Error al eliminar archivo: " + e.getMessage());
-            return false;
-        }
-    }
-
-    // Método usando IO (Java legacy)
-    public static boolean deleteFileIO(String filePath) {
-        if (filePath == null || filePath.trim().isEmpty()) {
-            throw new IllegalArgumentException("La ruta del archivo no puede ser nula o vacía");
-        }
-        File file = new File(filePath);
-        // Validaciones adicionales
-        if (!file.exists()) {
-            System.err.println("El archivo no existe: " + filePath);
-            return false;
-        }
-        if (!file.isFile()) {
-            System.err.println("La ruta no es un archivo: " + filePath);
-            return false;
-        }
-        return file.delete();
-    }
-
 }
