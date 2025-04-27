@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Plantilla UML Clase</title>
+    <style>
+        @page { size: A4; margin: 2cm; }
+        .container{
+            width: 700px;
+            border: 2px solid black;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .uml-class {
+            width: auto;
+            border: 2px solid black;
+            border-radius: 5px;
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+        }
+        .uml-header, .uml-attributes, .uml-methods, .uml-section {
+            padding: 8px;
+            border-bottom: 2px solid black;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .uml-title {
+            padding: 8px;
+            border-bottom: 2px solid black;
+            text-align: start;
+            font-weight: bold;
+        }
+
+        .uml-title-element {
+            padding: 8px;
+            text-align: start;
+            font-weight: bold;
+        }
+
+        .Element{
+            margin-left: 10px;
+            padding-top: 2px;
+        }
+        .uml-section {
+            padding: 8px;
+            text-align: start;
+            font-weight: bold;
+        }
+
+
+        .uml-attributes, .uml-methods {
+            text-align: left;
+            font-weight: normal;
+        }
+        .uml-methods {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+<div class="uml-class">
+    <div class="uml-title">Detalle de la clase: @NombreClaseTitle@ </div>
+    <div class="uml-attributes">
+        Package: @paquetico@ <br />
+        Class type: @ClassType@ <br/>
+        Class Signature Line:@classsignatureline@ <br />
+        Class ClassPath: @classclasspath@ <br />
+    </div>
+    <div class="uml-attributes">
+        Class Constructors:
+        @listConstructors@
+    </div>
+
+    <div class="uml-methods">
+        <div class="uml-title-element">@ConstructorsTitle@</div>
+        <div class="uml-class">
+            <div class="uml-header">@ConstructorsTitle1@</div>
+            <div class="uml-attributes">
+                @listConstructors@
+            </div>
+        </div>
+    </div>
+
+
+    <div class="uml-methods">
+        <div class="uml-title-element">Class UML:</div>
+        <div class="uml-class">
+            <div class="uml-header">@NombreClase@</div>
+            <div class="uml-attributes">
+                @Atributos@
+            </div>
+            <div class="uml-methods">
+                @Metodos@
+            </div>
+        </div>
+    </div>
+
+
+    <div class="uml-methods">
+        <div class="uml-title-element">@RelationsTitle@</div>
+        <div class="uml-class">
+            <div class="uml-header">@ImplementTitle@</div>
+            <div class="uml-attributes">
+                @Implement@
+            </div>
+        </div>
+        <div class="uml-class">
+            <div class="uml-header">@ExtendsTitle@</div>
+            <div class="uml-attributes">
+                @Extends@
+            </div>
+        </div>
+        <div class="uml-class">
+            <div class="uml-header">@IocTitle@</div>
+            <div class="uml-attributes">
+                @Ioc@
+            </div>
+        </div>
+        <div class="uml-class">
+            <div class="uml-header">@StrongAssociationTitle@</div>
+            <div class="uml-attributes">
+                @StrongAssociation@
+            </div>
+        </div>
+        <div class="uml-class">
+            <div class="uml-header">@StaticPatterBuildTitle@</div>
+            <div class="uml-attributes">
+                @StaticPatterBuild@
+            </div>
+        </div>
+    </div>
+
+
+    <div class="uml-section"></div>
+
+
+    <div class="uml-methods">
+        <div class="uml-class">
+            <div class="uml-header">@ClassImportsTitle@</div>
+            @ClassImports@
+        </div>
+    </div>
+
+
+    <div class="uml-methods">
+        <div class="uml-title-element">Interface: </div>
+
+        <div class="uml-class">
+            <div class="uml-header">@Structure-ImplementsTitle@</div>
+            @Structure-Implements@
+        </div>
+
+        <div class="uml-class">
+            <div class="uml-header">@Structure-ExtendsTitle@</div>
+            @Structure-Extends@
+        </div>
+    </div>
+    
+
+
+    <div class="uml-methods">
+        <div class="uml-class">
+            <div class="uml-header">@anotationsTitle@</div>
+            <div class="uml-attributes">
+                @anotations@
+            </div>
+        </div>
+    </div>
+
+
+</div>
+</body>
+</html>

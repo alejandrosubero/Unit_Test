@@ -1,9 +1,7 @@
 package com.unitTestGenerator.builders;
 
 
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.unitTestGenerator.analyzers.services.interfaces.IClassDetailBuilder;
 import com.unitTestGenerator.builders.interfaces.IFileManagerDelete;
@@ -66,13 +64,12 @@ public class PDFGenerator implements IPrintService, IFileManagerDelete {
             String path1 = pathBase + tempNameDirectoryTree;
             String path2 = pathBase + tempNameClassTree;
             String path3 = pathBase + tempNameTrees;
-            execute(project.getPrinterProject().getProjectDirectoryTree(), path1);
-            execute(project.getPrinterProject().getProjectClassTree(), path2);
+            this.execute( "Project Directory Tree", project.getPrinterProject().getProjectDirectoryTree(), path1);
+            this.execute("Project Class Tree",project.getPrinterProject().getProjectClassTree(), path2);
             appendPdf(path1, path2, path3);
 
         }
     }
-
 
     private void projectPdfGeneration(Project project) {
         try {
@@ -80,7 +77,6 @@ public class PDFGenerator implements IPrintService, IFileManagerDelete {
             String path1 = pathBase + tempNameTrees;
             String path2 = pathBase + tempNameTemplate;
             String outputPath = pathBase + project.getName() + IConstantModel.PDF_Extention;
-            ;
 
             List<byte[]> pdfsEnMemoria = new ArrayList<>();
             for (Clase classs : project.getClaseList()) {
@@ -94,6 +90,69 @@ public class PDFGenerator implements IPrintService, IFileManagerDelete {
             e.printStackTrace();
         }
     }
+
+    public void execute(String title, String text, String outpath) {
+        try {
+            if(title == null){
+                crearPDF(text, outpath);
+            }else {
+                generatePDF(title,  text,  outpath);
+            }
+            this.service().print_BLUE("PDF generated in: " + outpath);
+        } catch (DocumentException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void crearPDF(String text, String outpath) throws FileNotFoundException, DocumentException {
+        Document document = new Document();
+        try {
+            PdfWriter.getInstance(document, new FileOutputStream(outpath));
+            document.open();
+            document.add(new Paragraph(text));
+        } catch (DocumentException e) {
+            throw new RuntimeException(e);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } finally {
+            document.close();
+        }
+    }
+
+    // Método para generar el PDF
+    public static void generatePDF(String title, String text, String outpath) throws DocumentException, IOException {
+
+        Document document = new Document();
+
+       try {
+           PdfWriter.getInstance(document, new FileOutputStream(outpath));
+           document.open();
+
+           // font for title: blod and underlined
+           Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 16, Font.UNDERLINE);
+
+           // font for content: normal
+           Font fontContent = FontFactory.getFont(FontFactory.HELVETICA, 12, Font.NORMAL);
+
+           // create title
+           Paragraph paragraphTitle = new Paragraph(title, titleFont);
+           paragraphTitle.setSpacingAfter(10); // espacio después del título
+
+           // create content
+           Paragraph paragraphText = new Paragraph(text, fontContent);
+           document.add(paragraphTitle);
+           document.add(paragraphText);
+
+       }catch (DocumentException e) {
+           throw new RuntimeException(e);
+       } catch (FileNotFoundException e) {
+           throw new RuntimeException(e);
+       } finally {
+           document.close();
+       }
+    }
+
+
 
 
     private void classPdfGeneration(Clase classs) {
@@ -136,42 +195,21 @@ public class PDFGenerator implements IPrintService, IFileManagerDelete {
     }
 
 
-    public void execute(String text, String outpath) {
-        try {
-            crearPDF(text, outpath);
-            this.service().print_BLUE("PDF generated in: " + outpath);
-        } catch (DocumentException | IOException e) {
-            e.printStackTrace();
-        }
-    }
 
-    public static void crearPDF(String text, String outpath) throws FileNotFoundException, DocumentException {
-        Document document = new Document();
-        try {
-            PdfWriter.getInstance(document, new FileOutputStream(outpath));
-            document.open();
-            document.add(new Paragraph(text));
-        } catch (DocumentException e) {
-            throw new RuntimeException(e);
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        } finally {
-            document.close();
-        }
 
-    }
+
 
 
     public void appendPdf(String existingPdfPath, String newPdfPath, String outputPath) {
         try (
-                // Cargar documentos existentes
+                //add existent documents
                 PDDocument existingDoc = PDDocument.load(new File(existingPdfPath));
                 PDDocument newDoc = PDDocument.load(new File(newPdfPath))
         ) {
             for (int i = 0; i < newDoc.getNumberOfPages(); i++) {
                 existingDoc.addPage(newDoc.getPage(i));
             }
-            //add conten
+            //add content
             existingDoc.save(outputPath);
 
             this.service().print_YELLOW("PDF generated in: " + outputPath);
@@ -189,8 +227,8 @@ public class PDFGenerator implements IPrintService, IFileManagerDelete {
 
     private void deleteTemporalFile(String existingPdfPath, String newPdfPath) {
         try {
-            this.deleteFileNIO(existingPdfPath);
-            this.deleteFileNIO(newPdfPath);
+            this.deleteFileIO(existingPdfPath);
+            this.deleteFileIO(newPdfPath);
         } catch (Exception e) {
             this.service().print_RED("¡Fail to delete temp file:");
             this.service().print_RED("Error : " + e.getMessage());
