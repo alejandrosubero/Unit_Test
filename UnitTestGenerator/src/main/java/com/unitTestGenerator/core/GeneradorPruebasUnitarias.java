@@ -10,10 +10,11 @@ import com.unitTestGenerator.pojos.Project;
 import com.unitTestGenerator.pojos.TestFileContent;
 import com.unitTestGenerator.pojos.Variable;
 import com.unitTestGenerator.services.MethodParameterObject;
+import com.unitTestGenerator.util.IConstantModel;
 
 
 @Component
-public class GeneradorPruebasUnitarias implements IManageMavenGadleAppProperties {
+public class GeneradorPruebasUnitarias implements IManageMavenGadleAppProperties, IConstantModel {
 
     private Project project;
 

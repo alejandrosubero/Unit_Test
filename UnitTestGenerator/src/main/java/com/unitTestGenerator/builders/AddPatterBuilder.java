@@ -177,7 +177,7 @@ public class AddPatterBuilder implements IFileManager {
             String fieldName = field.split(" ")[1];
 
             addBuildMethod.append("\t\t"+className.toLowerCase()+".set")
-                    .append(capitalizeFirstLetter(fieldName))
+                    .append(capitalizetheFirstLetter(fieldName))
                     .append("(this.")
                     .append(fieldName).append(");\n");
         }
@@ -189,7 +189,7 @@ public class AddPatterBuilder implements IFileManager {
         return addBuildMethod.toString();
     }
 
-    public String capitalizeFirstLetter(String fieldName) {
+    public String capitalizetheFirstLetter(String fieldName) {
         if (fieldName == null || fieldName.isEmpty()) {
             return fieldName;
         }

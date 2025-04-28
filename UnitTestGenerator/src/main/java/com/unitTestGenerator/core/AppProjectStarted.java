@@ -3,13 +3,12 @@ package com.unitTestGenerator.core;
 
 import com.unitTestGenerator.analyzers.services.AnalizerProjectService;
 import com.unitTestGenerator.analyzers.services.interfaces.IAnalizerProjectServiceManager;
-import com.unitTestGenerator.interfaces.IPorjectName;
+
 import com.unitTestGenerator.ioc.ContextIOC;
 import com.unitTestGenerator.ioc.anotations.Component;
 import com.unitTestGenerator.ioc.anotations.Singleton;
 import com.unitTestGenerator.menus.AnalizerMenu;
 import com.unitTestGenerator.menus.MainMenue;
-import com.unitTestGenerator.test.interfaces.IInternalTest;
 import com.unitTestGenerator.pojos.Clase;
 import com.unitTestGenerator.pojos.Project;
 import com.unitTestGenerator.util.ICleanConsole;
@@ -20,7 +19,7 @@ import java.util.Scanner;
 
 @Component
 @Singleton
-public class AppProjectStarted implements MainMenue, IInternalTest, IAnalizerProjectServiceManager {
+public class AppProjectStarted implements MainMenue, IAnalizerProjectServiceManager {
 
     private AnalizerProjectService analizerProjectService;
     private GeneradorPruebasUnitarias generadorPruebasUnitarias;
@@ -133,23 +132,6 @@ public class AppProjectStarted implements MainMenue, IInternalTest, IAnalizerPro
             System.out.println("No class in project for generate the unit test");
             this.askContinue( new Scanner(System.in));
         }
-    }
-
-    @Override
-    public void executeTest(String pathProject, boolean isAnalisis, String nombreClase, String method, Boolean useMock) {
-
-        analizerProjectService.projectAnalize(pathProject, isAnalisis, this.project);
-        if (!isAnalisis) {
-            if (method == null || method.equals("")) {
-                method = "all";
-            }
-            this.generateUnitTest(nombreClase, method, useMock);
-        }
-    }
-
-    @Override
-    public void analizedTest(String pathProject, boolean isAnalisis, String nombreClase, String method, Boolean useMock) {
-        analizerProjectService.projectAnalize(pathProject, isAnalisis, this.project);
     }
 
 

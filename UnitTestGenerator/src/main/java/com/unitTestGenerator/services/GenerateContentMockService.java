@@ -5,6 +5,7 @@ import com.unitTestGenerator.ioc.anotations.Component;
 import com.unitTestGenerator.ioc.anotations.Singleton;
 import com.unitTestGenerator.interfaces.IMethodServiceTools;
 import com.unitTestGenerator.pojos.*;
+import com.unitTestGenerator.util.IConstantModel;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
@@ -15,7 +16,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 @Component
 @Singleton
-public class GenerateContentMockService implements IMethodServiceTools, IGenerateVariable {
+public class GenerateContentMockService implements IMethodServiceTools, IGenerateVariable, IConstantModel {
 
 
     private Project project;

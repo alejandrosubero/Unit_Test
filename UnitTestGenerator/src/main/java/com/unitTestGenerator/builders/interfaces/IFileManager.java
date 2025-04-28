@@ -11,6 +11,8 @@ import java.nio.file.Paths;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.unitTestGenerator.util.IConstantModel.pathSeparator;
+
 public interface IFileManager extends IBaseModel {
 
     default String fileExist(File file){

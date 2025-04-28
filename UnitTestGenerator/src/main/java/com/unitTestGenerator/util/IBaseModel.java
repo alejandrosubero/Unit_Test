@@ -1,11 +1,19 @@
 package com.unitTestGenerator.util;
 
+import com.unitTestGenerator.util.interfaces.IStringEnsambleService;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.StringJoiner;
 
-public interface IBaseModel extends IConstantModel {
+import static com.unitTestGenerator.util.IConstantModel.pathSeparator;
+
+public interface IBaseModel extends IStringEnsambleService{
+
+
+	public  String Separator = IConstantModel.Separator;
+	public  String BREAK_LINE = IConstantModel.BREAK_LINE;
 
 	default String path(List<String> paths) {
 		StringBuilder newPathBuilder = new StringBuilder();
@@ -23,29 +31,9 @@ public interface IBaseModel extends IConstantModel {
 				newPathBuilder.append(pathSeparator);
 			}
 		}
-
 		return newPathBuilder.toString();
 	}
 
-	default String stringEnsamble(List<String> stringPaths) {
-		StringBuffer newString = new StringBuffer();
-		stringPaths.stream().forEach((path) -> {
-			newString.append(path);
-		});
-		return newString.toString();
-	}
-
-	default String stringEnsamble(String... stringPaths) {
-		StringBuffer newString = new StringBuffer();
-		String[] var3 = stringPaths;
-		int var4 = stringPaths.length;
-
-		for(int var5 = 0; var5 < var4; ++var5) {
-			String path = var3[var5];
-			newString.append(path);
-		}
-		return newString.toString();
-	}
 
 
 	public static String stringEnsamble2(String... stringPaths) {
@@ -102,9 +90,7 @@ public interface IBaseModel extends IConstantModel {
 		return stringColumm.toString();
 	}
 
-	default void printColummString(String... paths){
-		System.out.println(listStringToColummString(paths));
-	}
+
 
 	default void printColummStringY(String... paths){
 		System.out.println("\u001B[33m" + listStringToColummString(paths));
@@ -112,60 +98,63 @@ public interface IBaseModel extends IConstantModel {
 
 
 
-	default String listStringStructureToColummString(List<String> parameters) {
-		StringBuilder stringColumm = new StringBuilder(BREAK_LINE);
-		if (parameters != null && parameters.size() > 0) {
-			for(int i = 0; i < parameters.size(); ++i) {
-				stringColumm.append(this.stringEnsamble(Arrays.asList((String)parameters.get(i))));
-				if (i < parameters.size()) {
-					stringColumm.append(BREAK_LINE);
-				}
-			}
-		}
-		return stringColumm.toString();
-	}
+//	default String listStringStructureToColummString(List<String> parameters) {
+//		StringBuilder stringColumm = new StringBuilder(BREAK_LINE);
+//		if (parameters != null && parameters.size() > 0) {
+//			for(int i = 0; i < parameters.size(); ++i) {
+//				stringColumm.append(this.stringEnsamble(Arrays.asList((String)parameters.get(i))));
+//				if (i < parameters.size()) {
+//					stringColumm.append(BREAK_LINE);
+//				}
+//			}
+//		}
+//		return stringColumm.toString();
+//	}
+//
+//	default  String indentation(Integer indentationLevel){
+//		StringBuilder indentation = new StringBuilder();
+//		if(indentationLevel > 0){
+//			int index = 0;
+//			while(index < indentationLevel) {
+//				indentation.append("\t");
+//				index++;
+//			}
+//		}
+//		return indentation.toString();
+//	}
 
-	default  String indentation(Integer indentationLevel){
-		StringBuilder indentation = new StringBuilder();
-		if(indentationLevel > 0){
-			int index = 0;
-			while(index < indentationLevel) {
-				indentation.append("\t");
-				index++;
-			}
-		}
-		return indentation.toString();
-	}
+//	default String capitalizeFirstLetter(String str) {
+//		if (str != null && !str.isEmpty()) {
+//			String firstCharInString = str.substring(0, 1).toUpperCase();
+//			String remainingCharsInString = str.substring(1);
+//			return this.stringEnsamble(Arrays.asList(firstCharInString, remainingCharsInString));
+//		} else {
+//			return str;
+//		}
+//	}
+	//	default String capitalizeOrUncapitalisedFirstLetter(String str, Character action) {
+//		if (str != null && !str.isEmpty()) {
+//			String remainingCharsInString = str.substring(1);
+//			return action.equals('u') ? this.stringEnsamble(Arrays.asList(str.substring(0, 1).toUpperCase(), remainingCharsInString)) : this.stringEnsamble( Arrays.asList(str.substring(0, 1).toLowerCase(), remainingCharsInString));
+//		} else {
+//			return str;
+//		}
+//	}
 
+//	default String toCamelCase(String text) {
+//		String[] words = text.split("[\\W_]+");
+//		StringBuilder builder = new StringBuilder();
+//
+//		for(int i = 0; i < words.length; ++i) {
+//			String word = words[i];
+//			builder.append(i > 0 ? word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase() : word.toLowerCase());
+//		}
+//
+//		return builder.toString();
+//	}
+//
+//	default void printColummString(String... paths){
+//		System.out.println(listStringToColummString(paths));
+//	}
 
-	default String capitalizeOrUncapitalisedFirstLetter(String str, Character action) {
-		if (str != null && !str.isEmpty()) {
-			String remainingCharsInString = str.substring(1);
-			return action.equals('u') ? this.stringEnsamble(Arrays.asList(str.substring(0, 1).toUpperCase(), remainingCharsInString)) : this.stringEnsamble( Arrays.asList(str.substring(0, 1).toLowerCase(), remainingCharsInString));
-		} else {
-			return str;
-		}
-	}
-
-	default String toCamelCase(String text) {
-		String[] words = text.split("[\\W_]+");
-		StringBuilder builder = new StringBuilder();
-
-		for(int i = 0; i < words.length; ++i) {
-			String word = words[i];
-			builder.append(i > 0 ? word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase() : word.toLowerCase());
-		}
-
-		return builder.toString();
-	}
-
-	default String capitalizeFirstLetter(String str) {
-		if (str != null && !str.isEmpty()) {
-			String firstCharInString = str.substring(0, 1).toUpperCase();
-			String remainingCharsInString = str.substring(1);
-			return this.stringEnsamble(Arrays.asList(firstCharInString, remainingCharsInString));
-		} else {
-			return str;
-		}
-	}
 }
