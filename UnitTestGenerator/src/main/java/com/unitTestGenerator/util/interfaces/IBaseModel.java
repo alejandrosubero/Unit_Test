@@ -1,13 +1,11 @@
-package com.unitTestGenerator.util;
-
-import com.unitTestGenerator.util.interfaces.IStringEnsambleService;
+package com.unitTestGenerator.util.interfaces;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.StringJoiner;
 
-import static com.unitTestGenerator.util.IConstantModel.pathSeparator;
+import static com.unitTestGenerator.util.interfaces.IConstantModel.pathSeparator;
 
 public interface IBaseModel extends IStringEnsambleService{
 
@@ -89,7 +87,6 @@ public interface IBaseModel extends IStringEnsambleService{
 		}
 		return stringColumm.toString();
 	}
-
 
 
 	default void printColummStringY(String... paths){

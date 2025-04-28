@@ -10,7 +10,7 @@ import com.unitTestGenerator.pojos.Project;
 import com.unitTestGenerator.pojos.TestFileContent;
 import com.unitTestGenerator.pojos.Variable;
 import com.unitTestGenerator.services.MethodParameterObject;
-import com.unitTestGenerator.util.IConstantModel;
+import com.unitTestGenerator.util.interfaces.IConstantModel;
 
 
 @Component

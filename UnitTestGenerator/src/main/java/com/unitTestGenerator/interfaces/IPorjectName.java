@@ -2,7 +2,7 @@ package com.unitTestGenerator.interfaces;
 
 import com.unitTestGenerator.core.ProjectHolder;
 import com.unitTestGenerator.ioc.ContextIOC;
-import com.unitTestGenerator.util.IConstantModel;
+import com.unitTestGenerator.util.interfaces.IConstantModel;
 
 
 public interface IPorjectName {

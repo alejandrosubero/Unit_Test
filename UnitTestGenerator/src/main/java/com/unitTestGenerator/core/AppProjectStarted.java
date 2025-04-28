@@ -8,10 +8,10 @@ import com.unitTestGenerator.ioc.ContextIOC;
 import com.unitTestGenerator.ioc.anotations.Component;
 import com.unitTestGenerator.ioc.anotations.Singleton;
 import com.unitTestGenerator.menus.AnalizerMenu;
-import com.unitTestGenerator.menus.MainMenue;
+import com.unitTestGenerator.menus.interfaces.MainMenue;
 import com.unitTestGenerator.pojos.Clase;
 import com.unitTestGenerator.pojos.Project;
-import com.unitTestGenerator.util.ICleanConsole;
+import com.unitTestGenerator.util.interfaces.ICleanConsole;
 
 import java.util.ArrayList;
 import java.util.List;

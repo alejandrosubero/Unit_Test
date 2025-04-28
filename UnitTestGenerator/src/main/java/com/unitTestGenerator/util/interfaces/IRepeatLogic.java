@@ -1,4 +1,4 @@
-package com.unitTestGenerator.util;
+package com.unitTestGenerator.util.interfaces;
 
 public interface IRepeatLogic {
 

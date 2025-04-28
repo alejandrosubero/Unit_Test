@@ -12,8 +12,8 @@ import java.io.FileOutputStream;
 
 import com.unitTestGenerator.pojos.Clase;
 import com.unitTestGenerator.pojos.Project;
-import com.unitTestGenerator.printers.IPrintService;
-import com.unitTestGenerator.util.IConstantModel;
+import com.unitTestGenerator.printers.interfaces.IPrintService;
+import com.unitTestGenerator.util.interfaces.IConstantModel;
 import org.apache.commons.io.IOUtils;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 import org.apache.pdfbox.io.MemoryUsageSetting;

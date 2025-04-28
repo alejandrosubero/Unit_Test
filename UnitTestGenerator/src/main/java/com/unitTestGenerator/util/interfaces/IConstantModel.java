@@ -1,6 +1,7 @@
-package com.unitTestGenerator.util;
+package com.unitTestGenerator.util.interfaces;
 
 import com.unitTestGenerator.pojos.Clase;
+import com.unitTestGenerator.util.DetectSO;
 
 import java.io.File;
 import java.util.Arrays;

@@ -1,7 +1,5 @@
 package com.unitTestGenerator.builders.interfaces;
 
-import com.unitTestGenerator.printers.IPrintService;
-
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;

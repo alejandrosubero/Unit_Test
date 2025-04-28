@@ -1,13 +1,9 @@
 package com.unitTestGenerator.uml.sevices;
 
-import com.unitTestGenerator.core.AppProjectStarted;
-import com.unitTestGenerator.ioc.ContextIOC;
 import com.unitTestGenerator.ioc.anotations.Component;
 import com.unitTestGenerator.pojos.*;
-import com.unitTestGenerator.uml.pojos.Element;
-import com.unitTestGenerator.util.IRepeatLogic;
+import com.unitTestGenerator.util.interfaces.IRepeatLogic;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Component

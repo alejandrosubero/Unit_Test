@@ -1,4 +1,4 @@
-package com.unitTestGenerator.printers;
+package com.unitTestGenerator.printers.interfaces;
 
 import java.io.File;
 import java.util.Arrays;

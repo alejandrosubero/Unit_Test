@@ -5,7 +5,7 @@ import com.unitTestGenerator.ioc.anotations.Component;
 import com.unitTestGenerator.ioc.anotations.Singleton;
 import com.unitTestGenerator.interfaces.IMethodServiceTools;
 import com.unitTestGenerator.pojos.*;
-import com.unitTestGenerator.util.IConstantModel;
+import com.unitTestGenerator.util.interfaces.IConstantModel;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;

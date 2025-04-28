@@ -1,9 +1,9 @@
-package com.unitTestGenerator.printers;
+package com.unitTestGenerator.printers.interfaces;
 
 import com.unitTestGenerator.pojos.Clase;
 import com.unitTestGenerator.pojos.Project;
 
-public interface PrintProjectAnalyzers extends IPrintService{
+public interface PrintProjectAnalyzers extends IPrintService {
 
 
     default void printProjectAnalizeResult(Project projectP) {

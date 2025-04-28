@@ -4,7 +4,7 @@ package com.unitTestGenerator.analyzers.services;
 import com.unitTestGenerator.ioc.anotations.Component;
 import com.unitTestGenerator.pojos.Clase;
 import com.unitTestGenerator.pojos.ImportAnalizePojo;
-import com.unitTestGenerator.util.IBaseModel;
+import com.unitTestGenerator.util.interfaces.IBaseModel;
 
 import java.util.ArrayList;
 import java.util.List;

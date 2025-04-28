@@ -10,10 +10,10 @@ import com.unitTestGenerator.ioc.anotations.Component;
 import com.unitTestGenerator.ioc.anotations.Singleton;
 import com.unitTestGenerator.pojos.Clase;
 import com.unitTestGenerator.pojos.Project;
-import com.unitTestGenerator.printers.IPrintService;
+import com.unitTestGenerator.printers.interfaces.IPrintService;
 import com.unitTestGenerator.printers.PrintClassAnalyzers;
-import com.unitTestGenerator.printers.PrintProjectAnalyzers;
-import com.unitTestGenerator.util.IBaseModel;
+import com.unitTestGenerator.printers.interfaces.PrintProjectAnalyzers;
+import com.unitTestGenerator.util.interfaces.IBaseModel;
 
 import java.util.Scanner;
 

@@ -11,8 +11,7 @@ import com.unitTestGenerator.ioc.anotations.Singleton;
 import com.unitTestGenerator.pojos.Clase;
 import com.unitTestGenerator.pojos.Project;
 import com.unitTestGenerator.printers.DirectoryTreeBuilder;
-import com.unitTestGenerator.printers.IPrintProjectStructure;
-import com.unitTestGenerator.uml.sevices.PrintClassToUML;
+import com.unitTestGenerator.printers.interfaces.IPrintProjectStructure;
 
 import java.io.File;
 import java.util.*;

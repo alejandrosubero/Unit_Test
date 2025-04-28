@@ -1,8 +1,6 @@
-package com.unitTestGenerator.printers;
+package com.unitTestGenerator.printers.interfaces;
 
-import com.unitTestGenerator.analyzers.services.interfaces.IClassDetailBuilder;
 import com.unitTestGenerator.pojos.Clase;
-import com.unitTestGenerator.pojos.ImportAnalizePojo;
 import com.unitTestGenerator.pojos.Project;
 
 import java.util.ArrayList;

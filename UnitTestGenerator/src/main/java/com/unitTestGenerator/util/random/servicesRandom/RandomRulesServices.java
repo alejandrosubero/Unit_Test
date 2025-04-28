@@ -4,7 +4,7 @@ import com.unitTestGenerator.interfaces.IReturnType;
 import com.unitTestGenerator.ioc.anotations.Component;
 import com.unitTestGenerator.ioc.anotations.Singleton;
 import com.unitTestGenerator.pojos.Variable;
-import com.unitTestGenerator.util.IConstantModel;
+import com.unitTestGenerator.util.interfaces.IConstantModel;
 
 import java.util.Arrays;
 import java.util.List;

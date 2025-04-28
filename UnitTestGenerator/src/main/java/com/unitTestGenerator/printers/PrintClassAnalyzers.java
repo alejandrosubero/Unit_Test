@@ -3,6 +3,7 @@ package com.unitTestGenerator.printers;
 import com.unitTestGenerator.ioc.anotations.Component;
 import com.unitTestGenerator.ioc.anotations.Singleton;
 import com.unitTestGenerator.pojos.*;
+import com.unitTestGenerator.printers.interfaces.IPrintService;
 
 @Component
 @Singleton

@@ -1,6 +1,6 @@
 package com.unitTestGenerator.analyzers.interfaces;
 
-import com.unitTestGenerator.util.IConstantModel;
+import com.unitTestGenerator.util.interfaces.IConstantModel;
 import com.unitTestGenerator.util.interfaces.IStringEnsambleService;
 
 import java.util.Arrays;

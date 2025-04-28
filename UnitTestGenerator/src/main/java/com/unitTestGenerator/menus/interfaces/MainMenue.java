@@ -1,4 +1,4 @@
-package com.unitTestGenerator.menus;
+package com.unitTestGenerator.menus.interfaces;
 
 
 import java.util.Scanner;

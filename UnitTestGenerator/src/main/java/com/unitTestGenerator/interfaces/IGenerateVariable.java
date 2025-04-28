@@ -1,6 +1,6 @@
 package com.unitTestGenerator.interfaces;
 
-import com.unitTestGenerator.util.IBaseModel;
+import com.unitTestGenerator.util.interfaces.IBaseModel;
 
 public interface IGenerateVariable extends IBaseModel {
 
