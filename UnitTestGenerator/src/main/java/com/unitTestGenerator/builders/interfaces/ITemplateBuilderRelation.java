@@ -21,8 +21,10 @@ public interface ITemplateBuilderRelation {
     default String relationImport(String templete, String title, String content){
         if(title == null){ title = "";}
         if (content == null){ content = "";}
-        templete = templete.replace("@ImplementTitle@", title);
-        templete = templete.replace("@Implement@", content);
+        String templeteInternal = getRelationImplement();
+        templeteInternal = templeteInternal.replace("@ImplementTitle@", title);
+        templeteInternal = templeteInternal.replace("@Implement@", content);
+        templete = templete.replace("@ImplementTemplate@", templeteInternal);
         return templete;
 
     }
@@ -30,16 +32,21 @@ public interface ITemplateBuilderRelation {
     default String relationExtends(String templete, String title, String content){
         if(title == null){ title = "";}
         if (content == null){ content = "";}
-        templete = templete.replace("@ExtendsTitle@", title);
-        templete = templete.replace("@Extends@", content);
+        String templeteInternal = getRelationExtends();
+        templeteInternal = templeteInternal.replace("@ExtendsTitle@", title);
+        templeteInternal = templeteInternal.replace("@Extends@", content);
+        templete = templete.replace("@ExtendsTemplate@", templeteInternal);
         return templete;
     }
+
 
     default String relationIoc(String templete, String title, String content){
         if(title == null){ title = "";}
         if (content == null){ content = "";}
-        templete = templete.replace("@IocTitle@", title);
-        templete = templete.replace("@Ioc@", content);
+        String templeteInternal = getRelationIoc();
+        templeteInternal = templeteInternal.replace("@IocTitle@", title);
+        templeteInternal = templeteInternal.replace("@Ioc@", content);
+        templete = templete.replace("@IocTemplate@", templeteInternal);
         return templete;
     }
 
@@ -47,8 +54,10 @@ public interface ITemplateBuilderRelation {
     default String relationStrongAssociation(String templete, String title, String content){
         if(title == null){ title = "";}
         if (content == null){ content = "";}
-        templete = templete.replace("@StrongAssociationTitle@", title);
-        templete = templete.replace("@StrongAssociation@", content);
+        String templeteInternal = getRelationStrongAssociation();
+        templeteInternal = templeteInternal.replace("@StrongAssociationTitle@", title);
+        templeteInternal = templeteInternal.replace("@StrongAssociation@", content);
+        templete = templete.replace("@StrongAssociationTemplate@", templeteInternal);
         return templete;
     }
 
@@ -56,10 +65,71 @@ public interface ITemplateBuilderRelation {
     default String relationStaticPatterBuild(String templete, String title, String content){
         if(title == null){ title = "";}
         if (content == null){ content = "";}
-        templete = templete.replace("@StaticPatterBuildTitle@", title);
-        templete = templete.replace("@StaticPatterBuild@", content);
+        String templeteInternal = getRelationStaticPatterBuild();
+        templeteInternal = templeteInternal.replace("@StaticPatterBuildTitle@", title);
+        templeteInternal = templeteInternal.replace("@StaticPatterBuild@", content);
+        templete = templete.replace("@StaticPatterBuildTemplate@", templeteInternal);
         return templete;
     }
+
+    default String relationBaseCleanAll(String templete){
+        templete = templete.replace("<!DOCTYPE html>", "");
+        templete = templete.replace("<html lang=\"es\">", "");
+        templete = templete.replace("<body>", "");
+        templete = templete.replace("</body>", "");
+        templete = templete.replace("</html>", "");
+        return templete;
+    }
+
+
+    default String getRelationImplement(){
+        return "    <div class=\"uml-class\">\n" +
+                "        <div class=\"uml-header\">@ImplementTitle@</div>\n" +
+                "        <div class=\"uml-attributes\">\n" +
+                "            @Implement@\n" +
+                "        </div>\n" +
+                "    </div>";
+    }
+
+    default String getRelationExtends(){
+        return " <div class=\"uml-class\">\n" +
+                "        <div class=\"uml-header\">@ExtendsTitle@</div>\n" +
+                "        <div class=\"uml-attributes\">\n" +
+                "            @Extends@\n" +
+                "        </div>\n" +
+                "    </div>";
+    }
+
+    default String getRelationIoc(){
+        return "   <div class=\"uml-class\">\n" +
+                "        <div class=\"uml-header\">@IocTitle@</div>\n" +
+                "        <div class=\"uml-attributes\">\n" +
+                "            @Ioc@\n" +
+                "        </div>\n" +
+                "    </div>";
+    }
+
+    default String getRelationStrongAssociation(){
+        return " <div class=\"uml-class\">\n" +
+                "        <div class=\"uml-header\">@StrongAssociationTitle@</div>\n" +
+                "        <div class=\"uml-attributes\">\n" +
+                "            @StrongAssociation@\n" +
+                "        </div>\n" +
+                "    </div>";
+    }
+
+    default String getRelationStaticPatterBuild(){
+        return "  <div class=\"uml-class\">\n" +
+                "        <div class=\"uml-header\">@StaticPatterBuildTitle@</div>\n" +
+                "        <div class=\"uml-attributes\">\n" +
+                "            @StaticPatterBuild@\n" +
+                "        </div>\n" +
+                "    </div>";
+    }
+
+
+
+
 
 
 }

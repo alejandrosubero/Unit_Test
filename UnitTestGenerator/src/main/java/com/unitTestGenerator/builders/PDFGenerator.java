@@ -15,9 +15,6 @@ import com.unitTestGenerator.pojos.Project;
 import com.unitTestGenerator.printers.IPrintService;
 import com.unitTestGenerator.util.IConstantModel;
 import org.apache.commons.io.IOUtils;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 import org.apache.pdfbox.io.MemoryUsageSetting;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
@@ -25,14 +22,11 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
+
 
 @Component
 public class PDFGenerator implements IPrintService, IFileManagerDelete {
@@ -64,6 +58,7 @@ public class PDFGenerator implements IPrintService, IFileManagerDelete {
             String path1 = pathBase + tempNameDirectoryTree;
             String path2 = pathBase + tempNameClassTree;
             String path3 = pathBase + tempNameTrees;
+            this.service().print_BLUE("Starting report generation....");
             this.execute( "Project Directory Tree", project.getPrinterProject().getProjectDirectoryTree(), path1);
             this.execute("Project Class Tree",project.getPrinterProject().getProjectClassTree(), path2);
             appendPdf(path1, path2, path3);
@@ -84,7 +79,7 @@ public class PDFGenerator implements IPrintService, IFileManagerDelete {
             }
             this.mergePdfBytes(pdfsEnMemoria, path2);
             appendPdf(path2, path1, outputPath);
-//            this.service().print_YELLOW("¡successfully generated PDF!");
+            this.service().print_YELLOW("¡successfully generated PDF!");
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -98,7 +93,7 @@ public class PDFGenerator implements IPrintService, IFileManagerDelete {
             }else {
                 generatePDF(title,  text,  outpath);
             }
-            this.service().print_BLUE("PDF generated in: " + outpath);
+            this.service().print_BLUE("Please wait while generating the report...");
         } catch (DocumentException | IOException e) {
             e.printStackTrace();
         }
@@ -119,25 +114,18 @@ public class PDFGenerator implements IPrintService, IFileManagerDelete {
         }
     }
 
-    // Método para generar el PDF
     public static void generatePDF(String title, String text, String outpath) throws DocumentException, IOException {
-
         Document document = new Document();
-
        try {
            PdfWriter.getInstance(document, new FileOutputStream(outpath));
            document.open();
-
            // font for title: blod and underlined
            Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 16, Font.UNDERLINE);
-
            // font for content: normal
            Font fontContent = FontFactory.getFont(FontFactory.HELVETICA, 12, Font.NORMAL);
-
            // create title
            Paragraph paragraphTitle = new Paragraph(title, titleFont);
-           paragraphTitle.setSpacingAfter(10); // espacio después del título
-
+           paragraphTitle.setSpacingAfter(10);
            // create content
            Paragraph paragraphText = new Paragraph(text, fontContent);
            document.add(paragraphTitle);
@@ -160,10 +148,9 @@ public class PDFGenerator implements IPrintService, IFileManagerDelete {
             try {
                 List<byte[]> pdfsEnMemoria = new ArrayList<>();
                 String fileName = classs.getNombre() + IConstantModel.PDF_Extention;
-                ;
                 pdfsEnMemoria.add(this.convertHtmlToPdfBytes(classs.getClassTemplate()));
                 this.mergePdfBytes(pdfsEnMemoria, fileName);
-                this.service().print_YELLOW("¡successfully generated PDF!");
+                this.service().print_GREEN("¡successfully generated PDF!");
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -171,6 +158,7 @@ public class PDFGenerator implements IPrintService, IFileManagerDelete {
     }
 
     public static byte[] convertHtmlToPdfBytes(String html) throws IOException {
+
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             ITextRenderer renderer = new ITextRenderer();
             renderer.setDocumentFromString(html);
@@ -180,6 +168,7 @@ public class PDFGenerator implements IPrintService, IFileManagerDelete {
         } catch (Exception e) {
             throw new IOException("Error al generar PDF en memoria: " + e.getMessage(), e);
         }
+
     }
 
     public static void mergePdfBytes(List<byte[]> pdfBytesList, String outputPath) throws IOException {
@@ -211,10 +200,7 @@ public class PDFGenerator implements IPrintService, IFileManagerDelete {
             }
             //add content
             existingDoc.save(outputPath);
-
-            this.service().print_YELLOW("PDF generated in: " + outputPath);
-            this.service().print_YELLOW("¡successfully generated!");
-
+            this.service().print_BLUE("Please wait while generating the report...");
             this.deleteTemporalFile(existingPdfPath, newPdfPath);
 
         } catch (IOException e) {
