@@ -1,4 +1,4 @@
-package com.example;
+package com.example.classrelationanalyzer;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -140,5 +140,33 @@ public class ClassRelationAnalyzer {
             printTree(relation.node, prefix + (isTail ? "    " : "│   ") + (last ? "    " : "│   "), true);
         }
     }
+
+
+
+    public String buildTreeString(ClassNode node) {
+        StringBuilder sb = new StringBuilder();
+        buildTreeStringRecursive(node, "", true, sb);
+        return sb.toString();
+    }
+
+    private void buildTreeStringRecursive(ClassNode node, String prefix, boolean isTail, StringBuilder sb) {
+        sb.append(prefix).append(isTail ? "└── " : "├── ").append(node.className).append("\n");
+        for (int i = 0; i < node.children.size(); i++) {
+            Relation relation = node.children.get(i);
+            boolean last = (i == node.children.size() - 1);
+            sb.append(prefix)
+                    .append(isTail ? "    " : "│   ")
+                    .append(last ? "└── " : "├── ")
+                    .append("(")
+                    .append(relation.type.name().toLowerCase())
+                    .append(") ")
+                    .append(relation.node.className)
+                    .append("\n");
+            buildTreeStringRecursive(relation.node, prefix + (isTail ? "    " : "│   ") + (last ? "    " : "│   "), true, sb);
+        }
+    }
+
+
+
 }
 

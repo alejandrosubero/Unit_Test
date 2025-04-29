@@ -1,4 +1,4 @@
-package com.example;
+package com.example.classrelationanalyzer;
 
 public class Relation {
     RelationType type;

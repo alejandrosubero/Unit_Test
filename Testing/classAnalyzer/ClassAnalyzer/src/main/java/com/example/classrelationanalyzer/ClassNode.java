@@ -1,4 +1,4 @@
-package com.example;
+package com.example.classrelationanalyzer;
 
 import java.util.ArrayList;
 import java.util.List;

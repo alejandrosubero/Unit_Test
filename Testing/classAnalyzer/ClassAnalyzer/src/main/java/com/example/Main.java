@@ -1,5 +1,8 @@
 package com.example;
 
+import com.example.classrelationanalyzer.ClassNode;
+import com.example.classrelationanalyzer.ClassRelationAnalyzer;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -16,16 +19,21 @@ public class Main {
                 // Class B implements A
                 "package test; public class B implements A {}",
                 // Class W implements D
-                "package test; public class W implements D {}"
+                "package test; public class W implements D {}",
+                "package test; public class S implements D {}",
+                "package test; public class S implements C {}",
+                "package test; public interface H {}",
+                "package test; public class P implements H {}"
         );
 
         ClassRelationAnalyzer analyzer = new ClassRelationAnalyzer();
         analyzer.analyzeClasses(javaSources);
 
         ClassNode tree = analyzer.buildTree("A");
-//        analyzer.printTree(tree, "");
-
-        analyzer.printTree(tree, "", true);
-
+        // Generar el String
+        String treeAsString = analyzer.buildTreeString(tree);
+        // Imprimirlo
+        System.out.println(treeAsString);
+        
     }
 }
