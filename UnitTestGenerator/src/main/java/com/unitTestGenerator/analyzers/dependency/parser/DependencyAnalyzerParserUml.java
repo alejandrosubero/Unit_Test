@@ -33,9 +33,15 @@ public class DependencyAnalyzerParserUml implements DataTIme {
     private final Map<String, List<String>> fieldsMap = new HashMap<>();
     private final Map<String, List<String>> methodsMap = new HashMap<>();
 
+
+
+
     public void analyze(List<String> classSources) {
         JavaParser parser = new JavaParser();
+
+
         for (String source : classSources) {
+
             parser.parse(source).ifSuccessful(cu -> {
                 cu.findFirst(ClassOrInterfaceDeclaration.class).ifPresent(classDecl -> {
                     String className = classDecl.getNameAsString();
@@ -125,6 +131,46 @@ public class DependencyAnalyzerParserUml implements DataTIme {
     }
 
 
+    private static String escapeDotField(String s) {
+        return s
+                .replace("\\", "\\\\") // doble barra
+                .replace("\"", "'")    // cambia comillas dobles por simples
+                .replace("{", "")
+                .replace("}", "")
+                .replace("<", "")
+                .replace(">", "")
+                .replace("|", "")
+                .replace("\n", " ")
+                .replace("\r", " ")
+                .replace("\t", "    "); // opcional: convierte tabulador a espacios
+    }
+
+
+
+    private static String escapeForDot(String text) {
+
+//        return text.replace("\n","");
+//        return text.replace("<", "&lt;")
+//                .replace(">", "&gt;").replace(".", "_").replace("\n","");
+
+        return text.replaceAll("\\\\", "").replace("<", "&lt;")
+                .replace(">", "&gt;").replace(".", "_")
+                .replace("{", "\\{").replace("\n","")
+                .replace("}", "\\}").replace("\"","'");
+    }
+
+
+    public String formatLabel(List<String> labels) {
+        StringBuilder result = new StringBuilder();
+        for (String method : labels) {
+            String temp = escapeForDot(method);
+            String escaped = DependencyAnalyzerParserUml.escapeDotField(temp);
+            if (!escaped.trim().isEmpty()) {
+                result.append(escaped).append("\\l");
+            }
+        }
+        return result.toString();
+    }
 
     public void generateUMLClassDiagram(String outputDotPath, String outputPngPath) throws IOException {
 
@@ -151,12 +197,12 @@ public class DependencyAnalyzerParserUml implements DataTIme {
             List<String> fields = fieldsMap.getOrDefault(className, Collections.emptyList());
             List<String> methods = methodsMap.getOrDefault(className, Collections.emptyList());
 
-            String fieldBlock = fields.isEmpty()
-                    ? ""
-                    : fields.stream().collect(Collectors.joining("\\l")) + "\\l";   // \l = newline left-justified
-            String methodBlock = methods.isEmpty()
-                    ? ""
-                    : methods.stream().collect(Collectors.joining("\\l")) + "\\l";
+
+            String fieldBlock = formatLabel(fields);
+            if (!fieldBlock.isEmpty()) fieldBlock += "\\l";
+
+            String methodBlock = formatLabel(methods);
+            if (!methodBlock.isEmpty()) methodBlock += "\\l";
 
             // Sintaxis record: {ClassName|fields|methods}
             String label = "{" + className
@@ -185,8 +231,11 @@ public class DependencyAnalyzerParserUml implements DataTIme {
         // Exportar .dot y .png (igual que antes)
         try (FileWriter w = new FileWriter(outputDotPath)) {
             w.write(g.toString());
+            System.out.println("DOT generado:\n\n" + g.toString()); // <-- para depurar
         }
         Graphviz.fromGraph(g).render(Format.PNG).toFile(new File(outputPngPath));
     }
 
 }
+
+

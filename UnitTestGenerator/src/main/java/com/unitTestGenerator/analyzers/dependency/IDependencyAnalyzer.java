@@ -22,6 +22,8 @@ public interface IDependencyAnalyzer {
         String outputDotPath = outputPath + ".dot";
         String outputPngPath = outputPath + ".png";
         parser.generateUMLClassDiagram(outputDotPath, outputPngPath);
+        System.out.println(outputDotPath);
+        System.out.println(outputPngPath);
     }
 
 
@@ -32,6 +34,8 @@ public interface IDependencyAnalyzer {
         String outputPngPath = outputPath + ".png";
         // Generar archivos de salida
         analyzer.generateDotAndPng(outputDotPath, outputPngPath);
+        System.out.println(outputDotPath);
+        System.out.println(outputPngPath);
     }
 
 

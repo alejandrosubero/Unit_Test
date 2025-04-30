@@ -42,7 +42,7 @@ public class AnalizadorProyecto implements ITodoDetectorService, IPrintProjectSt
         File carpetaProyecto = new File(rutaProyecto);
         this.analizarProyectoRecursivo(carpetaProyecto, clases, mapClass, project);
         project.setMapClass(mapClass);
-        String  classDirectoryTree = treeBuilder.getTreeString();
+        String classDirectoryTree = treeBuilder.getTreeString();
         project.getPrinterProject().setProjectClassTree(classDirectoryTree.replace(".java", " "));
         String projectDirectoryTree = getStructure(project.getPathProject());
         project.getPrinterProject().setProjectDirectoryTree(projectDirectoryTree);
@@ -114,11 +114,14 @@ public class AnalizadorProyecto implements ITodoDetectorService, IPrintProjectSt
         if(classList != null && clase !=null){
             classList.add(clase);
             project.getPrinterProject().addToClaseList(clase.getNombre());
+            project.getClaseListRaw().add(clase.getRawClass());
         }
 
         if (mapClass != null && clase != null) {
             mapClass.put(clase.getNombre(), clase);
         }
+
+
     }
 
 }

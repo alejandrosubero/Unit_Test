@@ -239,6 +239,7 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
     public void generateFileMenu(Project project, Scanner scanner) {
         this.generateFileMenuTxt();
         int opcion = scanner.nextInt();
+        String pathBase = project.getPathProject() + IConstantModel.Separator;
         switch (opcion) {
             case 1:
                 this.reportClass(scanner, project);
@@ -249,7 +250,7 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
                 subMenu2( project,  scanner);
                 break;
             case 3:
-                String outputPath = project.getPathProject() + project.getName() + "_Dependency";
+                String outputPath = pathBase + project.getName() + "_Dependency";
                 try {
                     this.generateDependencyDotPng(outputPath, project.getRawClassList());
                     this.service().print_GREEN("Successfully generated the File");
@@ -261,7 +262,8 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
                 subMenu2( project,  scanner);
                 break;
             case 4:
-                String outputPathUml = project.getPathProject() + project.getName() + "_UmlDiagram";
+                String outputPathUml = pathBase + project.getName() + "_UmlDiagram";
+
                 try {
                     this.generateUmlDiagram(outputPathUml, project.getRawClassList());
                     this.service().print_GREEN("Successfully generated the File");
@@ -304,7 +306,7 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
         this.service().print_DARKGREEN("Enter the interface Name for analyzed");
         String targetClassName = scanner.next();
 
-        if(targetClassName == null && !targetClassName.equals("")){
+        if(targetClassName != null && !targetClassName.equals("")){
             try {
                 this.service().print_BLUE("Please wait while between analyzed the Project...");
                 String nameFile = targetClassName + "_Interface_Relations"+IConstantModel.PDF_Extention;
