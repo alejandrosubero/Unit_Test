@@ -29,7 +29,7 @@ public class Main {
         ClassRelationAnalyzer analyzer = new ClassRelationAnalyzer();
         analyzer.analyzeClasses(javaSources);
 
-        ClassNode tree = analyzer.buildTree("A");
+        ClassNode tree = analyzer.buildTree("C");
         // Generar el String
         String treeAsString = analyzer.buildTreeString(tree);
         // Imprimirlo

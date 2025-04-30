@@ -1,0 +1,24 @@
+digraph "dependencies" {
+"P" ["label"=<<b>P</b>>]
+"H" ["label"=<<b>H</b>>]
+"B" ["label"=<<b>B</b>>]
+"A" ["label"=<<b>A</b>>]
+"C" ["label"=<<b>C</b>>]
+"S" ["label"=<<b>S</b>>]
+"D" ["label"=<<b>D</b>>]
+"W" ["label"=<<b>W</b>>]
+"MyService" ["label"=<<b>MyService</b>>]
+"ClassA" ["label"=<<b>ClassA</b>>]
+"ClassB" ["label"=<<b>ClassB</b>>]
+"ClassC" ["label"=<<b>ClassC</b>>]
+"P" -> "H"
+"B" -> "A"
+"C" -> "A"
+"S" -> "D"
+"D" -> "C"
+"W" -> "MyService"
+"W" -> "D"
+"ClassA" -> "MyService"
+"ClassB" -> "MyService"
+"ClassC" -> "MyService"
+}

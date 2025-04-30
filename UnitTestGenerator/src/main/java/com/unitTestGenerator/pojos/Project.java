@@ -17,6 +17,8 @@ public class Project {
     private String name;
     private String description;
     private String mainClassName;
+    private List<String> claseListRaw = new ArrayList<>();
+
 
     public Project() {
     }
@@ -46,6 +48,14 @@ public class Project {
         this.claseList = claseList;
         this.isMaven = isMaven;
         this.isGradle = isGradle;
+    }
+
+    public List<String> getClaseListRaw() {
+        return claseListRaw;
+    }
+
+    public void setClaseListRaw(List<String> claseListRaw) {
+        this.claseListRaw = claseListRaw;
     }
 
     public String getMainClassName() {
@@ -82,6 +92,16 @@ public class Project {
         return foundClass;
     }
 
+    public List<String> getRawClassList(){
+        if(this.claseListRaw.isEmpty()){
+            for(Clase classs : this.claseList){
+                if(classs.getRawClass() != null && !classs.getRawClass().isEmpty() && !classs.getRawClass().equals("")){
+                    this.claseListRaw.add(classs.getRawClass());
+                }
+            }
+        }
+        return this.claseListRaw;
+    }
 
     public Map<String, Clase> getMapClass() {
         return mapClass;

@@ -1,12 +1,13 @@
-package com.example.dependency;
+package com.unitTestGenerator.analyzers.dependency.console;
 
 
-
+import com.unitTestGenerator.ioc.anotations.Component;
 
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Component
 public class DependencyAnalyzer {
 
 

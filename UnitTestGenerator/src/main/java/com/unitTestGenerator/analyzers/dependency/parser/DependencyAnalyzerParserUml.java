@@ -1,17 +1,18 @@
-package com.example.uml;
+package com.unitTestGenerator.analyzers.dependency.parser;
 
 
 import com.github.javaparser.JavaParser;
-import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
-import com.github.javaparser.ast.expr.*;
+import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import com.unitTestGenerator.ioc.anotations.Component;
+import com.unitTestGenerator.util.interfaces.DataTIme;
 import guru.nidi.graphviz.attribute.Label;
 import guru.nidi.graphviz.engine.Format;
 import guru.nidi.graphviz.engine.Graphviz;
-import guru.nidi.graphviz.model.Factory;
 import guru.nidi.graphviz.model.Graph;
 import guru.nidi.graphviz.model.Node;
 
@@ -22,11 +23,11 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static guru.nidi.graphviz.attribute.Attributes.attr;
-import static guru.nidi.graphviz.model.Factory.*;
+import static guru.nidi.graphviz.model.Factory.graph;
+import static guru.nidi.graphviz.model.Factory.node;
 
-
-
-public class DependencyAnalyzerParser {
+@Component
+public class DependencyAnalyzerParserUml implements DataTIme {
     private final Map<String, Set<String>> dependencyMap = new HashMap<>();
     private final Map<String, Set<String>> reverseDependencyMap = new HashMap<>();
     private final Map<String, List<String>> fieldsMap = new HashMap<>();
@@ -42,11 +43,10 @@ public class DependencyAnalyzerParser {
                     fieldsMap.putIfAbsent(className, new ArrayList<>());
                     methodsMap.putIfAbsent(className, new ArrayList<>());
 
-                    // 1) EXTENDS / IMPLEMENTS siguen igual
                     classDecl.getExtendedTypes().forEach(t -> addDependency(className, t.getNameAsString()));
                     classDecl.getImplementedTypes().forEach(t -> addDependency(className, t.getNameAsString()));
 
-                    // 2) CAMPOS: guardamos nombre y tipo
+
                     for (FieldDeclaration field : classDecl.getFields()) {
                         String type = field.getElementType().asString();
                         for (VariableDeclarator var : field.getVariables()) {
@@ -56,7 +56,7 @@ public class DependencyAnalyzerParser {
                         }
                     }
 
-                    // 3) MÉTODOS: guardamos firma (tipo retorno + nombre + params)
+
                     for (MethodDeclaration method : classDecl.getMethods()) {
                         String sig = method.getType().asString() + " "
                                 + method.getNameAsString()
@@ -67,7 +67,7 @@ public class DependencyAnalyzerParser {
                                 + ")";
                         methodsMap.get(className).add(sig);
 
-                        // detectar invocaciones a new / static calls
+
                         method.findAll(ObjectCreationExpr.class)
                                 .forEach(e -> addDependency(className, e.getType().getNameAsString()));
                         method.findAll(MethodCallExpr.class).forEach(expr ->
@@ -124,11 +124,16 @@ public class DependencyAnalyzerParser {
         Graphviz.fromGraph(finalGraph).render(Format.PNG).toFile(new File(outputPngPath));
     }
 
+
+
     public void generateUMLClassDiagram(String outputDotPath, String outputPngPath) throws IOException {
-        // Grafo y atributos (igual que antes) …
+
+
+        String title = "UML_Class_diagram of " + "Project_Name" + this.getTime()+"\n\n";
+
         Graph g = graph("UML_Class_diagram").directed()
                 .graphAttr().with(
-                        attr("label", "UML Class diagram"),
+                        attr("label", title),
                         attr("labelloc", "t"),
                         attr("fontname", "Helvetica,Arial,sans-serif")
                 )
@@ -142,7 +147,7 @@ public class DependencyAnalyzerParser {
         Map<String, Node> nodes = new HashMap<>();
 
         for (String className : dependencyMap.keySet()) {
-            // Construimos lista de líneas para fields y métodos
+
             List<String> fields = fieldsMap.getOrDefault(className, Collections.emptyList());
             List<String> methods = methodsMap.getOrDefault(className, Collections.emptyList());
 

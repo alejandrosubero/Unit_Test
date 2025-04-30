@@ -66,6 +66,19 @@ public class PDFGenerator implements IPrintService, IFileManagerDelete {
         }
     }
 
+
+    public void createOnepdf(Project project, String text, String title, String nameFile) {
+        if (project.getPathProject() != null && text != null) {
+            if(nameFile == null){
+                nameFile = project.getName()+ IConstantModel.PDF_Extention;
+            }
+            String pathBase = project.getPathProject() + IConstantModel.Separator;
+            String path = pathBase + nameFile;
+            this.service().print_BLUE("Starting report generation....");
+            this.execute(title,text, path);
+        }
+    }
+
     private void projectPdfGeneration(Project project) {
         try {
             String pathBase = project.getPathProject() + IConstantModel.Separator;
@@ -182,9 +195,6 @@ public class PDFGenerator implements IPrintService, IFileManagerDelete {
         merger.setDestinationFileName(outputPath);
         merger.mergeDocuments(MemoryUsageSetting.setupMainMemoryOnly());
     }
-
-
-
 
 
 

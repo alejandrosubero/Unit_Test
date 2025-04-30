@@ -1,0 +1,26 @@
+digraph "UML_Class_diagram" {
+graph ["label"="UML_Class_diagram of Project_Name2025-04-30 02:28:20.969 -0400\n\n","labelloc"="t","fontname"="Helvetica,Arial,sans-serif"]
+node ["fontname"="Helvetica,Arial,sans-serif","shape"="record","style"="filled","fillcolor"="gray95"]
+"P" ["label"="{P||}"]
+"A" ["label"="{A||}"]
+"B" ["label"="{B||}"]
+"C" ["label"="{C||}"]
+"S" ["label"="{S||}"]
+"D" ["label"="{D||}"]
+"W" ["label"="{W||void doSomething()\l}"]
+"H" ["label"="{H||}"]
+"ClassA" ["label"="{ClassA|MyService myService\l|}"]
+"ClassB" ["label"="{ClassB||}"]
+"ClassC" ["label"="{ClassC||void doSomething()\l}"]
+"MyService" ["label"="{MyService}"]
+"P" -> "H"
+"B" -> "A"
+"C" -> "A"
+"S" -> "D"
+"D" -> "C"
+"W" -> "MyService"
+"W" -> "D"
+"ClassA" -> "MyService"
+"ClassB" -> "MyService"
+"ClassC" -> "MyService"
+}
