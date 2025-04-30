@@ -8,6 +8,22 @@
     <artifactId>ClassAnalyzer</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+<dependencies>
+
+    <dependency>
+        <groupId>com.github.javaparser</groupId>
+        <artifactId>javaparser-core</artifactId>
+        <version>3.25.4</version>
+    </dependency>
+
+    <dependency>
+        <groupId>guru.nidi</groupId>
+        <artifactId>graphviz-java</artifactId>
+        <version>0.18.1</version>
+    </dependency>
+
+</dependencies>
+
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>

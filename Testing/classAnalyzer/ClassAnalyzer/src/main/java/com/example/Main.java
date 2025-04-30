@@ -34,6 +34,6 @@ public class Main {
         String treeAsString = analyzer.buildTreeString(tree);
         // Imprimirlo
         System.out.println(treeAsString);
-        
+
     }
 }
