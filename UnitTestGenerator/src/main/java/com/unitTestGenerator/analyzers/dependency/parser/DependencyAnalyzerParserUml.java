@@ -131,34 +131,62 @@ public class DependencyAnalyzerParserUml implements DataTIme {
     }
 
 
+
+//    private static String escapeDotField(String s) {
+//        return s
+//                .replace("\\", "\\\\") // doble barra
+//                .replace("\"", "'")    // cambia comillas dobles por simples
+//                .replace("{", "")
+//                .replace("}", "")
+//                .replace("<", "")
+//                .replace(">", "")
+//                .replace("|", "")
+//                .replace("\n", " ")
+//                .replace("\r", " ")
+//                .replace("\t", "    "); // opcional: convierte tabulador a espacios
+//    }
+
+
+
+//    private static String escapeForDot(String text) {
+//
+////        return text.replace("\n","");
+////        return text.replace("<", "&lt;")
+////                .replace(">", "&gt;").replace(".", "_").replace("\n","");
+//
+//        return text.replaceAll("\\\\", "").replace("<", "&lt;")
+//                .replace(">", "&gt;").replace(".", "_")
+//                .replace("{", "\\{").replace("\n","")
+//                .replace("}", "\\}").replace("\"","'");
+//    }
+
+//    private static String escapeForDot(String text) {
+//        return text.replace("\\", "\\\\")  // Escapa barras invertidas
+//                .replace("{", "\\{")
+//                .replace("}", "\\}")
+//                .replace("<", "\\<")
+//                .replace(">", "\\>")
+//                .replace("\"", "\\\"")
+//                .replace("|", "\\|")
+//                .replace(".", "\\.")  // Escapa puntos
+//                .replace("\n", " ");
+//    }
+
     private static String escapeDotField(String s) {
         return s
-                .replace("\\", "\\\\") // doble barra
-                .replace("\"", "'")    // cambia comillas dobles por simples
-                .replace("{", "")
-                .replace("}", "")
-                .replace("<", "")
-                .replace(">", "")
-                .replace("|", "")
-                .replace("\n", " ")
-                .replace("\r", " ")
-                .replace("\t", "    "); // opcional: convierte tabulador a espacios
+                .replace("\\", "\\\\")   // Escapa barras invertidas
+                .replace("\"", "'")       // Reemplaza comillas dobles por simples
+                .replace("{", "\\{")      // Escapa llaves
+                .replace("}", "\\}")
+                .replace("<", "\\<")      // Escapa símbolos <
+                .replace(">", "\\>")      // Escapa símbolos >
+                .replace("|", "\\|")      // Escapa |
+                .replace("\n", "\\l");    // Nueva línea en Graphviz
     }
-
-
 
     private static String escapeForDot(String text) {
-
-//        return text.replace("\n","");
-//        return text.replace("<", "&lt;")
-//                .replace(">", "&gt;").replace(".", "_").replace("\n","");
-
-        return text.replaceAll("\\\\", "").replace("<", "&lt;")
-                .replace(">", "&gt;").replace(".", "_")
-                .replace("{", "\\{").replace("\n","")
-                .replace("}", "\\}").replace("\"","'");
+        return text.replace("\"", "\\\"");  // Solo escapa comillas dobles
     }
-
 
     public String formatLabel(List<String> labels) {
         StringBuilder result = new StringBuilder();
@@ -204,27 +232,89 @@ public class DependencyAnalyzerParserUml implements DataTIme {
             String methodBlock = formatLabel(methods);
             if (!methodBlock.isEmpty()) methodBlock += "\\l";
 
-            // Sintaxis record: {ClassName|fields|methods}
-            String label = "{" + className
-                    + "|" + fieldBlock
-                    + "|" + methodBlock
-                    + "}";
 
-            Node n = node(className).with(attr("label", label));
+
+            // Dentro del for que itera dependencyMap.keySet():
+            String escapedClassName = escapeForDot(className);
+            String quotedNodeName = "\"" + escapedClassName + "\""; // Nodos entre comillas
+
+            String label = "{" + escapedClassName + "|" + fieldBlock + "|" + methodBlock + "}";
+
+// Crear el nodo con el nombre escapado y entrecomillado
+            Node n = node(quotedNodeName).with(attr("label", label));
             nodes.put(className, n);
+
+
+            // En generateUMLClassDiagram:
+//            String escapedClassName = escapeForDot(className);
+//            String label = "{" + escapedClassName + "|" + fieldBlock + "|" + methodBlock + "}";
+
+            // Sintaxis record: {ClassName|fields|methods}
+//            String label = "{" + className
+//                    + "|" + fieldBlock
+//                    + "|" + methodBlock
+//                    + "}";
+
+//            String quotedClassName = "\"" + className + "\"";
+//            Node n = node(quotedClassName).with(attr("label", label));
+
+
+//            String quotedName = className.contains(".") ? "\"" + className + "\"" : className;
+//            Node n = node(quotedName).with(attr("label", label));
+//            nodes.put(className, n);
+
+//            Node n = node(className).with(attr("label", label));
+//            nodes.put(className, n);
             g = g.with(n);
         }
 
         // Relaciones igual que antes…
+//        for (Map.Entry<String, Set<String>> entry : dependencyMap.entrySet()) {
+//            String from = entry.getKey();
+//            for (String to : entry.getValue()) {
+//                Node fromNode = nodes.get(from);
+
+                //   Node toNode = nodes.computeIfAbsent(to, k -> {
+//                    String lbl = "{" + k + "}";
+//                    return node(k).with(attr("label", lbl));
+//                });
+
+//                String quotedTo = to.contains(".") ? "\"" + to + "\"" : to;
+//                Node toNode = nodes.computeIfAbsent(quotedTo, k -> {
+//                    String lbl = "{" + escapeForDot(to) + "}";
+//                    return node(quotedTo).with(attr("label", lbl));
+//                });
+//                g = g.with(fromNode.link(toNode));
+
+//                Node toNode = nodes.computeIfAbsent(to, k -> {
+//                    String escapedK = escapeForDot(k);
+//                    String lbl = "{" + escapedK + "}";
+//                    return node("\"" + k + "\"").with(attr("label", lbl)); // Nodo entrecomillado
+//                });
+//                g = g.with(fromNode.link(toNode));
+//            }
+//        }
+
+
         for (Map.Entry<String, Set<String>> entry : dependencyMap.entrySet()) {
             String from = entry.getKey();
             for (String to : entry.getValue()) {
-                Node fromNode = nodes.get(from);
-                Node toNode = nodes.computeIfAbsent(to, k -> {
-                    String lbl = "{" + k + "}";
-                    return node(k).with(attr("label", lbl));
+                // Escapar y quotar nombres
+                String quotedFrom = "\"" + escapeForDot(from) + "\"";
+                String quotedTo = "\"" + escapeForDot(to) + "\"";
+
+                // Obtener o crear nodos
+                Node fromNode = nodes.get(quotedFrom);
+                Node toNode = nodes.computeIfAbsent(quotedTo, k -> {
+                    String lbl = "{" + escapeForDot(to) + "}";
+                    return node(quotedTo).with(attr("label", lbl));
                 });
-                g = g.with(fromNode.link(toNode));
+
+                if (fromNode != null) {
+                    g = g.with(fromNode.link(toNode));
+                } else {
+                    System.err.println("Advertencia: Nodo '" + quotedFrom + "' no encontrado.");
+                }
             }
         }
 

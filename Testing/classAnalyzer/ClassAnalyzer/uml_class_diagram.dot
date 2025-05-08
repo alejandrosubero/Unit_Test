@@ -1,26 +1,16 @@
 digraph "UML_Class_diagram" {
-graph ["label"="UML_Class_diagram of Project_Name2025-04-30 06:49:18.234 -0400\n\n","labelloc"="t","fontname"="Helvetica,Arial,sans-serif"]
+graph ["label"="UML Class Diagram\nGenerated at: 2025-05-08 15:52:59.001 -0400","labelloc"="t","fontname"="Helvetica,Arial,sans-serif"]
 node ["fontname"="Helvetica,Arial,sans-serif","shape"="record","style"="filled","fillcolor"="gray95"]
-"P" ["label"="{P||}"]
-"A" ["label"="{A||}"]
-"B" ["label"="{B||}"]
-"C" ["label"="{C||}"]
-"S" ["label"="{S||}"]
-"D" ["label"="{D||}"]
-"W" ["label"="{W||void doSomething()\l}"]
-"H" ["label"="{H||}"]
-"ClassA" ["label"="{ClassA|MyService myService\l|}"]
-"ClassB" ["label"="{ClassB||}"]
-"ClassC" ["label"="{ClassC||void doSomething()\l}"]
-"MyService" ["label"="{MyService}"]
-"P" -> "H"
-"B" -> "A"
-"C" -> "A"
-"S" -> "D"
-"D" -> "C"
-"W" -> "MyService"
-"W" -> "D"
-"ClassA" -> "MyService"
-"ClassB" -> "MyService"
-"ClassC" -> "MyService"
+"test.C" ["label"="{test.C||}"]
+"test.S" ["label"="{test.S|TestFileContent testClass|}"]
+"test.B" ["label"="{test.B||}"]
+"test.A" ["label"="{test.A||}"]
+"com.example.ClassC" ["label"="{com.example.ClassC||void doSomething()}"]
+"test.P" ["label"="{test.P||}"]
+"com.example.ClassB" ["label"="{com.example.ClassB||}"]
+"com.example.ClassA" ["label"="{com.example.ClassA|MyService myService|}"]
+"com.example.TestFileContent" ["label"="{com.example.TestFileContent|String className\lString description\lList list\lMap map\lString tags|void buildTestFile()\lString stringEnsamble(String parts)\lString getMockImport()}"]
+"test.H" ["label"="{test.H||}"]
+"test.W" ["label"="{test.W||void doSomething()}"]
+"test.D" ["label"="{test.D||}"]
 }

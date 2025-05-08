@@ -3,7 +3,7 @@ package com.example;
 import com.example.classrelationanalyzer.ClassNode;
 import com.example.classrelationanalyzer.ClassRelationAnalyzer;
 import com.example.dependency.DependencyAnalyzer;
-import com.example.uml.DependencyAnalyzerParserUml;
+import com.example.uml.DependencyAnalyzerParserUmlPlus;
 
 import java.io.IOException;
 import java.util.List;
@@ -12,7 +12,7 @@ public interface IDependencyAnalyzerP {
 
 
     default void generateUml(String outputDotPath, String outputPngPath, List<String> classSources) throws IOException {
-        DependencyAnalyzerParserUml parser = new DependencyAnalyzerParserUml();
+        DependencyAnalyzerParserUmlPlus parser = new DependencyAnalyzerParserUmlPlus();
 
         parser.analyze(classSources);
         outputDotPath = outputDotPath + ".dot";
