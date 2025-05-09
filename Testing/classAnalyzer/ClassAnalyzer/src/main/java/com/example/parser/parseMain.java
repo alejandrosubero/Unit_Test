@@ -72,8 +72,8 @@ public class parseMain {
         // Analizar dependencias desde las clases
         analyzer.analyze(classSources);
         // Generar archivos de salida
-        analyzer.generateDotAndPng("class-dependencies.dot", "class-dependencies.png");
-        System.out.println("Generados: class-dependencies.dot y class-dependencies.png");
+        analyzer.generateDotAndPng("class-dependencies.dot", "class-dependencies1.png");
+        System.out.println("Generados: class-dependencies.dot y class-dependencies1.png");
 
 
     }

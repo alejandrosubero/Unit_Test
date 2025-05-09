@@ -35,6 +35,9 @@ public class Clase {
     private String classDetail;
     private String classTemplate;
     private Boolean isMainClass;
+    private Node classNode;
+
+
     public Clase() {
         this.metodos = new ArrayList<>();
         this.variables = new ArrayList<>();
@@ -44,6 +47,14 @@ public class Clase {
         this.useLomboxBuild = false;
         this.applyBuildMethod = false;
         this.isMainClass = false;
+    }
+
+    public Node getClassNode() {
+        return classNode;
+    }
+
+    public void setClassNode(Node classNode) {
+        this.classNode = classNode;
     }
 
     public Boolean getMainClass() {
@@ -303,6 +314,22 @@ public class Clase {
             }
         }
         return false;
+    }
+
+public void updateNode(String nodeName){
+        this.classNode.setClassName(this.nombre);
+        if(nodeName != null){
+            this.classNode.setName(nodeName);
+        }
+        if(this.imports != null && this.imports.getProjectImports() != null && !this.imports.getProjectImports().isEmpty()) {
+            this.classNode.setConextions(this.imports.getProjectImports());
+        }
+
+    }
+
+    public Node updateNodeAndGet(String nodeName){
+        this.updateNode(nodeName);
+        return this.classNode;
     }
 
 

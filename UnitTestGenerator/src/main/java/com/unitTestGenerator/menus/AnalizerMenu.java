@@ -228,12 +228,23 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
                 "Choose an option:",
                 "1. Class Report",
                 "2. Generate Protect Report",
-                "3. Generate .png with project Dependency",
-                "4. Generate UML Class Diagram",
-                "5. Generate Interface Relations",
-                "6. Return to the previous menu"
+                "4. Generate Interface Relations",
+                "5. Return to the previous menu"
         );
     }
+
+//    public void generateFileMenuTxt(){
+//        this.printColummStringY(
+//                "Generate File Menu: ",
+//                "Choose an option:",
+//                "1. Class Report",
+//                "2. Generate Protect Report",
+//                "3. Generate .png with project Dependency",
+//                "4. Generate UML Class Diagram",
+//                "5. Generate Interface Relations",
+//                "6. Return to the previous menu"
+//        );
+//    }
 
 
     public void generateFileMenu(Project project, Scanner scanner) {
@@ -249,36 +260,36 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
                 this.pdfGenerator.converterProjectOrClasInpdf(project,null);
                 subMenu2( project,  scanner);
                 break;
-            case 3:
-                String outputPath = pathBase + project.getName() + "_Dependency";
-                try {
-                    this.generateDependencyDotPng(outputPath, project.getRawClassList());
-                    this.service().print_GREEN("Successfully generated the File");
-                } catch (IOException e) {
-                    this.service().print_RED("ERROR IN GENERATION OF PNG DEPENDENCY");
-                    this.service().print_RED("ERROR: "+ e.getMessage());
-                    throw new RuntimeException(e);
-                }
-                subMenu2( project,  scanner);
-                break;
+//            case 3:
+//                String outputPath = pathBase + project.getName() + "_Dependency";
+//                try {
+//                    this.generateDependencyDotPng(outputPath, project.getRawClassList());
+//                    this.service().print_GREEN("Successfully generated the File");
+//                } catch (IOException e) {
+//                    this.service().print_RED("ERROR IN GENERATION OF PNG DEPENDENCY");
+//                    this.service().print_RED("ERROR: "+ e.getMessage());
+//                    throw new RuntimeException(e);
+//                }
+//                subMenu2( project,  scanner);
+//                break;
+//            case 4:
+//                String outputPathUml = pathBase + project.getName() + "_UmlDiagram";
+//
+//                try {
+//                    this.generateUmlDiagram(outputPathUml, project.getRawClassList());
+//                    this.service().print_GREEN("Successfully generated the File");
+//                } catch (IOException e) {
+//                    this.service().print_RED("ERROR IN GENERATION OF PNG UmlDiagram");
+//                    this.service().print_RED("ERROR: "+ e.getMessage());
+//                    throw new RuntimeException(e);
+//                }
+//                subMenu2( project,  scanner);
+//                break;
             case 4:
-                String outputPathUml = pathBase + project.getName() + "_UmlDiagram";
-
-                try {
-                    this.generateUmlDiagram(outputPathUml, project.getRawClassList());
-                    this.service().print_GREEN("Successfully generated the File");
-                } catch (IOException e) {
-                    this.service().print_RED("ERROR IN GENERATION OF PNG UmlDiagram");
-                    this.service().print_RED("ERROR: "+ e.getMessage());
-                    throw new RuntimeException(e);
-                }
-                subMenu2( project,  scanner);
-                break;
-            case 5:
                 this.interfaceRelations( project, scanner,false);
                 subMenu2( project,  scanner);
                 break;
-            case 6:
+            case 5:
                 this.analizerMenuInitial(project);
                 break;
             default:
