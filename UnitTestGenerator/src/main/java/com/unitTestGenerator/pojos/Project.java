@@ -9,7 +9,7 @@ import java.util.*;
 public class Project {
 
     private List<Clase> claseList = new ArrayList<>();
-    private Map<String, Clase> mapClass = new HashMap<>();;
+    private Map<String, Clase> mapClass = new HashMap<>();
     private Boolean isMaven;
     private Boolean isGradle;
     private String pathProject;
@@ -18,6 +18,7 @@ public class Project {
     private String description;
     private String mainClassName;
     private List<String> claseListRaw = new ArrayList<>();
+    private Map<String, Node> nodeSources = new HashMap<>();
 
 
     public Project() {
@@ -80,6 +81,14 @@ public class Project {
     }
 
 
+    public Map<String, Node> getNodeSources() {
+        return nodeSources;
+    }
+
+    public void setNodeSources(Map<String, Node> nodeSources) {
+        this.nodeSources = nodeSources;
+    }
+
     private Clase getClassI(String className) {
         Clase foundClass = null;
         if (this.claseList != null && !this.claseList.isEmpty() && className != null && !className.equals("")) {
@@ -102,6 +111,56 @@ public class Project {
         }
         return this.claseListRaw;
     }
+
+
+    public void fillnodeBase(){
+        for (int i = 0; i < this.claseList.size(); i++ ){
+            String key = ""+i;
+            Node classNode = this.claseList.get(i).getClassNode();
+            classNode.setName(key);
+            this.nodeSources.put(key, this.claseList.get(i).getClassNode());
+        }
+
+
+    }
+
+
+
+//Complejidad: O(N + C) donde C = total de conexiones en todos los nodos.
+    public  void fillUserForNodeList(){
+
+        Map<String, List<Clase>> nombreClaseMultimap = new HashMap<>(); // Mapa para manejar nombres duplicados
+
+// Paso 1: Construir el mapa de nombres -> lista de Clases (maneja duplicados)
+        for (Clase clase : this.claseList) {
+            nombreClaseMultimap
+                    .computeIfAbsent(clase.getNombre(), k -> new ArrayList<>())
+                    .add(clase);
+        }
+
+// Paso 2: Procesar conexiones usando la clave única del Node
+        for (Clase classs : this.claseList) {
+            Node currentClassNode = classs.getClassNode();
+            String currentClassName = currentClassNode.getClassName();
+            List<String> currentClassNodeConnections = currentClassNode.getConextions();
+
+            for (String connectedNombre : currentClassNodeConnections) {
+                // Condición equivalente a la original: evitar auto-referencias por className
+                if (!currentClassName.equals(connectedNombre)) {
+                    List<Clase> connectedClases = nombreClaseMultimap.get(connectedNombre);
+                    if (connectedClases != null) {
+                        for (Clase connectedClass : connectedClases) {
+                            // Acceso directo usando la clave única del Node actual
+                            this.nodeSources.get(currentClassNode.getName())
+                                    .getUseFor()
+                                    .add(connectedClass.getNombre());
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 
     public Map<String, Clase> getMapClass() {
         return mapClass;

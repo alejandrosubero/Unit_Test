@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.PrintWriter;
 import java.util.*;
+import java.util.List;
 
 
 public class GrafoInteractivo extends JPanel {
@@ -261,18 +262,9 @@ public class GrafoInteractivo extends JPanel {
     }
 
 
+    public static void start(Map<String, Set<String>> grafoDependency, Map<String, Set<String>> grafoUses){
 
-    public static void main(String[] args) {
-        Map<String, Set<String>> grafo = new HashMap<>();
-        grafo.put("A", new HashSet<>(Arrays.asList("B", "C")));
-        grafo.put("B", new HashSet<>());
-        grafo.put("C", new HashSet<>());
-
-        grafo.put("h", new HashSet<>(Arrays.asList("B", "C")));
-        grafo.put("w", new HashSet<>(Arrays.asList("q")));
-        grafo.put("q", new HashSet<>(Arrays.asList("w")));
-
-        GrafoInteractivo panel = new GrafoInteractivo(grafo);
+        GrafoInteractivo panel = new GrafoInteractivo(grafoDependency);
         JScrollPane scrollPane = new JScrollPane(panel);
 
         JButton btnRedistribuir = new JButton("Redistribuir");
@@ -289,6 +281,22 @@ public class GrafoInteractivo extends JPanel {
         frame.getContentPane().add(scrollPane, BorderLayout.CENTER);
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setVisible(true);
+    }
+
+
+    public static void main(String[] args) {
+        Map<String, Set<String>> grafoUses = new HashMap<>();
+        Map<String, Set<String>> grafoDependency = new HashMap<>();
+        grafoDependency.put("A", new HashSet<>(Arrays.asList("B", "C", "C")));
+        grafoDependency.put("B", new HashSet<>());
+        grafoDependency.put("C", new HashSet<>());
+
+        grafoDependency.put("h", new HashSet<>(Arrays.asList("B", "C")));
+        grafoDependency.put("w", new HashSet<>(Arrays.asList("q")));
+        grafoDependency.put("q", new HashSet<>(Arrays.asList("w")));
+
+        GrafoInteractivo.start(grafoDependency,  grafoUses);
+
     }
 
 

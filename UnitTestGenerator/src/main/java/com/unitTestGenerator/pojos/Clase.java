@@ -325,7 +325,6 @@ public class Clase {
         if (this.imports != null && this.imports.getProjectImports() != null && !this.imports.getProjectImports().isEmpty()) {
             this.classNode.setConextions(this.imports.getProjectImports());
         }
-
     }
 
     public Node updateNodeAndGet(String nodeName) {
