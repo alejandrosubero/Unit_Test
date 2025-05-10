@@ -42,6 +42,7 @@ public class Clase {
         this.metodos = new ArrayList<>();
         this.variables = new ArrayList<>();
         this.estructuras = new ArrayList<>();
+        this.classNode = new Node();
         this.useMock = false;
         this.constructores = new ArrayList<>();
         this.useLomboxBuild = false;
@@ -316,18 +317,18 @@ public class Clase {
         return false;
     }
 
-public void updateNode(String nodeName){
+    public void updateNode(String nodeName) {
         this.classNode.setClassName(this.nombre);
-        if(nodeName != null){
+        if (nodeName != null) {
             this.classNode.setName(nodeName);
         }
-        if(this.imports != null && this.imports.getProjectImports() != null && !this.imports.getProjectImports().isEmpty()) {
+        if (this.imports != null && this.imports.getProjectImports() != null && !this.imports.getProjectImports().isEmpty()) {
             this.classNode.setConextions(this.imports.getProjectImports());
         }
 
     }
 
-    public Node updateNodeAndGet(String nodeName){
+    public Node updateNodeAndGet(String nodeName) {
         this.updateNode(nodeName);
         return this.classNode;
     }
