@@ -1,6 +1,9 @@
 package com.example.grafo;
 
+import com.example.grafo.pojos.Node;
+
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.PrintWriter;
@@ -39,6 +42,7 @@ public class GrafoInteractivo extends JPanel {
             }
 
             public void mouseClicked(MouseEvent e) {
+                ...
                 if (SwingUtilities.isRightMouseButton(e)) {
                     String nodo = obtenerNodoEn(e.getPoint());
                     if (nodo != null) {
@@ -262,26 +266,193 @@ public class GrafoInteractivo extends JPanel {
     }
 
 
-    public static void start(Map<String, Set<String>> grafoDependency, Map<String, Set<String>> grafoUses){
+//    public static void start1(Map<String, Set<String>> grafoDependency, Map<String, Set<String>> grafoUses){
+//
+//        GrafoInteractivo panel = new GrafoInteractivo(grafoDependency);
+//        JScrollPane scrollPane = new JScrollPane(panel);
+//
+//        JButton btnRedistribuir = new JButton("Redistribuir");
+//        btnRedistribuir.addActionListener(e -> {
+//            panel.recalcularDistribucion();
+//        });
+//
+//        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+//        topPanel.add(btnRedistribuir);
+//
+//        JFrame frame = new JFrame("Grafo Interactivo - Java Swing");
+//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        frame.getContentPane().add(topPanel, BorderLayout.NORTH);
+//        frame.getContentPane().add(scrollPane, BorderLayout.CENTER);
+//        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+//        frame.setVisible(true);
+//    }
 
-        GrafoInteractivo panel = new GrafoInteractivo(grafoDependency);
-        JScrollPane scrollPane = new JScrollPane(panel);
+    public static Map<String, Set<String>> getMap(Map<String, Node> nodeSources, Boolean isUseFor){
+        Map<String, Set<String>> mapGrafo = new HashMap<>();
 
-        JButton btnRedistribuir = new JButton("Redistribuir");
-        btnRedistribuir.addActionListener(e -> {
-            panel.recalcularDistribucion();
+        for (Map.Entry<String, Node> node : nodeSources.entrySet()) {
+            if(isUseFor){
+                mapGrafo.put( node.getValue().getName(), new HashSet<>(node.getValue().getUseFor()));
+            }else {
+                mapGrafo.put( node.getValue().getName(), new HashSet<>(node.getValue().getConextions()));
+            }
+        }
+        return mapGrafo;
+    }
+
+
+    public static void start(Map<String, Node> nodeSources) {
+
+        Map<String, Set<String>> grafoDependency = getMap( nodeSources, false);
+
+
+        GrafoInteractivo panelGrafo = new GrafoInteractivo(grafoDependency);
+
+        // Modelo de la tabla de nodos
+        DefaultTableModel modeloNodos = new DefaultTableModel(new Object[]{"Nodo", "Class"}, 0);
+        JTable tablaNodos = new JTable(modeloNodos);
+
+        // Modelo de la tabla de conexiones
+        DefaultTableModel modeloConexiones = new DefaultTableModel(new Object[]{"Nodo", "Class", "Conexión"}, 0);
+        JTable tablaConexiones = new JTable(modeloConexiones);
+
+        // Llenar tabla de nodos
+        for (Map.Entry<String, Node> node : nodeSources.entrySet()) {
+            modeloNodos.addRow(new Object[]{node.getValue().getName(), node.getValue().getClassName()});
+        }
+
+        // Doble clic en un nodo del grafo
+        panelGrafo.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    String nodo = panelGrafo.obtenerNodoEn(e.getPoint());
+                    if (nodo != null) {
+                        modeloConexiones.setRowCount(0); // Limpiar
+                        for (String destino : grafoDependency.getOrDefault(nodo, new HashSet<>())) {
+                            modeloConexiones.addRow(new Object[]{nodo, nodo, destino});
+                        }
+                    }
+                }
+            }
         });
 
+        // Panel derecho con dos tablas
+        JPanel panelTablas = new JPanel(new BorderLayout());
+
+        JLabel labelNodos = new JLabel("List Nodes");
+        labelNodos.setFont(new Font("Arial", Font.BOLD, 14));
+        labelNodos.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        panelTablas.add(labelNodos, BorderLayout.NORTH);
+        panelTablas.add(new JScrollPane(tablaNodos), BorderLayout.CENTER);
+
+        JPanel panelInferior = new JPanel(new BorderLayout());
+        JLabel labelConexiones = new JLabel("Node Conexión");
+        labelConexiones.setFont(new Font("Arial", Font.BOLD, 14));
+        labelConexiones.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        panelInferior.add(labelConexiones, BorderLayout.NORTH);
+        panelInferior.add(new JScrollPane(tablaConexiones), BorderLayout.CENTER);
+
+        panelTablas.add(panelInferior, BorderLayout.SOUTH);
+        panelTablas.setPreferredSize(new Dimension(300, 600));
+
+        // Scroll para grafo
+        JScrollPane scrollGrafo = new JScrollPane(panelGrafo);
+
+        // Split pane
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scrollGrafo, panelTablas);
+        splitPane.setDividerLocation(1200);
+
+        // Botón Redistribuir
+        JButton btnRedistribuir = new JButton("Redistribuir");
+        btnRedistribuir.addActionListener(e -> panelGrafo.recalcularDistribucion());
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         topPanel.add(btnRedistribuir);
 
+        // Frame principal
         JFrame frame = new JFrame("Grafo Interactivo - Java Swing");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().add(topPanel, BorderLayout.NORTH);
-        frame.getContentPane().add(scrollPane, BorderLayout.CENTER);
+        frame.getContentPane().add(splitPane, BorderLayout.CENTER);
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setVisible(true);
     }
+
+
+
+
+
+    public static void start1(Map<String, Set<String>> grafoDependency, Map<String, Set<String>> grafoUses) {
+        GrafoInteractivo panelGrafo = new GrafoInteractivo(grafoDependency);
+
+        // Modelo de la tabla de nodos
+        DefaultTableModel modeloNodos = new DefaultTableModel(new Object[]{"Nodo", "Class"}, 0);
+        JTable tablaNodos = new JTable(modeloNodos);
+
+        // Modelo de la tabla de conexiones
+        DefaultTableModel modeloConexiones = new DefaultTableModel(new Object[]{"Nodo", "Class", "Conexión"}, 0);
+        JTable tablaConexiones = new JTable(modeloConexiones);
+
+        // Llenar tabla de nodos
+        for (String nodo : grafoDependency.keySet()) {
+            modeloNodos.addRow(new Object[]{nodo, nodo});
+        }
+
+        // Doble clic en un nodo del grafo
+        panelGrafo.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    String nodo = panelGrafo.obtenerNodoEn(e.getPoint());
+                    if (nodo != null) {
+                        modeloConexiones.setRowCount(0); // Limpiar
+                        for (String destino : grafoDependency.getOrDefault(nodo, new HashSet<>())) {
+                            modeloConexiones.addRow(new Object[]{nodo, nodo, destino});
+                        }
+                    }
+                }
+            }
+        });
+
+        // Panel derecho con dos tablas
+        JPanel panelTablas = new JPanel(new BorderLayout());
+
+        JLabel labelNodos = new JLabel("List Nodes");
+        labelNodos.setFont(new Font("Arial", Font.BOLD, 14));
+        labelNodos.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        panelTablas.add(labelNodos, BorderLayout.NORTH);
+        panelTablas.add(new JScrollPane(tablaNodos), BorderLayout.CENTER);
+
+        JPanel panelInferior = new JPanel(new BorderLayout());
+        JLabel labelConexiones = new JLabel("Node Conexión");
+        labelConexiones.setFont(new Font("Arial", Font.BOLD, 14));
+        labelConexiones.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        panelInferior.add(labelConexiones, BorderLayout.NORTH);
+        panelInferior.add(new JScrollPane(tablaConexiones), BorderLayout.CENTER);
+
+        panelTablas.add(panelInferior, BorderLayout.SOUTH);
+        panelTablas.setPreferredSize(new Dimension(300, 600));
+
+        // Scroll para grafo
+        JScrollPane scrollGrafo = new JScrollPane(panelGrafo);
+
+        // Split pane
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scrollGrafo, panelTablas);
+        splitPane.setDividerLocation(1200);
+
+        // Botón Redistribuir
+        JButton btnRedistribuir = new JButton("Redistribuir");
+        btnRedistribuir.addActionListener(e -> panelGrafo.recalcularDistribucion());
+        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        topPanel.add(btnRedistribuir);
+
+        // Frame principal
+        JFrame frame = new JFrame("Grafo Interactivo - Java Swing");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.getContentPane().add(topPanel, BorderLayout.NORTH);
+        frame.getContentPane().add(splitPane, BorderLayout.CENTER);
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        frame.setVisible(true);
+    }
+
 
 
     public static void main(String[] args) {
