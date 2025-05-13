@@ -3,7 +3,6 @@ package com.unitTestGenerator;
 import com.unitTestGenerator.core.AppProjectStarted;
 import com.unitTestGenerator.ioc.ContextIOC;
 import com.unitTestGenerator.ioc.anotations.EndebleIOC;
-import com.unitTestGenerator.util.ICleanConsole;
 
 
 @EndebleIOC("com.unitTestGenerator")

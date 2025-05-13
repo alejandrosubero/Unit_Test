@@ -4,14 +4,11 @@ import com.unitTestGenerator.analyzers.services.AnalizerProjectService;
 import com.unitTestGenerator.core.ProjectHolder;
 import com.unitTestGenerator.ioc.ContextIOC;
 import com.unitTestGenerator.ioc.anotations.Component;
-import com.unitTestGenerator.persistence.model.Data;
 import com.unitTestGenerator.persistence.model.DataPojo;
 import com.unitTestGenerator.persistence.repositories.DataDAOServicesImplement;
 import com.unitTestGenerator.persistence.repositories.IDaoService;
 import com.unitTestGenerator.pojos.Project;
-import com.unitTestGenerator.printers.IPrintService;
-import com.unitTestGenerator.printers.PrintProjectAnalyzers;
-import com.unitTestGenerator.test.AppTestDatabase;
+import com.unitTestGenerator.printers.interfaces.IPrintService;
 import com.unitTestGenerator.util.ObjectTransformer;
 
 import java.util.ArrayList;
@@ -33,7 +30,7 @@ public class SavedProjectMenu implements IPrintService {
         this.objectTransformer = objectTransformer;
         this.projectHolder = projectHolder;
         this.analizerProjectService = analizerProjectService;
-        this.dao =  ContextIOC.getInstance(AppTestDatabase.class).getClassInstance(DataDAOServicesImplement.class);
+        this.dao =  ContextIOC.getInstance().getClassInstance(DataDAOServicesImplement.class);
     }
 
     public Project started(Scanner scanner){

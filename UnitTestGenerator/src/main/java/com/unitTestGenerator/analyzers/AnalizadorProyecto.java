@@ -11,8 +11,7 @@ import com.unitTestGenerator.ioc.anotations.Singleton;
 import com.unitTestGenerator.pojos.Clase;
 import com.unitTestGenerator.pojos.Project;
 import com.unitTestGenerator.printers.DirectoryTreeBuilder;
-import com.unitTestGenerator.printers.IPrintProjectStructure;
-import com.unitTestGenerator.uml.sevices.PrintClassToUML;
+import com.unitTestGenerator.printers.interfaces.IPrintProjectStructure;
 
 import java.io.File;
 import java.util.*;
@@ -43,7 +42,7 @@ public class AnalizadorProyecto implements ITodoDetectorService, IPrintProjectSt
         File carpetaProyecto = new File(rutaProyecto);
         this.analizarProyectoRecursivo(carpetaProyecto, clases, mapClass, project);
         project.setMapClass(mapClass);
-        String  classDirectoryTree = treeBuilder.getTreeString();
+        String classDirectoryTree = treeBuilder.getTreeString();
         project.getPrinterProject().setProjectClassTree(classDirectoryTree.replace(".java", " "));
         String projectDirectoryTree = getStructure(project.getPathProject());
         project.getPrinterProject().setProjectDirectoryTree(projectDirectoryTree);
@@ -112,13 +111,18 @@ public class AnalizadorProyecto implements ITodoDetectorService, IPrintProjectSt
 
     private void setContainers(Clase clase, List<Clase> classList, Map<String, Clase> mapClass, Project project){
 
-        if(classList != null && clase !=null){
-            classList.add(clase);
-            project.getPrinterProject().addToClaseList(clase.getNombre());
-        }
+        if(clase !=null) {
+            clase.updateNode(null);
 
-        if (mapClass != null && clase != null) {
-            mapClass.put(clase.getNombre(), clase);
+            if (classList != null) {
+                classList.add(clase);
+                project.getPrinterProject().addToClaseList(clase.getNombre());
+                project.getClaseListRaw().add(clase.getRawClass());
+            }
+
+            if (mapClass != null) {
+                mapClass.put(clase.getNombre(), clase);
+            }
         }
     }
 

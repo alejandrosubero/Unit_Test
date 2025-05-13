@@ -2,11 +2,8 @@ package com.unitTestGenerator.interfaces;
 
 import com.unitTestGenerator.analyzers.GradleAnalyzer;
 import com.unitTestGenerator.analyzers.PomAnalyzer;
-import com.unitTestGenerator.builders.interfaces.IFileManager;
 import com.unitTestGenerator.ioc.ContextIOC;
-import com.unitTestGenerator.pojos.Clase;
 import com.unitTestGenerator.pojos.Project;
-import com.unitTestGenerator.util.IBaseModel;
 
 import java.io.File;
 

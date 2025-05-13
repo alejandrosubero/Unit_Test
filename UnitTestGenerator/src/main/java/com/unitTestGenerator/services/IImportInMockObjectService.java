@@ -6,7 +6,7 @@ import com.unitTestGenerator.pojos.Project;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.unitTestGenerator.util.IConstantModel.COMMON_IMPORTS;
+import static com.unitTestGenerator.util.interfaces.IConstantModel.COMMON_IMPORTS;
 
 public interface IImportInMockObjectService {
 

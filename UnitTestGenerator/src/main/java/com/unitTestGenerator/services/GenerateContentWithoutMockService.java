@@ -48,13 +48,6 @@ public class GenerateContentWithoutMockService implements IReturnType, IMethodSe
             content.append("\n");
             String responseVariableName = "response";
             content.append(this.generateClassMethodCall(metodo,clase, responseVariableName));
-
-
-            //TODO: NEED TESTING
-//            content.append("\n")
-//                    .append("\t")
-//                    .append(this.getAssertTypeNull( "true", responseVariableName ));
-
             content.append("\n")
                     .append("\t")
                     .append(this.getAssertType(metodo.getTipoRetorno(), "true", responseVariableName ));

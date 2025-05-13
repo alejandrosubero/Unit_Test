@@ -1,7 +1,7 @@
 package com.unitTestGenerator.builders.interfaces;
 
 import com.unitTestGenerator.pojos.Clase;
-import com.unitTestGenerator.util.IBaseModel;
+import com.unitTestGenerator.util.interfaces.IBaseModel;
 import org.apache.commons.io.FileUtils;
 
 import java.io.*;

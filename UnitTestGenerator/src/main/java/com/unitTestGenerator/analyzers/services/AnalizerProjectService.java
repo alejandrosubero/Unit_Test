@@ -9,9 +9,8 @@ import com.unitTestGenerator.ioc.ContextIOC;
 import com.unitTestGenerator.ioc.anotations.Component;
 import com.unitTestGenerator.ioc.anotations.Singleton;
 import com.unitTestGenerator.pojos.Project;
-import com.unitTestGenerator.printers.IPrintAnalizeImports;
-import com.unitTestGenerator.printers.IPrintService;
-import com.unitTestGenerator.uml.sevices.PrintClassToUML;
+import com.unitTestGenerator.printers.interfaces.IPrintAnalizeImports;
+import com.unitTestGenerator.printers.interfaces.IPrintService;
 
 import java.util.Scanner;
 

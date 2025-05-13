@@ -4,7 +4,7 @@ package com.unitTestGenerator.analyzers.services.interfaces;
 import com.unitTestGenerator.pojos.Clase;
 import com.unitTestGenerator.pojos.Constructor;
 import com.unitTestGenerator.pojos.Project;
-import com.unitTestGenerator.util.IRepeatLogic;
+import com.unitTestGenerator.util.interfaces.IRepeatLogic;
 import java.util.Optional;
 
 public interface IClassDetailBuilder extends IRepeatLogic {

@@ -10,6 +10,7 @@ import java.util.Optional;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import com.unitTestGenerator.analyzers.interfaces.IGradleAnalyzer;
 import com.unitTestGenerator.ioc.anotations.Component;
 import com.unitTestGenerator.pojos.Dependency;
 import com.unitTestGenerator.util.Dependencies;
@@ -20,7 +21,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 @Component
-public class GradleAnalyzer implements IFileManager {
+public class GradleAnalyzer implements IGradleAnalyzer, IFileManager {
 
     private File archivoGradle;
 

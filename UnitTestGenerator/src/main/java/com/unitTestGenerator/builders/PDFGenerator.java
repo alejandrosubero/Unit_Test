@@ -12,8 +12,8 @@ import java.io.FileOutputStream;
 
 import com.unitTestGenerator.pojos.Clase;
 import com.unitTestGenerator.pojos.Project;
-import com.unitTestGenerator.printers.IPrintService;
-import com.unitTestGenerator.util.IConstantModel;
+import com.unitTestGenerator.printers.interfaces.IPrintService;
+import com.unitTestGenerator.util.interfaces.IConstantModel;
 import org.apache.commons.io.IOUtils;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 import org.apache.pdfbox.io.MemoryUsageSetting;
@@ -63,6 +63,19 @@ public class PDFGenerator implements IPrintService, IFileManagerDelete {
             this.execute("Project Class Tree",project.getPrinterProject().getProjectClassTree(), path2);
             appendPdf(path1, path2, path3);
 
+        }
+    }
+
+
+    public void createOnepdf(Project project, String text, String title, String nameFile) {
+        if (project.getPathProject() != null && text != null) {
+            if(nameFile == null){
+                nameFile = project.getName()+ IConstantModel.PDF_Extention;
+            }
+            String pathBase = project.getPathProject() + IConstantModel.Separator;
+            String path = pathBase + nameFile;
+            this.service().print_BLUE("Starting report generation....");
+            this.execute(title,text, path);
         }
     }
 
@@ -182,9 +195,6 @@ public class PDFGenerator implements IPrintService, IFileManagerDelete {
         merger.setDestinationFileName(outputPath);
         merger.mergeDocuments(MemoryUsageSetting.setupMainMemoryOnly());
     }
-
-
-
 
 
 
