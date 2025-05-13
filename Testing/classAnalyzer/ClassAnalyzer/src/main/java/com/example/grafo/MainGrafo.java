@@ -30,7 +30,8 @@ public class MainGrafo {
         grafoDependency.put("Deller", new HashSet<>(Arrays.asList("Car")));
 
 
-        GrafoInteractivo.start(grafoDependency,  grafoUses);
+        GrafoInteractivo.start1(grafoDependency,  grafoUses);
+
 
     }
 
@@ -57,7 +58,7 @@ public class MainGrafo {
         nodeSources.put(node5.getName(), node5);
         nodeSources.put(node6.getName(), node6);
 
-
+        GrafoInteractivo.start(nodeSources);
 }
 
 }
