@@ -1,73 +1,129 @@
-# Unit_Test
 
+# **UnitCLI** – Unit Test Generator for Java
 
-# Project structure bash unit-test-dist.zip
-=============================================
-hello-cli/
+**UnitCLI** is a powerful command-line tool designed for Java developers to **streamline and accelerate** the creation of unit tests. It automatically generates well-structured test cases using **JUnit** and **Mockito**, allowing you to focus on building robust applications while maintaining high code quality.
+
+With just a few commands, UnitCLI helps you:
+
+* Quickly generate unit tests for your classes.
+* Choose between **Mockito** or plain **JUnit** based testing.
+* Analyze your project to get a summary of all classes.
+* Explore your project's folder structure visually via the CLI.
+* Improve test coverage and code reliability.
+
+### 🚀 **Benefits of Using UnitCLI**
+
+* **Faster development cycles:** Automate the creation of repetitive test code.
+* **Increased code quality:** Catch bugs earlier with consistent unit testing.
+* **Safe refactoring:** Make changes confidently, knowing that automated tests cover your code.
+* **Documentation through tests:** Unit tests act as living documentation for how your code behaves.
+* **Simplified test setup:** Ready-to-use CLI for macOS and Windows makes integration easy.
+
+---
+
+## 📁 Project Structure
+
+### `unit-test-dist.zip`
+
+```
+unit-cli/
 ├── cli/
-│   ├── unit
-│   └── unit.bat
+│   ├── unit                 # Shell script (macOS/Linux)
+│   └── unit.bat             # Batch script (Windows)
 ├── src/
 │   └── main/
 │       └── java/
 │           └── com/
-│               └── example/
+│               └── unitTestGenerator/
 │                   └── App.java
-├── pom.xml
+├── pom.xml                  # Maven build configuration
+└── Makefile                 # Build and packaging script
+```
+
+### `cli-dist.zip`
+
+```
+cli/
+├── unit                     # Shell script
+├── unit.bat                 # Batch script
+├── unit-1.0.0-jar-with-dependencies.jar
 └── Makefile
+```
 
-=============================================
+---
 
-cli-dist.zip
-|── cli/
-│   ├── unit
-│   ├── unit.bat
-│   └── unit-1.0.0-jar-with-dependencies.jar
-|____Makefile        
-=============================================
+## 🛠️ Build Instructions
 
-# Build STEPS:
-1. mvn clean package
-2. make dist
-3. unzip 
+To build and package the application:
 
+```bash
+# Step 1: Build with Maven
+mvn clean package
 
-# macOS:
-=============================================
-unzip:
+# Step 2: Create distribution
+make dist
+
+# Step 3: Unzip the packaged CLI
+unzip unit-test-dist.zip
+```
+
+---
+
+## 🍎 macOS Installation
+
+### Unpack and Install
+
+```bash
 unzip unit-test-dist.zip -d unit-test-dist
-cd cli
-=============================================
-Install:
-sudo ./cli/unit install
+cd unit-test-dist/cli
+sudo ./unit install
+```
 
-=============================================
-Use post-install in macOs:
-Usage:
-  unit [command] [options]
+### Usage (macOS/Linux)
 
-Commands:
-  install       Install the application
-  uninstall     Remove the application
-  --version, -v Show version
-  --help, -h    Show this help
+```bash
+unit [command] [options]
+```
 
-=============================================
+**Available Commands:**
 
+* `install`             Install the application
+* `uninstall`          Remove the application
+* `--version`, `-v`    Show version
+* `--help`, `-h`        Show this help message
 
-# Windows:
-=============================================
-Install:
-CMD/Powershell open like Administrator
+---
+
+## 🪟 Windows Installation
+
+### Run as Administrator
+
+Open **CMD** or **PowerShell** as Administrator and run:
+
+```bash
 cli\unit.bat install
-=============================================
-post-instalación:
-Use in Windows:
-unit [comando]
-Comandos:
-install    Install the application
-uninstall  Remove the application
---version  Show version
---help     Show this help
+```
 
-=============================================
+### Usage (Windows)
+
+```bash
+unit [command]
+```
+
+**Available Commands:**
+
+* `install`       Install the application
+* `uninstall`    Remove the application
+* `--version`    Show version
+* `--help`      Show help message
+
+---
+
+## 📦 Future Enhancements (optional section)
+
+* Support for test coverage metrics
+* Integration with CI/CD tools
+* Interactive test configuration
+* IDE plugins for IntelliJ and Eclipse
+
+
