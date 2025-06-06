@@ -1,5 +1,6 @@
 package com.unitTestGenerator.pojos;
 
+import com.unitTestGenerator.analyzers.TypeClass;
 import com.unitTestGenerator.ioc.anotations.Component;
 
 import java.io.File;
@@ -19,7 +20,7 @@ public class Project {
     private String mainClassName;
     private List<String> claseListRaw = new ArrayList<>();
     private Map<String, Node> nodeSources = new HashMap<>();
-
+    private Map<String, List<Clase>> mapClassInterfae = new HashMap<>();
 
     public Project() {
     }
@@ -223,6 +224,40 @@ public class Project {
         boolean isMaven = new File(proyecto, "pom.xml").exists();
         this.isGradle = new File(proyecto, "build.gradle").exists() || new File(proyecto, "build.gradle.kts").exists();
         this.isMaven = isMaven;
+    }
+
+    public Map<String, List<Clase>> getMapClassInterfae() {
+        return mapClassInterfae;
+    }
+
+    public void setMapClassInterfae(Map<String, List<Clase>> mapClassInterfae) {
+        this.mapClassInterfae = mapClassInterfae;
+    }
+
+
+    public void setInMapClassInterfae(Clase classs){
+        String key ="";
+
+        if(classs.getTypeClass().equals( TypeClass.INTEFACE.getValue())){
+            key =TypeClass.INTEFACE.getValue();
+        }else {
+            key = TypeClass.CLASS.getValue();
+        }
+
+        if(this.mapClassInterfae.containsKey(key)){
+            this.mapClassInterfae.get(key).add(classs);
+        }else {
+            List <Clase> list = new ArrayList<>();
+            list.add(classs);
+            this.mapClassInterfae.put(key,list);
+        }
+    }
+
+    public List<Clase> getElementOfMapClassInterfae(String key){
+        if(this.mapClassInterfae.containsKey(key)){
+          return  this.mapClassInterfae.get(key);
+        }
+        return this.claseList;
     }
 
 

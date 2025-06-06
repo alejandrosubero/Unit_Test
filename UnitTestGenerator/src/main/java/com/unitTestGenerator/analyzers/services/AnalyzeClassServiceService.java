@@ -1,5 +1,6 @@
 package com.unitTestGenerator.analyzers.services;
 
+import com.unitTestGenerator.analyzers.TypeClass;
 import com.unitTestGenerator.analyzers.services.interfaces.IAnalyzeCassMethodService;
 import com.unitTestGenerator.analyzers.services.interfaces.IAnalyzeClassRelationsService;
 import com.unitTestGenerator.ioc.ContextIOC;
@@ -89,14 +90,15 @@ public class AnalyzeClassServiceService implements IAnalyzeCassMethodService, IA
 
         if (matcherClase.find()) {
             clase.setNombre(matcherClase.group(1));
-            clase.setTypeClass("class");
+
+            clase.setTypeClass(TypeClass.CLASS.getValue());
             clase.setIndexFirmaClass(matcherClase.start(1));
         } else {
             Pattern patronInterface = Pattern.compile("public interface (\\w+)");
             Matcher matcherInterface = patronInterface.matcher(contenido);
             if (matcherInterface.find()) {
                 clase.setNombre(matcherInterface.group(1));
-                clase.setTypeClass("interface");
+                clase.setTypeClass(TypeClass.INTEFACE.getValue());
                 clase.setIndexFirmaClass(matcherInterface.start(1));
             }
         }

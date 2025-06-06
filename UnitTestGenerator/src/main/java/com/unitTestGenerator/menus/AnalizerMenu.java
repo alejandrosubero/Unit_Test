@@ -38,6 +38,8 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
         this.pdfGenerator = pdfGenerator;
     }
 
+
+
     public void analizerMenu(){
         this.printColummStringY("Analyze project Module",
                 "Choose an option:",
@@ -73,6 +75,10 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
                 this.analizerMenuStarted(project, scanner);
         }
     }
+
+    //TODO: PARA IMPRIMIR LAS CLASES O LAS INTERFACES ESPLICITAMENTE POR SEPARADO.
+//    project.getElementOfMapClassInterfae(String key)
+    ... "x. Print the list of Intefaces"
 
     public void AnalysisOptionsMenu(){
        this.printColummStringY("Analyzer Options Menu:",

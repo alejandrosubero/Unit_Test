@@ -110,7 +110,6 @@ public class AnalizadorProyecto implements ITodoDetectorService, IPrintProjectSt
 //    }
 
     private void setContainers(Clase clase, List<Clase> classList, Map<String, Clase> mapClass, Project project){
-
         if(clase !=null) {
             clase.updateNode(null);
 
@@ -118,6 +117,7 @@ public class AnalizadorProyecto implements ITodoDetectorService, IPrintProjectSt
                 classList.add(clase);
                 project.getPrinterProject().addToClaseList(clase.getNombre());
                 project.getClaseListRaw().add(clase.getRawClass());
+                project.setInMapClassInterfae(clase);
             }
 
             if (mapClass != null) {
