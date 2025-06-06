@@ -79,12 +79,12 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
     //TODO: PARA IMPRIMIR LAS CLASES O LAS INTERFACES ESPLICITAMENTE POR SEPARADO.
 //    project.getElementOfMapClassInterfae(String key)
     ... "x. Print the list of Intefaces"
-            "1. Print the list of classes",
+            "xx. Print the list of class",
 
     public void AnalysisOptionsMenu(){
        this.printColummStringY("Analyzer Options Menu:",
                 "Choose an option:",
-                "1. Print the list of classes",
+                "1. Print the list of class and interfaces of project",
                 "2. Print Methods of one class",
                 "3. Print a Class with Details",
                 "4. Print the project class tree",
