@@ -2,9 +2,8 @@ the project need:
 
  version 2.0.0.0
 
-- Print separate interface and class
 - fix bug in tree of class
 - modified the template because the paht don't fized there.
 - update the java version to 24  (Analyzed this point).
-- separate the project in modules (java 9) (Analyzed this point).
+
 

@@ -3,6 +3,8 @@ package com.unitTestGenerator.printers.interfaces;
 import com.unitTestGenerator.pojos.Clase;
 import com.unitTestGenerator.pojos.Project;
 
+import java.util.List;
+
 public interface PrintProjectAnalyzers extends IPrintService {
 
 
@@ -14,6 +16,12 @@ public interface PrintProjectAnalyzers extends IPrintService {
     default void printClassList(Project projectP ) {
         this.service().print_RED(""+projectP.getPrinterProject().getClaseList().size());
         projectP.getPrinterProject().getClaseList().forEach(className -> this.service().print_YELLOW(className));
+    }
+
+
+    default void printKeyMapClassInterfaceList(List<Clase> list, String key) {
+        this.service().print_RED("NUMBER of "+ key +": "+ list.size());
+        list.forEach(className -> this.service().print_GREEN(className.getNombre()));
     }
 
     default void printMethodsOfClass(Project projectP, String className ) {

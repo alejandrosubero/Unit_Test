@@ -120,7 +120,8 @@ public class AnalyzeClassServiceService implements IAnalyzeCassMethodService, IA
 
 
     private void analyzeConstructors(String contenido, Clase clase) {
-        Pattern patronConstructor = Pattern.compile("public (\\w+)\\((.*?)\\)\\s*\\{(.*?)\\}", Pattern.DOTALL);
+//        Pattern patronConstructor = Pattern.compile("public (\\w+)\\((.*?)\\)\\s*\\{(.*?)\\}", Pattern.DOTALL);
+        Pattern patronConstructor = Pattern.compile("(?:public|private|protected)?\\s*(\\w+)\\((.*?)\\)\\s*\\{(.*?)\\}", Pattern.DOTALL);
         Matcher matcherConstructor = patronConstructor.matcher(contenido);
 
         while (matcherConstructor.find()) {

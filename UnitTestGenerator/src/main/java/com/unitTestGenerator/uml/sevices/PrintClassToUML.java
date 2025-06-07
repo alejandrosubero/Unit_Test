@@ -43,9 +43,13 @@ public class PrintClassToUML implements IRepeatLogic {
         if (classs.getMetodos() != null && !classs.getMetodos().isEmpty()) {
             for (Metodo metodo : classs.getMetodos()) {
                 String signature = metodo.getMethodSignature().replace(";","");
+                String cleanedSignature = signature.replaceAll("public|private|protected", "");
+                signature =  cleanedSignature.replace(metodo.getTipoRetorno(),"");
                 buffer.append(uMLTemplate(metodo.getAccessModifier(), signature, metodo.getTipoRetorno())).append("\n");
             }
         }
+
+
         return buffer.toString();
     }
 
@@ -95,9 +99,7 @@ public class PrintClassToUML implements IRepeatLogic {
         StringBuffer buffer = new StringBuffer();
 
         if (classs.getClassRelations() != null && classs.getClassRelations().check()) {
-//            buffer.append("Relations: ").append(nombre).append("\n");
             if (classs.getClassRelations().getImplementsList() != null && !classs.getClassRelations().getImplementsList().isEmpty()) {
-//                buffer.append("\t").append("Implement: ").append(nombre).append("\n");
                 for (String impl : classs.getClassRelations().getImplementsList()) {
                     buffer.append("\t").append(" -").append(impl).append("\n");
                 }

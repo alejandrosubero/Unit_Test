@@ -76,9 +76,10 @@ public class ClassRelationAnalyzer {
         for (int i = 0; i < node.children.size(); i++) {
             Relation relation = node.children.get(i);
             boolean last = (i == node.children.size() - 1);
-            System.out.println(prefix + (isTail ? "    " : "│   ") +
-                    (last ? "└── " : "├── ") +
+            System.out.println(prefix + (isTail ? "    " :
+                    "│   ") + (last ? "└── " : "├── ") +
                     "(" + relation.type.name().toLowerCase() + ") " + relation.node.className);
+
             printTree(relation.node, prefix + (isTail ? "    " : "│   ") + (last ? "    " : "│   "), true);
         }
     }

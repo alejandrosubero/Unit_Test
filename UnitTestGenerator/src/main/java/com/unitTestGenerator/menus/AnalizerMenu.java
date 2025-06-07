@@ -1,5 +1,6 @@
 package com.unitTestGenerator.menus;
 
+import com.unitTestGenerator.analyzers.TypeClass;
 import com.unitTestGenerator.analyzers.dependency.IDependencyAnalyzer;
 import com.unitTestGenerator.analyzers.services.AnalizerProjectService;
 import com.unitTestGenerator.analyzers.services.interfaces.IAnalizerProjectServiceManager;
@@ -77,24 +78,24 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
     }
 
     //TODO: PARA IMPRIMIR LAS CLASES O LAS INTERFACES ESPLICITAMENTE POR SEPARADO.
-//    project.getElementOfMapClassInterfae(String key)
-    ... "x. Print the list of Intefaces"
-            "xx. Print the list of class",
+//
+
 
     public void AnalysisOptionsMenu(){
        this.printColummStringY("Analyzer Options Menu:",
                 "Choose an option:",
                 "1. Print the list of class and interfaces of project",
-                "2. Print Methods of one class",
-                "3. Print a Class with Details",
-                "4. Print the project class tree",
-                "5. Print the project file tree",
-                "6. Generate Interface Relations",
-                "7. Generate File",
-                "8. Return to the previous menu",
-                "9. Return to the main menu");
+               "2. Print the list of class",
+               "3. Print the list of Interfaces",
+                "4. Print Methods of one class",
+                "5. Print a Class with Details",
+                "6. Print the project class tree",
+                "7. Print the project file tree",
+                "8. Generate Interface Relations",
+                "9. Generate File",
+                "10. Return to the previous menu",
+                "11. Return to the main menu");
     }
-
 
 
     public void analizerMenuInitial(Project project){
@@ -103,33 +104,48 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
         int opcion = scanner.nextInt();
 
         switch (opcion) {
+
             case 2:
+                this.printKeyMapClassInterfaceList(
+                        project.getElementOfMapClassInterfae( TypeClass.CLASS.getValue()),
+                        TypeClass.CLASS.getValue()
+                );
+                this.subMenu1(project,scanner);
+                break;
+            case 3:
+                this.printKeyMapClassInterfaceList(
+                        project.getElementOfMapClassInterfae( TypeClass.INTEFACE.getValue()),
+                        TypeClass.INTEFACE.getValue()
+                );
+                this.subMenu1(project,scanner);
+                break;
+            case 4:
                 methodsOfclass(scanner, project);
                 subMenu2( project,  scanner);
                 break;
-            case 3:
+            case 5:
                 this.classDetail(scanner, project);
                 subMenu2( project,  scanner);
                 break;
-            case 4:
+            case 6:
                 this.printProjectClassTree(project);
                 subMenu2( project,  scanner);
                 break;
-            case 5:
+            case 7:
                 this.printProjectFileTree(project);
                 subMenu2( project,  scanner);
                 break;
-            case 6:
+            case 8:
                 this.interfaceRelations( project, scanner,true);
                 subMenu2( project,  scanner);
                 break;
-            case 7:
+            case 9:
                this.generateFileMenu(project, scanner);
                 break;
-            case 8:
+            case 10:
                 this.analizerMenuStarted( project,scanner);
                 break;
-            case 9:
+            case 11:
                 this.goToMainMenu();
                 break;
             default:
