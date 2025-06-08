@@ -203,13 +203,9 @@ public class AnalyzeClassServiceService implements IAnalyzeCassMethodService, IA
 
                 while (matcherMetodoInterface.find()) {
                     Metodo metodo = ContextIOC.getInstance().getClassInstance(Metodo.class);
-
-                    // Set method name, return type, and access modifier from the regex capture groups
                     metodo.setNombre(matcherMetodoInterface.group(3));
                     metodo.setTipoRetorno(matcherMetodoInterface.group(2));
                     metodo.setAccessModifier(matcherMetodoInterface.group(1));
-
-                    // Process the method parameters (handle edge cases such as empty or malformed parameters)
                     try {
                         String[] parametersList = matcherMetodoInterface.group(4).split(",");
                         if (parametersList != null && parametersList.length > 0) {
@@ -230,37 +226,18 @@ public class AnalyzeClassServiceService implements IAnalyzeCassMethodService, IA
                         e.printStackTrace();
                     }
 
-                    // Set the method signature (we only want the method signature, not the method body)
                     String methodSignature = matcherMetodoInterface.group(0).trim();
-                    String signatureWithoutBody = methodSignature.split("\\{")[0]; // Ensures we get only the header, not the body
+                    String signatureWithoutBody = methodSignature.split("\\{")[0];
                     metodo.setMethodSignature(signatureWithoutBody);
 
-                    // Process annotations (if any)
                     String[] lineas = contenido.split("\n");
                     for (int i = 0; i < lineas.length - 1; i++) {
                         if (lineas[i].trim().startsWith("@") && lineas[i + 1].trim().startsWith(signatureWithoutBody)) {
                             metodo.setAnotation(lineas[i].trim());
                         }
                     }
-
-                    // Add the method to the class
                     clase.addMetodo(metodo);
                 }
-
-
-
-
-//                while (matcherMetodoInterface.find()) {
-//                    Metodo metodo = ContextIOC.getInstance().getClassInstance(Metodo.class);
-//                    this.analyzeMethodBasic(metodo, matcherMetodoInterface);
-//                    this.analyzeMethodParameters(metodo, matcherMetodoInterface);
-//
-//                    String[] signturePart = matcherMetodoInterface.group(0).trim().split("\\{");
-//                    String va = signturePart[0];
-//                    metodo.setMethodSignature(va);
-//                    this.analyzeMethodAnotations(contenido, metodo, metodo.getMethodSignature());
-//                    clase.addMetodo(metodo);
-//                }
             }
 
         }
@@ -385,8 +362,6 @@ public class AnalyzeClassServiceService implements IAnalyzeCassMethodService, IA
         if (matcherMetodoBuilder.find() && matcherMetodoBuild.find()) {
             clase.setApplyBuildMethod(true);
         }
-
     }
-
 
 }

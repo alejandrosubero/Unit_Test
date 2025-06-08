@@ -18,8 +18,6 @@ import java.util.Scanner;
 @Component
 public class SavedProjectMenu implements IPrintService {
 
-//    V1.1.0.0  In progress....
-
     private ObjectTransformer objectTransformer;
     public static IDaoService dao;
     private ProjectHolder projectHolder;

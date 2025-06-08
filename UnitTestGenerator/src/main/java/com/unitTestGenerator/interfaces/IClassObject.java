@@ -77,7 +77,6 @@ public interface IClassObject {
                 String contentBody = this.buildObject(classObjectVariable, project);
                 content.append("\t\t").append(".").append(variableName).append("(").append(contentBody).append(")").append("\n");
             }
-
         }
         );
         content.append("\t\t").append(".build();");

@@ -18,10 +18,8 @@ import com.unitTestGenerator.printers.interfaces.PrintProjectAnalyzers;
 import com.unitTestGenerator.util.interfaces.IBaseModel;
 import com.unitTestGenerator.util.interfaces.IConstantModel;
 
-import java.io.IOException;
 import java.util.Scanner;
 
-//V1.1.0.0  In progress....
 
 @Component
 @Singleton
@@ -76,9 +74,6 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
                 this.analizerMenuStarted(project, scanner);
         }
     }
-
-    //TODO: PARA IMPRIMIR LAS CLASES O LAS INTERFACES ESPLICITAMENTE POR SEPARADO.
-//
 
 
     public void AnalysisOptionsMenu(){
@@ -228,7 +223,7 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
     private void methodsOfclass(Scanner scanner, Project project) {
         System.out.println("Enter the name of the Class");
         String response = scanner.next().toLowerCase();
-        if(response != null && !response.equals("")){
+        if(response != null && !response.isEmpty()){
             this.printMethodsOfClass(project, response);
         }
     }
@@ -236,7 +231,7 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
     private void classDetail(Scanner scanner, Project project) {
         System.out.println("Enter the name of the Class");
         String response = scanner.next().toLowerCase();
-        if(response != null && !response.equals("")){
+        if(response != null && !response.isEmpty()){
             Clase classs = project.getClass(response);
             if(classs != null && classs.getClassDetail() != null && !classs.getClassDetail().isEmpty()){
                 this.printClassAnalyzers.printClassDetail(classs);
@@ -256,24 +251,11 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
         );
     }
 
-//    public void generateFileMenuTxt(){
-//        this.printColummStringY(
-//                "Generate File Menu: ",
-//                "Choose an option:",
-//                "1. Class Report",
-//                "2. Generate Protect Report",
-//                "3. Generate .png with project Dependency",
-//                "4. Generate UML Class Diagram",
-//                "5. Generate Interface Relations",
-//                "6. Return to the previous menu"
-//        );
-//    }
-
 
     public void generateFileMenu(Project project, Scanner scanner) {
         this.generateFileMenuTxt();
         int opcion = scanner.nextInt();
-        String pathBase = project.getPathProject() + IConstantModel.Separator;
+//        String pathBase = project.getPathProject() + IConstantModel.Separator;
         switch (opcion) {
             case 1:
                 this.reportClass(scanner, project);
@@ -325,7 +307,7 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
     private void reportClass(Scanner scanner, Project project) {
        this.service().print_BLUE("Enter the name of the Class");
         String response = scanner.next().toLowerCase();
-        if(response != null && !response.equals("")){
+        if(response != null && !response.isEmpty()){
             Clase classs = project.getClass(response);
             if(classs != null && classs.getClassDetail() != null && !classs.getClassDetail().isEmpty()){
                 this.pdfGenerator.converterProjectOrClasInpdf(null,classs);
@@ -340,7 +322,7 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
         this.service().print_DARKGREEN("Enter the interface Name for analyzed");
         String targetClassName = scanner.next();
 
-        if(targetClassName != null && !targetClassName.equals("")){
+        if(targetClassName != null && !targetClassName.isEmpty()){
             try {
                 this.service().print_BLUE("Please wait while between analyzed the Project...");
                 String nameFile = targetClassName + "_Interface_Relations"+IConstantModel.PDF_Extention;

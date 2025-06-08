@@ -195,7 +195,7 @@ import org.reflections.Reflections;
                 }
                 // 🔥 Manejo de String y Tipos Primitivos
                 else if (paramType.equals(String.class)) {
-                    resolvedParameters[i] = ""; // Valor por defecto para String
+                    resolvedParameters[i] = "";
                 } else if (paramType.equals(int.class) || paramType.equals(Integer.class)) {
                     resolvedParameters[i] = 0;
                 } else if (paramType.equals(boolean.class) || paramType.equals(Boolean.class)) {
@@ -205,16 +205,14 @@ import org.reflections.Reflections;
                 } else if (paramType.equals(float.class) || paramType.equals(Float.class)) {
                     resolvedParameters[i] = 0.0f;
                 } else {
-                    // Evitar ciclo de dependencias
                     if (instancesInProgress.contains(paramName)) {
                         throw new RuntimeException("Dependency cycle detected while creating: " + paramName);
                     }
-
-                    instancesInProgress.add(paramName); // Marcar como "en progreso"
+                    instancesInProgress.add(paramName);
                     try {
                         resolvedParameters[i] = getClassInstance(paramName, paramType);
                     } finally {
-                        instancesInProgress.remove(paramName); // Remover después de crear
+                        instancesInProgress.remove(paramName);
                     }
                 }
             }
@@ -225,9 +223,6 @@ import org.reflections.Reflections;
 
         // Get an instance from the container
         public <T> T getClassInstance(String name, Class<T> type) {
-//            System.out.println("🔍 Searching for instance: " + name);
-//            System.out.println("📌 Available instances: " + registeredClasses.keySet());
-
             // Check if it is a Singleton
             if (singletonInstances.containsKey(name)) {
                 return type.cast(singletonInstances.get(name));
@@ -242,7 +237,6 @@ import org.reflections.Reflections;
             throw new RuntimeException("Instance with name " + name + " not found");
         }
 
-        // Get an instance of a registered class
         public <T> T getClassInstance(Class<T> type) {
             return getClassInstance(type.getSimpleName().toLowerCase(), type);
         }
@@ -255,9 +249,7 @@ import org.reflections.Reflections;
                     ClassName classNameAnnotation = clazz.getAnnotation(ClassName.class);
                     String className = classNameAnnotation.value();
                     Class<?> dynamicClass = Class.forName(className);
-                    // Instanciar la clase dinámicamente y llamar a un método
                     Object instance = dynamicClass.getDeclaredConstructor().newInstance();
-                    // Obtener el método saludo() de la clase Cliente (o cualquier clase)
                     Method saludoMethod = dynamicClass.getMethod(name);
 
                     if (saludoMethod == null) {
@@ -265,8 +257,6 @@ import org.reflections.Reflections;
                     } else {
                         saludoMethod.invoke(instance);
                     }
-                    // Invocar el método saludo() en la instancia creada
-
 
                 } else {
                     System.out.println("Class does not have the ClassName annotation.");

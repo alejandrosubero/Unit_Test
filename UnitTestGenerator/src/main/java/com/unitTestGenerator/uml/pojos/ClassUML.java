@@ -11,14 +11,6 @@ public class ClassUML {
     public ClassUML() {
     }
 
-
-
-
-
-
-
-
-
     public String getClassToUML() {
         return ClassToUML;
     }
@@ -26,8 +18,6 @@ public class ClassUML {
     public void setClassToUML(String classToUML) {
         ClassToUML = classToUML;
     }
-
-
 
 }
 
