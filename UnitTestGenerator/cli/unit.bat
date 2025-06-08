@@ -2,7 +2,7 @@
 setlocal enabledelayedexpansion
 
 set APP_NAME=unit
-set VERSION=1.0.0
+set VERSION=2.0.0
 set INSTALL_DIR=%APPDATA%\%APP_NAME%
 set JAR_NAME= unit-%VERSION%-jar-with-dependencies.jar
 
