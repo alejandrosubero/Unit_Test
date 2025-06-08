@@ -15,12 +15,13 @@ public interface PrintProjectAnalyzers extends IPrintService {
 
     default void printClassList(Project projectP ) {
         this.service().print_RED(""+projectP.getPrinterProject().getClaseList().size());
-        projectP.getPrinterProject().getClaseList().forEach(className -> this.service().print_YELLOW(className));
+        projectP.getPrinterProject().getClaseList().forEach(className -> this.service().print_GREEN(className));
     }
 
 
     default void printKeyMapClassInterfaceList(List<Clase> list, String key) {
-        this.service().print_RED("NUMBER of "+ key +": "+ list.size());
+        String number = "NUMBER of "+ key +": "+ list.size();
+        this.service().print_RED(number);
         list.forEach(className -> this.service().print_GREEN(className.getNombre()));
     }
 

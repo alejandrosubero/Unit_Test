@@ -92,7 +92,6 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
                 "11. Return to the main menu");
     }
 
-
     public void analizerMenuInitial(Project project){
         Scanner scanner = new Scanner(System.in);
         this.AnalysisOptionsMenu();
