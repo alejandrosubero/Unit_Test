@@ -1,7 +1,9 @@
 package com.unitTestGenerator.analyzers;
 
+import com.unitTestGenerator.analyzers.dependency.reverse.ReverseDependencyScanner;
 import com.unitTestGenerator.analyzers.services.AnalyzeClassServiceService;
 import com.unitTestGenerator.analyzers.services.ImportAnalizeService;
+import com.unitTestGenerator.analyzers.services.ReverseDependencyServices;
 import com.unitTestGenerator.analyzers.services.interfaces.ITodoDetectorService;
 import com.unitTestGenerator.builders.TemplateBuilder;
 import com.unitTestGenerator.ioc.ContextIOC;
@@ -46,6 +48,8 @@ public class AnalizadorProyecto implements ITodoDetectorService, IPrintProjectSt
         project.getPrinterProject().setProjectClassTree(classDirectoryTree.replace(".java", " "));
         String projectDirectoryTree = getStructure(project.getPathProject());
         project.getPrinterProject().setProjectDirectoryTree(projectDirectoryTree);
+        ContextIOC.getInstance().getClassInstance(ReverseDependencyServices.class).ejecute(project);
+
         return clases;
     }
 

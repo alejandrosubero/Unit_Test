@@ -2,7 +2,6 @@ package com.unitTestGenerator.analyzers.dependency;
 
 
 
-import com.unitTestGenerator.App;
 import com.unitTestGenerator.analyzers.dependency.console.DependencyAnalyzer;
 import com.unitTestGenerator.analyzers.dependency.interfaceanalyzer.ClassNode;
 import com.unitTestGenerator.analyzers.dependency.interfaceanalyzer.ClassRelationAnalyzer;

@@ -75,11 +75,12 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
         }
     }
 
-
+    .. uso de la clase en cada clase
+            .. listado de uso de todas las clases
     public void AnalysisOptionsMenu(){
        this.printColummStringY("Analyzer Options Menu:",
                 "Choose an option:",
-                "1. Print the list of class and interfaces of project",
+               "1. Print the list of class and interfaces of project",
                "2. Print the list of class",
                "3. Print the list of Interfaces",
                 "4. Print Methods of one class",

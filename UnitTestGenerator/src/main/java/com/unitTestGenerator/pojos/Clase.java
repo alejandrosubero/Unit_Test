@@ -1,5 +1,6 @@
 package com.unitTestGenerator.pojos;
 
+import com.unitTestGenerator.analyzers.dependency.reverse.ReverseDependencyNode;
 import com.unitTestGenerator.ioc.anotations.Component;
 
 import java.util.*;
@@ -36,6 +37,7 @@ public class Clase {
     private String classTemplate;
     private Boolean isMainClass;
     private Node classNode;
+    private ReverseDependencyNode reverseDependencyNode;
 
 
     public Clase() {
@@ -48,6 +50,14 @@ public class Clase {
         this.useLomboxBuild = false;
         this.applyBuildMethod = false;
         this.isMainClass = false;
+    }
+
+    public ReverseDependencyNode getReverseDependencyNode() {
+        return reverseDependencyNode;
+    }
+
+    public void setReverseDependencyNode(ReverseDependencyNode reverseDependencyNode) {
+        this.reverseDependencyNode = reverseDependencyNode;
     }
 
     public Node getClassNode() {
