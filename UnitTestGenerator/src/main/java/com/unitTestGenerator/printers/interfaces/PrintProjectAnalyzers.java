@@ -43,4 +43,9 @@ public interface PrintProjectAnalyzers extends IPrintService {
         this.service().print_GREEN(projectP.getPrinterProject().getProjectDirectoryTree());
     }
 
+    default void printElemet(String elemet) {
+        this.service().print_GREEN(elemet);
+    }
+
+
 }

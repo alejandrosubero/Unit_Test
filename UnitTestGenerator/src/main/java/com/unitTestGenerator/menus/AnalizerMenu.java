@@ -75,8 +75,7 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
         }
     }
 
-    .. uso de la clase en cada clase
-            .. listado de uso de todas las clases
+
     public void AnalysisOptionsMenu(){
        this.printColummStringY("Analyzer Options Menu:",
                 "Choose an option:",
@@ -184,6 +183,9 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
                 "3. Return to the main menu");
     }
 
+       .. uso de la clase en cada clase
+            .. listado de uso de todas las clases
+
     public void subMenu1(Project project, Scanner scanner) {
         this.subMenu1Txt();
         int opcion = scanner.nextInt();
@@ -226,6 +228,18 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
         if(response != null && !response.isEmpty()){
             this.printMethodsOfClass(project, response);
         }
+    }
+
+    .... 
+    private void classUseBy(Scanner scanner, Project project) {
+        System.out.println("Enter the name of the Class");
+        String response = scanner.next().toLowerCase();
+
+        if(response != null && !response.isEmpty()){
+               Clase clase =  project.getClass(response);
+            this.printElemet(clase.getRawClass().toString());
+        }
+
     }
 
     private void classDetail(Scanner scanner, Project project) {
