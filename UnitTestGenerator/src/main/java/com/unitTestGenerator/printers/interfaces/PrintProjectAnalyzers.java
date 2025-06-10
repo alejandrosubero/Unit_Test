@@ -48,4 +48,13 @@ public interface PrintProjectAnalyzers extends IPrintService {
     }
 
 
+    default void printElemetShiftColor(String elemet, boolean color) {
+        if(color){
+            this.service().print_GREEN(elemet);
+        }else {
+            this.service().print_BLUE(elemet);
+        }
+    }
+
+
 }

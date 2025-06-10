@@ -2,6 +2,7 @@ package com.unitTestGenerator.menus;
 
 import com.unitTestGenerator.analyzers.TypeClass;
 import com.unitTestGenerator.analyzers.dependency.IDependencyAnalyzer;
+import com.unitTestGenerator.analyzers.dependency.reverse.ReverseDependencyNode;
 import com.unitTestGenerator.analyzers.services.AnalizerProjectService;
 import com.unitTestGenerator.analyzers.services.interfaces.IAnalizerProjectServiceManager;
 import com.unitTestGenerator.builders.PDFGenerator;
@@ -75,21 +76,31 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
         }
     }
 
+    //todo: cambiar esta logica para que imprima de un color una la siguiente de otro color asi susecibamente....
+    public void printReverseDependency(Project project){
+        boolean color = false;
+        for (ReverseDependencyNode node : project.getReverseDependencyNodes()){
+            color = color? false:true;
+            this.printElemetShiftColor(node.toString(), color);
+        }
+    }
+
 
     public void AnalysisOptionsMenu(){
        this.printColummStringY("Analyzer Options Menu:",
                 "Choose an option:",
-               "1. Print the list of class and interfaces of project",
-               "2. Print the list of class",
-               "3. Print the list of Interfaces",
-                "4. Print Methods of one class",
-                "5. Print a Class with Details",
-                "6. Print the project class tree",
-                "7. Print the project file tree",
-                "8. Generate Interface Relations",
-                "9. Generate File",
-                "10. Return to the previous menu",
-                "11. Return to the main menu");
+                "1. Print the list of class and interfaces of project",
+                "2. Print the list of class",
+                "3. Print the list of Interfaces",
+                "4. Print the class list use by",
+                "5. Print Methods of one class",
+                "6. Print a Class with Details",
+                "7. Print the project class tree",
+                "8. Print the project file tree",
+                "9. Generate Interface Relations",
+                "10. Generate File",
+                "11. Return to the previous menu",
+                "12. Return to the main menu");
     }
 
     public void analizerMenuInitial(Project project){
@@ -114,32 +125,36 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
                 this.subMenu1(project,scanner);
                 break;
             case 4:
-                methodsOfclass(scanner, project);
+                printReverseDependency(project);
                 subMenu2( project,  scanner);
                 break;
             case 5:
-                this.classDetail(scanner, project);
+                methodsOfclass(scanner, project);
                 subMenu2( project,  scanner);
                 break;
             case 6:
-                this.printProjectClassTree(project);
+                this.classDetail(scanner, project);
                 subMenu2( project,  scanner);
                 break;
             case 7:
-                this.printProjectFileTree(project);
+                this.printProjectClassTree(project);
                 subMenu2( project,  scanner);
                 break;
             case 8:
-                this.interfaceRelations( project, scanner,true);
+                this.printProjectFileTree(project);
                 subMenu2( project,  scanner);
                 break;
             case 9:
-               this.generateFileMenu(project, scanner);
+                this.interfaceRelations( project, scanner,true);
+                subMenu2( project,  scanner);
                 break;
             case 10:
-                this.analizerMenuStarted( project,scanner);
+               this.generateFileMenu(project, scanner);
                 break;
             case 11:
+                this.analizerMenuStarted( project,scanner);
+                break;
+            case 12:
                 this.goToMainMenu();
                 break;
             default:
@@ -178,13 +193,12 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
     public void subMenu1Txt(){
         this.printColummStringY(
                 "Choose an option:",
-                "1. Print  methods of one class",
-                "2. Return to the previous menu",
-                "3. Return to the main menu");
+                "1. Print methods",
+                "2. Print the classes use may class (class Use By)",
+                "3. Return to the previous menu",
+                "4. Return to the main menu");
     }
 
-       .. uso de la clase en cada clase
-            .. listado de uso de todas las clases
 
     public void subMenu1(Project project, Scanner scanner) {
         this.subMenu1Txt();
@@ -195,9 +209,13 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
                 subMenu2( project,  scanner);
                 break;
             case 2:
-                analizerMenuInitial(project);
+                classUseBy(scanner, project);
+                subMenu2( project,  scanner);
                 break;
             case 3:
+                analizerMenuInitial(project);
+                break;
+            case 4:
                 this.goToMainMenu();
                 break;
             default:
@@ -230,14 +248,13 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
         }
     }
 
-    .... 
+
     private void classUseBy(Scanner scanner, Project project) {
         System.out.println("Enter the name of the Class");
         String response = scanner.next().toLowerCase();
-
         if(response != null && !response.isEmpty()){
                Clase clase =  project.getClass(response);
-            this.printElemet(clase.getRawClass().toString());
+            this.printElemet(clase.getReverseDependencyNode().toString());
         }
 
     }
@@ -253,6 +270,8 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
         }
     }
 
+    ... generate pdf with list of class use by
+    . .. add useBy to the report pdf
 
     public void generateFileMenuTxt(){
         this.printColummStringY(

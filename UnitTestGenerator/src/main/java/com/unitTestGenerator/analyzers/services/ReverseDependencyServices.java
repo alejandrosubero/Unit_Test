@@ -13,13 +13,12 @@ public class ReverseDependencyServices implements IReverseDependency {
 
     public void ejecute(Project project){
         List<ReverseDependencyNode> reverseDependencyList = this.getReverseDependencys(project.getPathProject());
+        project.setReverseDependencyNodes(reverseDependencyList);
         for( ReverseDependencyNode node : reverseDependencyList){
             Clase clazz = project.getClass(node.getClassName());
             if (clazz != null) {
                 clazz.setReverseDependencyNode(node);
             }
-
         }
     }
-
 }
