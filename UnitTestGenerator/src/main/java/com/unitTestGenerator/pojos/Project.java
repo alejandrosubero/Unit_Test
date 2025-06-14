@@ -1,6 +1,7 @@
 package com.unitTestGenerator.pojos;
 
 import com.unitTestGenerator.analyzers.TypeClass;
+import com.unitTestGenerator.analyzers.dependency.pojos.ProjectInfo;
 import com.unitTestGenerator.analyzers.dependency.reverse.ReverseDependencyNode;
 import com.unitTestGenerator.ioc.anotations.Component;
 
@@ -22,8 +23,8 @@ public class Project {
     private List<String> claseListRaw = new ArrayList<>();
     private Map<String, Node> nodeSources = new HashMap<>();
     private Map<String, List<Clase>> mapClassInterfae = new HashMap<>();
-    List<ReverseDependencyNode> reverseDependencyNodes = new ArrayList<>();
-
+    private List<ReverseDependencyNode> reverseDependencyNodes = new ArrayList<>();
+    private ProjectInfo info;
 
     public Project() {
     }
@@ -91,6 +92,14 @@ public class Project {
 
     public void setNodeSources(Map<String, Node> nodeSources) {
         this.nodeSources = nodeSources;
+    }
+
+    public ProjectInfo getInfo() {
+        return info;
+    }
+
+    public void setInfo(ProjectInfo info) {
+        this.info = info;
     }
 
     private Clase getClassI(String className) {

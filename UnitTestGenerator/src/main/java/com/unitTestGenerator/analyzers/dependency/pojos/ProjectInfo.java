@@ -1,8 +1,5 @@
-package com.example.maven;
+package com.unitTestGenerator.analyzers.dependency.pojos;
 
-
-
-import com.example.gradle.DependencyI;
 
 import java.util.ArrayList;
 import java.util.List;

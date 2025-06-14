@@ -1,12 +1,20 @@
-package com.example.gradle;
+package com.unitTestGenerator.analyzers.dependency.parser;
 
 
-import com.example.maven.DependencyInfo;
-import com.example.maven.ProjectInfo;
 
-import java.io.*;
-import java.util.regex.*;
 
+import com.unitTestGenerator.analyzers.dependency.pojos.DependencyInfo;
+import com.unitTestGenerator.analyzers.dependency.pojos.ProjectInfo;
+import com.unitTestGenerator.ioc.anotations.Component;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+@Component
 public class GradleParser {
 
     public static ProjectInfo parseGradleFile(File gradleFile) {
@@ -76,9 +84,8 @@ public class GradleParser {
                 Matcher depMatcher = dependencyPattern.matcher(line);
                 if (depMatcher.find()) {
                     String rawDeps = depMatcher.group(2);
-                    rawDeps = rawDeps.split("//")[0].trim(); // Eliminar comentarios
+                    rawDeps = rawDeps.split("//")[0].trim();
 
-                    // Puede haber múltiples dependencias separadas por coma
                     String[] deps = rawDeps.split(",");
                     for (String dep : deps) {
                         dep = dep.trim();
@@ -89,8 +96,6 @@ public class GradleParser {
                         }
 
                         if (!dep.isEmpty()) {
-
-//                            info.addDependency(new DependencyI(dep));
                             info.addDependency(new DependencyInfo(dep));
                         }
                     }

@@ -1,21 +1,18 @@
-package com.example.maven;
+package com.example.gradle;
 
 
-public class DependencyInfo {
+
+public class DependencyI {
+
+
     private String groupId;
     private String artifactId;
     private String version;
     private String rawDependency; // cadena original
 
-    public DependencyInfo(String rawDependency) {
+    public DependencyI(String rawDependency) {
         this.rawDependency = rawDependency;
         parseRawDependency(rawDependency);
-    }
-
-    public DependencyInfo(String groupId, String artifactId, String version) {
-        this.groupId = groupId;
-        this.artifactId = artifactId;
-        this.version = version;
     }
 
     private void parseRawDependency(String dep) {
@@ -51,8 +48,6 @@ public class DependencyInfo {
         this.rawDependency = rawDependency;
     }
 
-
-
     @Override
     public String toString() {
         StringBuffer buffer = new StringBuffer();
@@ -60,32 +55,8 @@ public class DependencyInfo {
         buffer.append(" groupId=").append(groupId).append("\n");
         buffer.append(" artifactId=").append(artifactId).append("\n");
         buffer.append(" version=").append(version).append("\n");
+        buffer.append(" rawDependency=").append(rawDependency).append("\n");
         buffer.append("}").append("\n");
-        return buffer.toString();
-    }
-
-
-    public String toStringGradle() {
-        StringBuffer buffer = new StringBuffer();
-        buffer.append("Dependencys: =").append("\n").append(rawDependency).append("\n");
-        return buffer.toString();
-    }
-
-
-    public String toStringMaven() {
-        StringBuffer buffer = new StringBuffer();
-        buffer.append("GroupId: ").append(groupId).append("\n");
-        buffer.append("ArtifactId: ").append(artifactId).append("\n");
-        buffer.append("Version: ").append(version).append("\n");
-        return buffer.toString();
-    }
-
-    public String toStringMavenLine() {
-        StringBuffer buffer = new StringBuffer();
-        buffer.append("Dependencys:  ");
-        buffer.append("GroupId: ").append(groupId).append(", ");
-        buffer.append("ArtifactId: ").append(artifactId).append(", ");
-        buffer.append("Version: ").append(version).append("\n");
         return buffer.toString();
     }
 }

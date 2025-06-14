@@ -1,5 +1,6 @@
 package com.unitTestGenerator.analyzers;
 
+import com.unitTestGenerator.analyzers.dependency.IDependencyAnalyzer;
 import com.unitTestGenerator.analyzers.dependency.reverse.ReverseDependencyScanner;
 import com.unitTestGenerator.analyzers.services.AnalyzeClassServiceService;
 import com.unitTestGenerator.analyzers.services.ImportAnalizeService;
@@ -20,7 +21,7 @@ import java.util.*;
 
 @Component
 @Singleton
-public class AnalizadorProyecto implements ITodoDetectorService, IPrintProjectStructure {
+public class AnalizadorProyecto implements ITodoDetectorService, IPrintProjectStructure, IDependencyAnalyzer {
 
     private  final String[] IGNORAR = {"target", "node_modules", ".git"};
 
@@ -51,11 +52,12 @@ public class AnalizadorProyecto implements ITodoDetectorService, IPrintProjectSt
         // project
         ContextIOC.getInstance().getClassInstance(ReverseDependencyServices.class).ejecute(project);
 
-//        if(project.getMaven()){
-//            // get the dependencies
-//        }else {
-//             // get the dependencies
-//        }
+        if(project.getMaven()){
+            this.getProjectInfoFromMaven(project);
+        }else {
+            this.getProjectInfoFromGradle(project);
+        }
+
 
         return clases;
     }

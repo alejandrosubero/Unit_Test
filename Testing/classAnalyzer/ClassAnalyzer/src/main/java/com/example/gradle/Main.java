@@ -1,6 +1,8 @@
 package com.example.gradle;
 
 
+import com.example.maven.ProjectInfo;
+
 import java.io.File;
 
 public class Main {
@@ -11,7 +13,7 @@ public class Main {
         File buildGradle = GradleLocator.findBuildGradle(projectPath);
 
         if (buildGradle != null) {
-            GradleProjectInfo info = GradleParser.parseGradleFile(buildGradle);
+            ProjectInfo info = GradleParser.parseGradleFile(buildGradle);
             System.out.println(info.toString());
         } else {
             System.out.println("No se encontró build.gradle en: " + projectPath);

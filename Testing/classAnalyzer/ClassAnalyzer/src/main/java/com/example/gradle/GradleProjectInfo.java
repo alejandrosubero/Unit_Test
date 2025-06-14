@@ -9,7 +9,7 @@ public class GradleProjectInfo {
     private String description;
     private String version;
     private String javaVersion;
-    private List<DependencyInfo> dependencies = new ArrayList<>();
+    private List<DependencyI> dependencies = new ArrayList<>();
 
     public String getName() {
         return name;
@@ -35,11 +35,11 @@ public class GradleProjectInfo {
         this.javaVersion = javaVersion;
     }
 
-    public List<DependencyInfo> getDependencies() {
+    public List<DependencyI> getDependencies() {
         return dependencies;
     }
 
-    public void addDependency(DependencyInfo dependency) {
+    public void addDependency(DependencyI dependency) {
         this.dependencies.add(dependency);
     }
 
@@ -60,7 +60,7 @@ public class GradleProjectInfo {
         buffer.append("javaVersion=").append(javaVersion).append("\n");
         buffer.append("dependencies=").append("\n");
 
-        for (DependencyInfo dependecy: dependencies){
+        for (DependencyI dependecy: dependencies){
             buffer.append(dependecy.toString());
         }
         return buffer.toString();

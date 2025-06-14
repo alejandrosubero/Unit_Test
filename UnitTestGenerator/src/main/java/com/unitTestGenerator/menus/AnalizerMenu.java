@@ -285,7 +285,7 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
                 "2. Generate Protect Report",
                 "4. Generate Interface Relations",
                 "5. Generate list of class are used by",
-//                 ... list of dependencies
+                 ... list of dependencies
                 "7. Return to the previous menu"
         );
     }
