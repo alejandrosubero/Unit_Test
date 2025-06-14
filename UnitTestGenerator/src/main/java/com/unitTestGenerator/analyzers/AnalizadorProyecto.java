@@ -50,6 +50,13 @@ public class AnalizadorProyecto implements ITodoDetectorService, IPrintProjectSt
         project.getPrinterProject().setProjectDirectoryTree(projectDirectoryTree);
         // project
         ContextIOC.getInstance().getClassInstance(ReverseDependencyServices.class).ejecute(project);
+
+//        if(project.getMaven()){
+//            // get the dependencies
+//        }else {
+//             // get the dependencies
+//        }
+
         return clases;
     }
 

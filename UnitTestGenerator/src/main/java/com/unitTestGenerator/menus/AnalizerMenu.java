@@ -3,6 +3,7 @@ package com.unitTestGenerator.menus;
 import com.unitTestGenerator.analyzers.TypeClass;
 import com.unitTestGenerator.analyzers.dependency.IDependencyAnalyzer;
 import com.unitTestGenerator.analyzers.dependency.reverse.ReverseDependencyNode;
+import com.unitTestGenerator.analyzers.dependency.reverse.ReverseDependencyScanner;
 import com.unitTestGenerator.analyzers.services.AnalizerProjectService;
 import com.unitTestGenerator.analyzers.services.interfaces.IAnalizerProjectServiceManager;
 import com.unitTestGenerator.builders.PDFGenerator;
@@ -19,6 +20,10 @@ import com.unitTestGenerator.printers.interfaces.PrintProjectAnalyzers;
 import com.unitTestGenerator.util.interfaces.IBaseModel;
 import com.unitTestGenerator.util.interfaces.IConstantModel;
 
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 import java.util.Scanner;
 
 
@@ -270,8 +275,7 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
         }
     }
 
-    ... generate pdf with list of class use by
-    . .. add useBy to the report pdf
+
 
     public void generateFileMenuTxt(){
         this.printColummStringY(
@@ -280,9 +284,12 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
                 "1. Class Report",
                 "2. Generate Protect Report",
                 "4. Generate Interface Relations",
-                "5. Return to the previous menu"
+                "5. Generate list of class are used by",
+//                 ... list of dependencies
+                "7. Return to the previous menu"
         );
     }
+
 
 
     public void generateFileMenu(Project project, Scanner scanner) {
@@ -328,6 +335,10 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
                 subMenu2( project,  scanner);
                 break;
             case 5:
+                this.generateListUsedBy(project);
+                subMenu2( project,  scanner);
+                break;
+            case 7:
                 this.analizerMenuInitial(project);
                 break;
             default:
@@ -347,6 +358,26 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
             }
         }
 
+    }
+
+
+    private void generateListUsedBy(Project project){
+        try {
+            if(project.getReverseDependencyNodes() != null){
+                StringBuffer buffer = new StringBuffer();
+                List<ReverseDependencyNode> nodes = project.getReverseDependencyNodes();
+                for (ReverseDependencyNode node : nodes) {
+                    buffer.append(node.toString()).append("\n");
+                }
+                String nameFile =  "Reverse_Dependencys"+IConstantModel.PDF_Extention;
+                ContextIOC.getInstance().getClassInstance(PDFGenerator.class).createOnepdf( project, buffer.toString(), "Reverse Dependencys", nameFile);
+            }
+
+        } catch (Exception e) {
+            this.service().print_RED("ERROR IN GENERATION OF Reverse Dependencys PDF ");
+            this.service().print_RED("ERROR: "+ e.getMessage());
+            e.printStackTrace();
+        }
     }
 
 

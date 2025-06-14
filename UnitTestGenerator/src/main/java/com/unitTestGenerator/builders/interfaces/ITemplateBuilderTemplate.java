@@ -81,4 +81,18 @@ public interface ITemplateBuilderTemplate {
     }
 
 
+    default String getUseByTemplate(){
+        return  "<div class=\"uml-methods\">\n" +
+                "        <div class=\"uml-class\">\n" +
+                "            <div class=\"uml-header\">@ReverseDependencyTitle@</div>\n" +
+                "            <div class=\"uml-attributes\">\n" +
+                "                @ReverseDependency@\n" +
+                "            </div>\n" +
+                "        </div>\n" +
+                "    </div>";
+    }
+
+
+
+
 }

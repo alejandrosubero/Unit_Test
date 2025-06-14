@@ -34,6 +34,7 @@ public class TemplateBuilder implements ITemplateBuilderRelation, ITemplateBuild
             templete = this.getStructureInterface(templete, classs);
             templete = this.getStructureExtends(templete, classs);
             templete = this.getClassAnotations(templete, classs);
+            templete = this.getClassUseBy(templete, classs);
             classs.setClassTemplate(templete);
         }
     }
@@ -307,6 +308,23 @@ public class TemplateBuilder implements ITemplateBuilderRelation, ITemplateBuild
 
         }else {
             templeteFather = templeteFather.replace("@AnotationsTemplate@", "");
+        }
+        return templeteFather;
+    }
+
+
+    private String getClassUseBy( String templeteFather, Clase classs){
+
+        if(classs.getReverseDependencyNode() != null ){
+            String templete = this.getUseByTemplate();
+            StringBuffer bufferAnotations = new StringBuffer();
+            bufferAnotations.append("\t").append(classs.getReverseDependencyNode().toString()).append("\n");
+            templete = templete.replace("@ReverseDependencyTitle@","Class is Used By");
+            templete = templete.replace("@ReverseDependency@",bufferAnotations.toString());
+            templeteFather = templeteFather.replace("@ReverseDependencyTemplate@", templete);
+
+        }else {
+            templeteFather = templeteFather.replace("@ReverseDependencyTemplate@", "");
         }
         return templeteFather;
     }

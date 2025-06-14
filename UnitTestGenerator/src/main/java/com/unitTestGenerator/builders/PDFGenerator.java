@@ -24,6 +24,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -62,20 +63,6 @@ public class PDFGenerator implements IPrintService, IFileManagerDelete {
             this.execute( "Project Directory Tree", project.getPrinterProject().getProjectDirectoryTree(), path1);
             this.execute("Project Class Tree",project.getPrinterProject().getProjectClassTree(), path2);
             appendPdf(path1, path2, path3);
-
-        }
-    }
-
-
-    public void createOnepdf(Project project, String text, String title, String nameFile) {
-        if (project.getPathProject() != null && text != null) {
-            if(nameFile == null){
-                nameFile = project.getName()+ IConstantModel.PDF_Extention;
-            }
-            String pathBase = project.getPathProject() + IConstantModel.Separator;
-            String path = pathBase + nameFile;
-            this.service().print_BLUE("Starting report generation....");
-            this.execute(title,text, path);
         }
     }
 
@@ -91,13 +78,17 @@ public class PDFGenerator implements IPrintService, IFileManagerDelete {
                 pdfsEnMemoria.add(this.convertHtmlToPdfBytes(classs.getClassTemplate()));
             }
             this.mergePdfBytes(pdfsEnMemoria, path2);
-            appendPdf(path2, path1, outputPath);
+//            appendPdf(path2, path1, outputPath);
+
+            combinePdfs(Arrays.asList(path2, path1), outputPath);
+
             this.service().print_YELLOW("¡successfully generated PDF!");
 
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
 
     public void execute(String title, String text, String outpath) {
         try {
@@ -109,6 +100,18 @@ public class PDFGenerator implements IPrintService, IFileManagerDelete {
             this.service().print_BLUE("Please wait while generating the report...");
         } catch (DocumentException | IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public void createOnepdf(Project project, String text, String title, String nameFile) {
+        if (project.getPathProject() != null && text != null) {
+            if(nameFile == null){
+                nameFile = project.getName()+ IConstantModel.PDF_Extention;
+            }
+            String pathBase = project.getPathProject() + IConstantModel.Separator;
+            String path = pathBase + nameFile;
+            this.service().print_BLUE("Starting report generation....");
+            this.execute(title,text, path);
         }
     }
 
@@ -198,6 +201,59 @@ public class PDFGenerator implements IPrintService, IFileManagerDelete {
 
 
 
+    public void combinePdfs(List<String> pdfPaths, String outputPath) {
+
+        if (pdfPaths == null || pdfPaths.isEmpty()) {
+            this.service().print_RED("Error: the list is null or no have paths");
+            return;
+        }
+
+        PDDocument mainDocument = null;
+
+        try {
+            mainDocument = PDDocument.load(new File(pdfPaths.get(0)));
+            this.service().print_BLUE("load the first document or base document: " + pdfPaths.get(0));
+
+            for (int i = 1; i < pdfPaths.size(); i++) {
+                String currentPdfPath = pdfPaths.get(i);
+                this.service().print_BLUE("add pages of : " + currentPdfPath);
+
+                try (PDDocument newDoc = PDDocument.load(new File(currentPdfPath))) {
+
+                    for (int j = 0; j < newDoc.getNumberOfPages(); j++) {
+                        mainDocument.addPage(newDoc.getPage(j));
+                    }
+                }
+            }
+
+            mainDocument.save(outputPath);
+            this.service().print_BLUE("Please wait while generating the Document......");
+            this.deleteTemporalFiles(pdfPaths);
+
+        } catch (IOException e) {
+            this.service().print_RED("¡Fail the pdf generated data:");
+            this.service().print_RED("PDF out put Path : " + outputPath);
+            this.service().print_RED("Error : " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            // Este bloque 'finally' asegura que el 'mainDocument' se cierre SIEMPRE,
+            // incluso si ocurre una excepción. Esto es vital para liberar recursos.
+            if (mainDocument != null) {
+                try {
+                    mainDocument.close();
+                } catch (IOException e) {
+                    this.service().print_RED("Error al cerrar el documento principal: " + e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+
+
+
+
+
 
     public void appendPdf(String existingPdfPath, String newPdfPath, String outputPath) {
         try (
@@ -225,6 +281,19 @@ public class PDFGenerator implements IPrintService, IFileManagerDelete {
         try {
             this.deleteFileIO(existingPdfPath);
             this.deleteFileIO(newPdfPath);
+        } catch (Exception e) {
+            this.service().print_RED("¡Fail to delete temp file:");
+            this.service().print_RED("Error : " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+
+    private void deleteTemporalFiles(List<String> paths ) {
+        try {
+            for (String existingPdfPath: paths){
+                this.deleteFileIO(existingPdfPath);
+            }
         } catch (Exception e) {
             this.service().print_RED("¡Fail to delete temp file:");
             this.service().print_RED("Error : " + e.getMessage());
