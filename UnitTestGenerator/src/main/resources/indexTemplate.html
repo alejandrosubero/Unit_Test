@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Menu</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 2cm;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .book-menu {
+            width: auto;
+            margin: 0 auto;
+            border: 2px solid black;
+            border-radius: 8px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        .menu-title {
+            padding: 10px;
+            border-bottom: 2px solid black;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .menu-section {
+            padding: 10px 0;
+            border-bottom: 1px dashed #ddd;
+            font-size: 18px;
+            color: #555;
+        }
+        .menu-section:last-child {
+            border-bottom: none;
+        }
+        .section-number {
+            font-weight: bold;
+            color: #000;
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+<div class="book-menu">
+    <div class="menu-title">Index</div>
+    <div class="menu-section">
+        <span class="section-number">Section #1: </span> Project Description
+    </div>
+    <div class="menu-section">
+        <span class="section-number">Section #2: </span> Project Tree
+    </div>
+    <div class="menu-section">
+        <span class="section-number">Section #3: </span> Project class Tree
+    </div>
+    <div class="menu-section">
+        <span class="section-number">Section #4: </span> Class Details
+    </div>
+    <div class="menu-section">
+        <span class="section-number">Section #5: </span> Project Dependencies
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>project cover</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 0; /* Remove default margins for full control */
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh; /* Ensure it takes full viewport height */
+            background-color: #f4f4f4;
+        }
+        .cover-page {
+            width: 100%;
+            height: 100vh; /* Take full viewport height for the cover */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background-color: #ffffff;
+            /* You can add a background image or other styles here */
+        }
+        .project-title {
+            font-size: 4em; /* Larger font size for the main title */
+            font-weight: bold;
+            color: #333;
+            margin: 0; /* Remove default paragraph margin */
+            line-height: 1.2;
+        }
+        .subtitle {
+            font-size: 1.5em;
+            color: #666;
+            margin-top: 20px;
+        }
+        .author-info {
+            position: absolute;
+            bottom: 50px;
+            width: 100%;
+            text-align: center;
+            font-size: 1.1em;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+<br>
+<br>
+<div class="cover-page">
+    <h1 class="project-title">@Project Name@</h1>
+    <p class="subtitle">Project Analysis</p>
+    <div class="author-info">
+        <p>Date: @date@</p>
+    </div>
+</div>
+</body>
+</html>

@@ -71,5 +71,20 @@ public class ProjectInfo {
         }
         return buffer.toString();
     }
+
+
+    public String toStringDependencies(Boolean isMaven ){
+        StringBuffer buffer = new StringBuffer();
+        for (DependencyInfo dependecy: dependencies){
+            if(isMaven){
+                buffer.append(dependecy.toStringMavenLine());
+            }else {
+                buffer.append(dependecy.toStringGradle());
+            }
+        }
+        return buffer.toString();
+    }
+
+
 }
 

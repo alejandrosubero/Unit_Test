@@ -285,7 +285,7 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
                 "2. Generate Protect Report",
                 "4. Generate Interface Relations",
                 "5. Generate list of class are used by",
-                 ... list of dependencies
+                "6. Generate list of dependencies",
                 "7. Return to the previous menu"
         );
     }
@@ -295,7 +295,6 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
     public void generateFileMenu(Project project, Scanner scanner) {
         this.generateFileMenuTxt();
         int opcion = scanner.nextInt();
-//        String pathBase = project.getPathProject() + IConstantModel.Separator;
         switch (opcion) {
             case 1:
                 this.reportClass(scanner, project);
@@ -305,37 +304,16 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
                 this.pdfGenerator.converterProjectOrClasInpdf(project,null);
                 subMenu2( project,  scanner);
                 break;
-//            case 3:
-//                String outputPath = pathBase + project.getName() + "_Dependency";
-//                try {
-//                    this.generateDependencyDotPng(outputPath, project.getRawClassList());
-//                    this.service().print_GREEN("Successfully generated the File");
-//                } catch (IOException e) {
-//                    this.service().print_RED("ERROR IN GENERATION OF PNG DEPENDENCY");
-//                    this.service().print_RED("ERROR: "+ e.getMessage());
-//                    throw new RuntimeException(e);
-//                }
-//                subMenu2( project,  scanner);
-//                break;
-//            case 4:
-//                String outputPathUml = pathBase + project.getName() + "_UmlDiagram";
-//
-//                try {
-//                    this.generateUmlDiagram(outputPathUml, project.getRawClassList());
-//                    this.service().print_GREEN("Successfully generated the File");
-//                } catch (IOException e) {
-//                    this.service().print_RED("ERROR IN GENERATION OF PNG UmlDiagram");
-//                    this.service().print_RED("ERROR: "+ e.getMessage());
-//                    throw new RuntimeException(e);
-//                }
-//                subMenu2( project,  scanner);
-//                break;
             case 4:
                 this.interfaceRelations( project, scanner,false);
                 subMenu2( project,  scanner);
                 break;
             case 5:
                 this.generateListUsedBy(project);
+                subMenu2( project,  scanner);
+                break;
+            case 6:
+                this.pdfGenerator.projectDependencies(project);
                 subMenu2( project,  scanner);
                 break;
             case 7:

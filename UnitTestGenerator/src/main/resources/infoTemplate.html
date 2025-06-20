@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Project Information</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 2cm;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+            color: #333;
+        }
+        .project-info-container {
+            width: auto;
+            margin: 0 auto;
+            border: 2px solid black;
+            border-radius: 8px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+        }
+        .info-title {
+            padding-bottom: 15px;
+            border-bottom: 2px solid black;
+            text-align: center;
+            font-size: 28px;
+            font-weight: bold;
+            color: #222;
+            margin-bottom: 25px;
+        }
+        .info-item {
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+        .info-item strong {
+            display: inline-block;
+            width: 150px; /* Aligns the colons */
+            color: #000;
+        }
+        .info-item span {
+            color: #555;
+        }
+        .project-description {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        .project-description p {
+            font-size: 1em;
+            line-height: 1.8;
+            text-align: justify;
+        }
+    </style>
+</head>
+<body>
+<div class="project-info-container">
+    <div class="info-title">Project Info</div>
+
+    <div class="info-item">
+        <strong>Project Name:</strong> <span>@projectname@</span>
+    </div>
+    <div class="info-item">
+        <strong>Java Version:</strong> <span>@javaVersion@</span>
+    </div>
+    <div class="info-item">
+        <strong>Project Version:</strong> <span>@projectVersion@</span>
+    </div>
+
+    <div class="project-description">
+        <h3>Description:</h3>
+        <p>@description@</p>
+    </div>
+</div>
+</body>
+</html>
+

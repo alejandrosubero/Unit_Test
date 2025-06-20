@@ -5,6 +5,7 @@ import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.unitTestGenerator.analyzers.services.interfaces.IClassDetailBuilder;
 import com.unitTestGenerator.builders.interfaces.IFileManagerDelete;
+import com.unitTestGenerator.ioc.ContextIOC;
 import com.unitTestGenerator.ioc.anotations.Component;
 
 import java.io.FileNotFoundException;
@@ -13,6 +14,7 @@ import java.io.FileOutputStream;
 import com.unitTestGenerator.pojos.Clase;
 import com.unitTestGenerator.pojos.Project;
 import com.unitTestGenerator.printers.interfaces.IPrintService;
+import com.unitTestGenerator.uml.sevices.PrintClassToUML;
 import com.unitTestGenerator.util.interfaces.IConstantModel;
 import org.apache.commons.io.IOUtils;
 import org.xhtmlrenderer.pdf.ITextRenderer;
@@ -37,7 +39,8 @@ public class PDFGenerator implements IPrintService, IFileManagerDelete {
     private String tempNameClassTree = "ClassTree.pdf";
     private String tempNameTrees = "tree.pdf";
     private String tempNameTemplate = "Template.pdf";
-
+    private String templateBase = "base.pdf";
+    private String templateDependencies = "dependencies.pdf";
 
     public PDFGenerator() {
     }
@@ -53,6 +56,24 @@ public class PDFGenerator implements IPrintService, IFileManagerDelete {
         }
     }
 
+
+    private void generateBase(Project project){
+        try {
+            String pathBase = project.getPathProject() + IConstantModel.Separator;
+            String base = pathBase + templateBase;
+            List<byte[]> pdfsEnMemoria = new ArrayList<>();
+            TemplateBuilder templateBuilder  =  ContextIOC.getInstance().getClassInstance(TemplateBuilder.class);
+            pdfsEnMemoria.add(this.convertHtmlToPdfBytes(templateBuilder.coverTemplateGenerate(project.getName())));
+            pdfsEnMemoria.add(this.convertHtmlToPdfBytes(templateBuilder.indexTemplateGenerate()));
+            pdfsEnMemoria.add(this.convertHtmlToPdfBytes(templateBuilder.projectInfo(project)));
+            this.mergePdfBytes(pdfsEnMemoria, base);
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
     private void createTempOne(Project project) {
         if (project.getPrinterProject() != null && (project.getPrinterProject().getProjectClassTree() != null || project.getPrinterProject().getProjectDirectoryTree() != null)) {
             String pathBase = project.getPathProject() + IConstantModel.Separator;
@@ -66,22 +87,31 @@ public class PDFGenerator implements IPrintService, IFileManagerDelete {
         }
     }
 
+    public void projectDependencies(Project project){
+        String pathBase = project.getPathProject() + IConstantModel.Separator;
+        String dependenciesPath = pathBase +templateDependencies;
+        this.execute( "Project Dependencies", project.getInfo().toStringDependencies(project.getMaven()), dependenciesPath);
+    }
+
     private void projectPdfGeneration(Project project) {
         try {
+            List<byte[]> pdfsEnMemoria = new ArrayList<>();
             String pathBase = project.getPathProject() + IConstantModel.Separator;
             String path1 = pathBase + tempNameTrees;
             String path2 = pathBase + tempNameTemplate;
+            String basePath = pathBase + templateBase;
+            String dependenciesPath = pathBase +templateDependencies;
             String outputPath = pathBase + project.getName() + IConstantModel.PDF_Extention;
 
-            List<byte[]> pdfsEnMemoria = new ArrayList<>();
+            this.generateBase(project);
+            this.projectDependencies(project);
+
             for (Clase classs : project.getClaseList()) {
                 pdfsEnMemoria.add(this.convertHtmlToPdfBytes(classs.getClassTemplate()));
             }
             this.mergePdfBytes(pdfsEnMemoria, path2);
-//            appendPdf(path2, path1, outputPath);
 
-            combinePdfs(Arrays.asList(path2, path1), outputPath);
-
+            this.combinePdfs(Arrays.asList(basePath, path2, path1, dependenciesPath), outputPath);
             this.service().print_YELLOW("¡successfully generated PDF!");
 
         } catch (IOException e) {
@@ -201,7 +231,7 @@ public class PDFGenerator implements IPrintService, IFileManagerDelete {
 
 
 
-    public void combinePdfs(List<String> pdfPaths, String outputPath) {
+    public void combinePdfs1(List<String> pdfPaths, String outputPath) {
 
         if (pdfPaths == null || pdfPaths.isEmpty()) {
             this.service().print_RED("Error: the list is null or no have paths");
@@ -250,6 +280,33 @@ public class PDFGenerator implements IPrintService, IFileManagerDelete {
     }
 
 
+    public void combinePdfs(List<String> pdfPaths, String outputPath) {
+        if (pdfPaths == null || pdfPaths.isEmpty()) {
+            this.service().print_RED("Error: the list is null or no have paths");
+            return;
+        }
+
+        PDFMergerUtility merger = new PDFMergerUtility();
+        merger.setDestinationFileName(outputPath);
+
+        try {
+            for (String path : pdfPaths) {
+                this.service().print_BLUE("Adding file to merge: " + path);
+                merger.addSource(path);
+            }
+
+            this.service().print_BLUE("Please wait while generating the Document......");
+            merger.mergeDocuments(MemoryUsageSetting.setupTempFileOnly());
+
+            this.deleteTemporalFiles(pdfPaths);
+
+        } catch (IOException e) {
+            this.service().print_RED("¡Fail the pdf generated data:");
+            this.service().print_RED("PDF output Path : " + outputPath);
+            this.service().print_RED("Error : " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
 
 
 

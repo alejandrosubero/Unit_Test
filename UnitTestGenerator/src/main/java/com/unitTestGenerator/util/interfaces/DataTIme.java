@@ -10,4 +10,11 @@ public interface DataTIme {
         String fechaHoraFormateada = fechaHoraZona.format(formateador);
         return fechaHoraFormateada;
     }
+
+    default String getDate() {
+        ZonedDateTime fechaHoraZona = ZonedDateTime.now();
+        DateTimeFormatter formateador = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String fechaHoraFormateada = fechaHoraZona.format(formateador);
+        return fechaHoraFormateada;
+    }
 }

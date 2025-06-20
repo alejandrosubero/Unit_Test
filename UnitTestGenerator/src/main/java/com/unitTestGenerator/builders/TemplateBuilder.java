@@ -1,5 +1,6 @@
 package com.unitTestGenerator.builders;
 
+import com.unitTestGenerator.analyzers.dependency.pojos.ProjectInfo;
 import com.unitTestGenerator.analyzers.services.interfaces.IClassDetailBuilder;
 import com.unitTestGenerator.builders.interfaces.ITemplateBuilderRelation;
 import com.unitTestGenerator.builders.interfaces.ITemplateBuilderTemplate;
@@ -7,20 +8,52 @@ import com.unitTestGenerator.ioc.ContextIOC;
 import com.unitTestGenerator.ioc.anotations.Component;
 import com.unitTestGenerator.pojos.Clase;
 import com.unitTestGenerator.pojos.Constructor;
+import com.unitTestGenerator.pojos.Project;
 import com.unitTestGenerator.uml.sevices.PrintClassToUML;
+import com.unitTestGenerator.util.interfaces.DataTIme;
 import org.apache.commons.io.IOUtils;
 
+import javax.swing.plaf.PanelUI;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 @Component
-public class TemplateBuilder implements ITemplateBuilderRelation, ITemplateBuilderTemplate {
+public class TemplateBuilder implements ITemplateBuilderRelation, ITemplateBuilderTemplate, DataTIme {
 
     public TemplateBuilder() {
     }
 
     private String templateName = "template1.html";
     private String templateRelatonsName = "relations.html";
+    private String templateIndex = "indexTemplate.html";
+    private String templateCover = "coverTemplate.html";
+    private String templateInfo = "infoTemplate.html";
+
+    public String indexTemplateGenerate(){
+        String templete = ReadResourceFile(templateIndex);
+        return templete;
+    }
+
+    public String coverTemplateGenerate(String name){
+        String templete = ReadResourceFile(templateCover);
+        templete = templete.replace("@Project Name@", name);
+        templete = templete.replace("@date@", this.getDate());
+        return templete;
+    }
+
+    public String projectInfo(Project project) {
+        String templete = ReadResourceFile(templateInfo);
+        ProjectInfo info = project.getInfo();
+        templete = templete.replace("@projectname@", project.getName());
+        templete = templete.replace("@javaVersion@", info.getJavaVersion());
+        templete = templete.replace("@projectVersion@", info.getVersion());
+
+        if (info.getDescription() != null) {
+            templete = templete.replace("@description@", info.getDescription());
+        }
+        return templete;
+    }
+
 
     public void buildClassDetailHtml(Clase classs) {
         String templete = ReadResourceFile(templateName);
@@ -35,6 +68,8 @@ public class TemplateBuilder implements ITemplateBuilderRelation, ITemplateBuild
             templete = this.getStructureExtends(templete, classs);
             templete = this.getClassAnotations(templete, classs);
             templete = this.getClassUseBy(templete, classs);
+
+
             classs.setClassTemplate(templete);
         }
     }
