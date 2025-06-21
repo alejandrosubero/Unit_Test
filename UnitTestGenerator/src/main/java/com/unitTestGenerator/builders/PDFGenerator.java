@@ -84,7 +84,6 @@ public class PDFGenerator implements IPrintService, IFileManagerDelete {
             this.execute( "Project Directory Tree", project.getPrinterProject().getProjectDirectoryTree(), path1);
             this.execute("Project Class Tree",project.getPrinterProject().getProjectClassTree(), path2);
             appendPdf(path1, path2, path3);
-            ......
         }
     }
 
@@ -325,7 +324,8 @@ public class PDFGenerator implements IPrintService, IFileManagerDelete {
             //add content
             existingDoc.save(outputPath);
             this.service().print_BLUE("Please wait while generating the report...");
-            this.deleteTemporalFile(existingPdfPath, newPdfPath);
+//            this.deleteTemporalFile(existingPdfPath, newPdfPath);
+            this.deleteTemporalFiles(Arrays.asList(existingPdfPath, newPdfPath));
 
         } catch (IOException e) {
             this.service().print_RED("¡Fail the pdf generated data:");
