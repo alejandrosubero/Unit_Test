@@ -10,23 +10,27 @@ public interface IAnalyzeCassMethodService {
 
 
     default void analyzeMethod(String content, Clase classs) {
-        this.analyzeMethodRelationsStatic(content, classs);
-        this.analyzeMethodRelationsSingelton(content,classs);
-        this.analyzeMethodRelationsStrongDependencyAssociationNew(content,classs);
-        this.analyzeMethodRelationsStrongDependencyAssociationBuilder(content,classs);
+        if(content != null) {
+            this.analyzeMethodRelationsStatic(content, classs);
+            this.analyzeMethodRelationsSingelton(content, classs);
+            this.analyzeMethodRelationsStrongDependencyAssociationNew(content, classs);
+            this.analyzeMethodRelationsStrongDependencyAssociationBuilder(content, classs);
+        }
     }
 
 
     default void analyzeMethodRelationsStatic(String content, Clase classs) {
-        Pattern pattern = Pattern.compile("\\b([A-Z][a-zA-Z0-9_]*)\\.([a-zA-Z_][a-zA-Z0-9_]*)\\s*\\(([^)]*)\\)");
-        Matcher matcher = pattern.matcher(content);
+        if(content != null){
+            Pattern pattern = Pattern.compile("\\b([A-Z][a-zA-Z0-9_]*)\\.([a-zA-Z_][a-zA-Z0-9_]*)\\s*\\(([^)]*)\\)");
+            Matcher matcher = pattern.matcher(content);
 
-        while (matcher.find()) {
-            String clase = matcher.group(1);
-            String metodoEstatico = matcher.group(2);
-            String parametros = matcher.group(3);
-            if(!classs.getClassRelations().getIdentifieresRelatedClasses().contains(clase)){
-                classs.getClassRelations().addIdentifieres(clase);
+            while (matcher.find()) {
+                String clase = matcher.group(1);
+                String metodoEstatico = matcher.group(2);
+                String parametros = matcher.group(3);
+                if(!classs.getClassRelations().getIdentifieresRelatedClasses().contains(clase)){
+                    classs.getClassRelations().addIdentifieres(clase);
+                }
             }
         }
     }

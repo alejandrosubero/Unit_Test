@@ -54,6 +54,8 @@ public class AnalyzeClassServiceService implements IAnalyzeCassMethodService, IA
             return classs;
         } catch (Exception e) {
             System.out.println("Error al analizar archivo: " + archivo.getName());
+            System.out.println("Error : " + e.getMessage());
+            e.printStackTrace();
         }
         return null;
     }
@@ -84,7 +86,7 @@ public class AnalyzeClassServiceService implements IAnalyzeCassMethodService, IA
         }
     }
 
-    private void analyzeNamesAndTypeOfClass(String contenido, Clase clase) {
+    private void analyzeNamesAndTypeOfClassx(String contenido, Clase clase) {
         Pattern patronClase = Pattern.compile("public class (\\w+)");
         Matcher matcherClase = patronClase.matcher(contenido);
 
@@ -107,6 +109,76 @@ public class AnalyzeClassServiceService implements IAnalyzeCassMethodService, IA
         this.getClassSignatureLineAnotations(contenido, clase);
     }
 
+
+    private void analyzeNamesAndTypeOfClassxx(String contenido, Clase clase) {
+        Pattern patronClase = Pattern.compile("public class (\\w+)");
+        Matcher matcherClase = patronClase.matcher(contenido);
+
+        if (matcherClase.find()) {
+            clase.setNombre(matcherClase.group(1));
+            clase.setTypeClass(TypeClass.CLASS.getValue());
+            clase.setIndexFirmaClass(matcherClase.start(1));
+        } else {
+            Pattern patronInterface = Pattern.compile("public interface (\\w+)");
+            Matcher matcherInterface = patronInterface.matcher(contenido);
+            if (matcherInterface.find()) {
+                clase.setNombre(matcherInterface.group(1));
+                clase.setTypeClass(TypeClass.INTEFACE.getValue());
+                clase.setIndexFirmaClass(matcherInterface.start(1));
+            } else {
+                Pattern patronEnum = Pattern.compile("public enum (\\w+)");
+                Matcher matcherEnum = patronEnum.matcher(contenido);
+                if (matcherEnum.find()) {
+                    clase.setNombre(matcherEnum.group(1));
+                    clase.setTypeClass(TypeClass.ENUM.getValue());
+                    clase.setIndexFirmaClass(matcherEnum.start(1));
+                }
+            }
+        }
+
+        this.getClassSignatureLine(contenido, clase);
+        this.getClassRelationsInClassSignatureLine(clase);
+        this.getClassSignatureLineAnotations(contenido, clase);
+    }
+
+
+    private void analyzeNamesAndTypeOfClass(String contenido, Clase clase) {
+        Pattern patronClase = Pattern.compile("public class (\\w+)");
+        Matcher matcherClase = patronClase.matcher(contenido);
+
+        if (matcherClase.find()) {
+            clase.setNombre(matcherClase.group(1));
+            clase.setTypeClass(TypeClass.CLASS.getValue());
+            clase.setIndexFirmaClass(matcherClase.start(1));
+        } else {
+            Pattern patronClaseNoPublic = Pattern.compile("\\bclass (\\w+)");
+            Matcher matcherClaseNoPublic = patronClaseNoPublic.matcher(contenido);
+            if (matcherClaseNoPublic.find()) {
+                clase.setNombre(matcherClaseNoPublic.group(1));
+                clase.setTypeClass(TypeClass.CLASS.getValue());
+                clase.setIndexFirmaClass(matcherClaseNoPublic.start(1));
+            } else {
+                Pattern patronInterface = Pattern.compile("public interface (\\w+)");
+                Matcher matcherInterface = patronInterface.matcher(contenido);
+                if (matcherInterface.find()) {
+                    clase.setNombre(matcherInterface.group(1));
+                    clase.setTypeClass(TypeClass.INTEFACE.getValue());
+                    clase.setIndexFirmaClass(matcherInterface.start(1));
+                } else {
+                    Pattern patronEnum = Pattern.compile("public enum (\\w+)");
+                    Matcher matcherEnum = patronEnum.matcher(contenido);
+                    if (matcherEnum.find()) {
+                        clase.setNombre(matcherEnum.group(1));
+                        clase.setTypeClass(TypeClass.ENUM.getValue());
+                        clase.setIndexFirmaClass(matcherEnum.start(1));
+                    }
+                }
+            }
+        }
+        this.getClassSignatureLine(contenido, clase);
+        this.getClassRelationsInClassSignatureLine(clase);
+        this.getClassSignatureLineAnotations(contenido, clase);
+    }
 
     private void getSignatureConstructors(Constructor constructor) {
 //        Pattern patronConstructor = Pattern.compile("public\\s+(\\w+)\\(.*?\\)\\s*(?=\\{)", Pattern.DOTALL);
@@ -131,13 +203,18 @@ public class AnalyzeClassServiceService implements IAnalyzeCassMethodService, IA
 
             String[] parametros = matcherConstructor.group(2).split(",");
             List<ParametroMetodo> parametroMetodos = new ArrayList<>();
+
             for (String parametro : parametros) {
                 if (!parametro.trim().isEmpty()) {
+                    ParametroMetodo parametroMetodo = null;
                     String[] partes = parametro.trim().split("\\s+");
-                    ParametroMetodo parametroMetodo = ParametroMetodo.builder().nombre(partes[1]).tipo(partes[0]).build();
+                    if(partes.length >=2){
+                        parametroMetodo = ParametroMetodo.builder().nombre(partes[1]).tipo(partes[0]).build();
+                    }
                     parametroMetodos.add(parametroMetodo);
                 }
             }
+
             constructor.setParametros(parametroMetodos);
             constructor.setIsNoneParam(parametroMetodos.isEmpty());
 

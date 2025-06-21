@@ -259,9 +259,10 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
         String response = scanner.next().toLowerCase();
         if(response != null && !response.isEmpty()){
                Clase clase =  project.getClass(response);
-            this.printElemet(clase.getReverseDependencyNode().toString());
+               if(clase != null){
+                   this.printElemet(clase.getReverseDependencyNode().toString());
+               }
         }
-
     }
 
     private void classDetail(Scanner scanner, Project project) {

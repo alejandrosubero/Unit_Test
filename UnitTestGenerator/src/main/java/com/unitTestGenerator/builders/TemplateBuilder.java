@@ -113,6 +113,7 @@ public class TemplateBuilder implements ITemplateBuilderRelation, ITemplateBuild
     }
 
     private String getStructureBase( String templete, Clase classs){
+
         templete = templete.replace("@NombreClaseTitle@", classs.getNombre());
         if(classs != null && (classs.getPaquete() !=null &&  !classs.getPaquete().equals(""))) {
             templete = templete.replace("@paquetico@", classs.getPaquete());

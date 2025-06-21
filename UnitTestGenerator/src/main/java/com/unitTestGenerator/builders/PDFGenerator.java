@@ -84,6 +84,7 @@ public class PDFGenerator implements IPrintService, IFileManagerDelete {
             this.execute( "Project Directory Tree", project.getPrinterProject().getProjectDirectoryTree(), path1);
             this.execute("Project Class Tree",project.getPrinterProject().getProjectClassTree(), path2);
             appendPdf(path1, path2, path3);
+            ......
         }
     }
 

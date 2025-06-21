@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 public interface IAnalyzeClassRelationsService extends IReturnType {
 
-    default void getClassSignatureLine(String contenido, Clase clase){
+    default void getClassSignatureLinex(String contenido, Clase clase){
         Pattern patronClase =  Pattern.compile("public class (\\w+)(?:\\s+extends\\s+[^{]+)?(?:\\s+implements\\s+[^{]+)?\\s*\\{");
         Matcher matcherClase = patronClase.matcher(contenido);
 
@@ -29,7 +29,47 @@ public interface IAnalyzeClassRelationsService extends IReturnType {
                 clase.setClassSignatureLine(matcherInterface.group(0));
             }
         }
+
+        Pattern patronEnum = Pattern.compile("public enum (\\w+)\\s*\\{");
+        Matcher matcherEnum = patronEnum.matcher(contenido);
+
+        if (matcherEnum.find()) {
+            clase.setClassSignatureLine(matcherEnum.group(0));
+        }
+
     }
+
+
+    default void getClassSignatureLine(String contenido, Clase clase) {
+        Pattern patronClase = Pattern.compile("public class (\\w+)(?:\\s+extends\\s+[^{]+)?(?:\\s+implements\\s+[^{]+)?\\s*\\{");
+        Matcher matcherClase = patronClase.matcher(contenido);
+
+        if (matcherClase.find()) {
+            clase.setClassSignatureLine(matcherClase.group(0));
+            return;
+        }
+
+        Pattern patronClaseNoPublic = Pattern.compile("\\bclass (\\w+)(?:\\s+extends\\s+[^{]+)?(?:\\s+implements\\s+[^{]+)?\\s*\\{");
+        Matcher matcherClaseNoPublic = patronClaseNoPublic.matcher(contenido);
+        if (matcherClaseNoPublic.find()) {
+            clase.setClassSignatureLine(matcherClaseNoPublic.group(0));
+            return;
+        }
+
+        Pattern patronInterface = Pattern.compile("public interface (\\w+)(?:\\s+extends\\s+[^{]+)?(?:\\s+implements\\s+[^{]+)?\\s*\\{");
+        Matcher matcherInterface = patronInterface.matcher(contenido);
+        if (matcherInterface.find()) {
+            clase.setClassSignatureLine(matcherInterface.group(0));
+            return;
+        }
+
+        Pattern patronEnum = Pattern.compile("public enum (\\w+)\\s*\\{");
+        Matcher matcherEnum = patronEnum.matcher(contenido);
+        if (matcherEnum.find()) {
+            clase.setClassSignatureLine(matcherEnum.group(0));
+        }
+    }
+
 
 
     default void getClassSignatureLineAnotations(String contenido, Clase clase) {
@@ -70,16 +110,23 @@ public interface IAnalyzeClassRelationsService extends IReturnType {
         String firmaClase = clase.getClassSignatureLine();
 
         Pattern patronExtends = Pattern.compile("extends\\s+([\\w\\s,]+)");
-        Matcher matcherExtends = patronExtends.matcher(firmaClase);
-
         Pattern patronImplements = Pattern.compile("implements\\s+([\\w\\s,]+)");
-        Matcher matcherImplements = patronImplements.matcher(firmaClase);
+        Matcher matcherExtends = null;
+        Matcher matcherImplements = null;
 
-        if (matcherExtends.find()) {
+        if(patronExtends != null && firmaClase != null){
+            matcherExtends = patronExtends.matcher(firmaClase);
+        }
+
+        if(patronImplements != null && firmaClase != null){
+            matcherImplements = patronImplements.matcher(firmaClase);
+        }
+
+        if (matcherExtends != null && matcherExtends.find()) {
             classExtends = matcherExtends.group(1);
         }
 
-        if (matcherImplements.find()) {
+        if (matcherImplements !=null  && matcherImplements.find()) {
             String temp = matcherImplements.group(1);
             String[] arreglo =  temp.trim().split(",");
             classImplements = Arrays.stream(arreglo).collect(Collectors.toList());
@@ -110,14 +157,18 @@ public interface IAnalyzeClassRelationsService extends IReturnType {
 
         if(xclass.getConstructores() != null && !xclass.getConstructores().isEmpty()){
             xclass.getConstructores().stream().forEach(constructor -> {
-                constructor.getParametros().stream().forEach(parametroMetodo -> {
-                    Variable var = xclass.getVariable(parametroMetodo.getTipo());
-                    if(var != null && xclass.checkAnotation(iocAnotations) ){
-                        if(!xclass.getClassRelations().getDependencyInjectionIoC().contains(var.getTipo())){
-                            xclass.getClassRelations().addDependencyInjectionIoC(var.getTipo());
+
+                if(constructor.getParametros() != null && constructor.getParametros().isEmpty()){
+                    constructor.getParametros().stream().forEach(parametroMetodo -> {
+                        Variable var = xclass.getVariable(parametroMetodo.getTipo());
+                        if(var != null && xclass.checkAnotation(iocAnotations) ){
+                            if(!xclass.getClassRelations().getDependencyInjectionIoC().contains(var.getTipo())){
+                                xclass.getClassRelations().addDependencyInjectionIoC(var.getTipo());
+                            }
                         }
-                    }
-                });
+                    });
+                }
+
             });
         }
     }
