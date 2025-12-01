@@ -78,7 +78,8 @@ public class AnalizadorProyecto implements ITodoDetectorService, IPrintProjectSt
                   }else {
                       if(file.getName().trim().contains(".java")) {
                           Clase clase = this.analyzeClassServiceService.analyzeClase(file);
-                          if (clase != null) {
+
+                          if (clase != null && clase.getNombre() != null) {
                               clase.setTodoNoteInClass(this.getTodo(clase.getRawClass()));
                               this.treeBuilder.addPath(clase.getClassPath());
                               if(clase != null && (clase.getPaquete() !=null &&  !clase.getPaquete().equals(""))){
@@ -88,8 +89,8 @@ public class AnalizadorProyecto implements ITodoDetectorService, IPrintProjectSt
                             if(clase.getMainClass()){
                                 project.setMainClassName(clase.getNombre());
                             }
+                                this.setContainers(clase, classList, mapClass, project);
                           }
-                          this.setContainers(clase, classList, mapClass, project);
                       }
                   }
               }

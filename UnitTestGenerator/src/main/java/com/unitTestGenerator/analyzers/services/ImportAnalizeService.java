@@ -19,13 +19,19 @@ public class ImportAnalizeService implements IBaseModel {
 
     public ImportAnalizePojo importAnalize(Clase clase) {
 
+
         ImportAnalizePojo importAnalizePojo = null;
         String[] parts = clase.getPaquete().split("\\.");
         String packageBaseName = "";
 
-        if (parts != null && parts.length > 0) {
+        if (parts != null && parts.length > 0 && parts.length == 1) {
+            packageBaseName = parts[0];
+        }
+
+        if (parts != null && parts.length > 1) {
             packageBaseName = parts[0] + "." +parts[1];
         }
+
         try {
             if(packageBaseName != null && !packageBaseName.equals("")){
                 Pattern importPattern = Pattern.compile("import\\s+([\\w.]+);");

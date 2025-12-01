@@ -81,8 +81,9 @@ public class ReverseDependencyScanner {
         return "";
     }
 
-    private Set<String> extractUsedClasses(List<String> lines, String currentClass) {
+    private Set<String> extractUsedClasses1(List<String> lines, String currentClass) {
         Set<String> used = new HashSet<>();
+
         Map<String, String> simpleToFQ = nodeMap.entrySet().stream()
                 .filter(e -> !e.getKey().equals(currentClass))
                 .collect(Collectors.toMap(e -> getSimpleName(e.getKey()), Map.Entry::getKey));
@@ -101,6 +102,41 @@ public class ReverseDependencyScanner {
         }
         return used;
     }
+
+
+    private Set<String> extractUsedClasses(List<String> lines, String currentClass) {
+        Set<String> used = new HashSet<>();
+
+        // Agrupar por nombre simple → lista de FQN
+        Map<String, List<String>> simpleToFQ = nodeMap.entrySet().stream()
+                .filter(e -> !e.getKey().equals(currentClass))
+                .collect(Collectors.groupingBy(
+                        e -> getSimpleName(e.getKey()),
+                        Collectors.mapping(Map.Entry::getKey, Collectors.toList())
+                ));
+
+        for (String line : lines) {
+            Matcher importMatcher = IMPORT_PATTERN.matcher(line);
+            if (importMatcher.find()) {
+                used.add(importMatcher.group(1));
+            }
+
+            for (Map.Entry<String, List<String>> entry : simpleToFQ.entrySet()) {
+                String simple = entry.getKey();
+                List<String> fqns = entry.getValue();
+
+                if (line.contains(simple)) {
+                    used.addAll(fqns);  // <<--- agrega TODAS las coincidencias
+                }
+            }
+        }
+        return used;
+    }
+
+
+
+
+
 
 
     private String getFullyQualifiedClassName(Path javaFile) {

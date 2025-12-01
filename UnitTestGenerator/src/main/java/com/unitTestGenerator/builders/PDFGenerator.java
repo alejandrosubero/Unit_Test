@@ -93,6 +93,9 @@ public class PDFGenerator implements IPrintService, IFileManagerDelete {
         this.execute( "Project Dependencies", project.getInfo().toStringDependencies(project.getMaven()), dependenciesPath);
     }
 
+    Error en project.getInfo()...... because the project in not a Maven or Grabdel 
+
+
     private void projectPdfGeneration(Project project) {
         try {
             List<byte[]> pdfsEnMemoria = new ArrayList<>();

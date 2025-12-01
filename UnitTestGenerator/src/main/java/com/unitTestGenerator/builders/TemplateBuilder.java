@@ -43,14 +43,17 @@ public class TemplateBuilder implements ITemplateBuilderRelation, ITemplateBuild
 
     public String projectInfo(Project project) {
         String templete = ReadResourceFile(templateInfo);
-        ProjectInfo info = project.getInfo();
         templete = templete.replace("@projectname@", project.getName());
-        templete = templete.replace("@javaVersion@", info.getJavaVersion());
-        templete = templete.replace("@projectVersion@", info.getVersion());
 
-        if (info.getDescription() != null) {
-            templete = templete.replace("@description@", info.getDescription());
+        if (project.getInfo() != null) {
+            ProjectInfo info = project.getInfo();
+            templete = templete.replace("@javaVersion@", info.getJavaVersion());
+            templete = templete.replace("@projectVersion@", info.getVersion());
+            if (info.getDescription() != null) {
+                templete = templete.replace("@description@", info.getDescription());
+            }
         }
+
         return templete;
     }
 
@@ -58,7 +61,7 @@ public class TemplateBuilder implements ITemplateBuilderRelation, ITemplateBuild
     public void buildClassDetailHtml(Clase classs) {
         String templete = ReadResourceFile(templateName);
 
-        if (classs != null) {
+        if (classs != null && classs.getNombre() != null) {
             templete = this.getStructureBase(templete, classs);
             templete = this.costructorElement(templete, classs);
             templete = this.umlData(templete, classs);
