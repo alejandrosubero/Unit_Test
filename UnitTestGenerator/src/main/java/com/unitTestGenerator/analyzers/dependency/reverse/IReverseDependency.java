@@ -13,7 +13,7 @@ public interface IReverseDependency {
         try {
             list =  ContextIOC.getInstance().getClassInstance(ReverseDependencyScanner.class).analizer(router);
         } catch (IOException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             return list;
         }
         return list;

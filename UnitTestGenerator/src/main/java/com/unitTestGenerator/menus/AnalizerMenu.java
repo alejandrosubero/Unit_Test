@@ -177,22 +177,30 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
     }
 
     public void subMenu2(Project project, Scanner scanner) {
-        this.subMenu2Txt();
-        int opcion = scanner.nextInt();
-        switch (opcion) {
-            case 1:
-                System.out.println("Good bye");
-                break;
-            case 2:
-                analizerMenuInitial(project);
-                break;
-            case 3:
-                this.goToMainMenu();
-                break;
-            default:
-                System.out.println("Invalid option");
-                analizerMenuInitial(project);
-        }
+
+      try{
+          this.subMenu2Txt();
+          int opcion = scanner.nextInt();
+          switch (opcion) {
+              case 1:
+                  System.out.println("Good bye");
+                  break;
+              case 2:
+                  analizerMenuInitial(project);
+                  break;
+              case 3:
+                  this.goToMainMenu();
+                  break;
+              default:
+                  System.out.println("Invalid option");
+                  analizerMenuInitial(project);
+          }
+
+      }catch (Exception e){
+          System.out.println("Invalid option");
+          subMenu2( project,  scanner);
+      }
+
     }
 
     public void subMenu1Txt(){

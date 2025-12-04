@@ -90,10 +90,14 @@ public class PDFGenerator implements IPrintService, IFileManagerDelete {
     public void projectDependencies(Project project){
         String pathBase = project.getPathProject() + IConstantModel.Separator;
         String dependenciesPath = pathBase +templateDependencies;
-        this.execute( "Project Dependencies", project.getInfo().toStringDependencies(project.getMaven()), dependenciesPath);
+
+        String text = (project.getInfo() == null || project.getInfo().getDependencies() == null)?
+                "No Dependencies ...": project.getInfo().toStringDependencies(project.getMaven());
+
+        this.execute( "Project Dependencies", text, dependenciesPath);
     }
 
-    Error en project.getInfo()...... because the project in not a Maven or Grabdel 
+//    Error en project.getInfo()...... because the project in not a Maven or Grabdel
 
 
     private void projectPdfGeneration(Project project) {
