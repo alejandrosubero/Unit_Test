@@ -399,4 +399,37 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
         }
     }
 
+// TODO IMPLEMENTAR EL MENU PARA QUE HAGE ESTO DIRIA QUE UN SUB MENU SOBRE LA OCCIONES EXISTENTES EN LOS OTROS MENUES
+    private void allInterfaceRelations(Project project, Scanner scanner, Boolean printText){
+        if(project != null){
+            try {
+                List<String> interfaceRelations = this.allInterfaceRelations(project.getRawClassList(), project);
+
+                if(!printText){
+
+                    StringBuffer buffer = new StringBuffer();
+                    interfaceRelations.forEach(element -> buffer.append(element).append(IConstantModel.BREAK_LINE));
+
+                    String nameFile = "Interfaces_Relations"+IConstantModel.PDF_Extention;
+                    this.service().print_BLUE("Please wait while generating the report...");
+                    ContextIOC.getInstance().getClassInstance(PDFGenerator.class).createOnepdf( project, buffer.toString(), "Interface Relations", nameFile);
+                    this.service().print_GREEN("Successfully generated the File");
+                }else {
+                    interfaceRelations.forEach(element -> this.service().print_DARKGREEN(element));
+                }
+
+                this.subMenu2(project, scanner);
+
+            } catch (Exception e) {
+                this.service().print_RED("ERROR IN GENERATION OF PNG UmlDiagram");
+                this.service().print_RED("ERROR: "+ e.getMessage());
+                e.printStackTrace();
+            }
+        }else {
+            this.subMenu2(project, scanner);
+        }
+    }
+
+
+
 }
