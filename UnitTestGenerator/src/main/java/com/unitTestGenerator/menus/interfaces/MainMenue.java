@@ -12,6 +12,8 @@ public interface MainMenue {
         buffer.append("1. Analyze project").append("\n");
         buffer.append("2. Generate unit tests").append("\n");
         buffer.append("3. Exit*").append("\n");
+        buffer.append("4. Version").append("\n");
+
         String ANSI_YELLOW = "\u001B[33m";
         System.out.println(ANSI_YELLOW + buffer.toString());
 //        System.out.println(buffer.toString());

@@ -102,7 +102,7 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
                 "6. Print a Class with Details",
                 "7. Print the project class tree",
                 "8. Print the project file tree",
-                "9. Generate Interface Relations",
+                "9. Interface Relations",
                 "10. Generate File",
                 "11. Return to the previous menu",
                 "12. Return to the main menu");
@@ -150,7 +150,7 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
                 subMenu2( project,  scanner);
                 break;
             case 9:
-                this.interfaceRelations( project, scanner,true);
+                this.subMenuInterface( project, scanner);
                 subMenu2( project,  scanner);
                 break;
             case 10:
@@ -165,6 +165,46 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
             default:
                 this.printClassList(project);
                 this.subMenu1(project,scanner);
+        }
+    }
+
+    public void subMenuInterfaceTxT(){
+        this.printColummStringY(
+                "Choose an option:",
+                "1. Generate Interface Relations",
+                "2. Generate All Interface Relations",
+                "3. Return to the previous menu",
+                "4. Return to the main menu");
+    }
+
+    public void subMenuInterface(Project project, Scanner scanner) {
+        try{
+            this.subMenuInterfaceTxT();
+            int opcion = scanner.nextInt();
+            switch (opcion) {
+                case 5:
+                    System.out.println("Good bye");
+                    break;
+                case 1:
+                    this.interfaceRelations( project, scanner,true);
+                    subMenu2( project,  scanner);
+                case 2:
+                    this.allInterfaceRelations( project, scanner, true);
+                    subMenu2( project,  scanner);
+                    break;
+                case 3:
+                    analizerMenuInitial(project);
+                    break;
+                case 4:
+                    this.goToMainMenu();
+                    break;
+                default:
+                    System.out.println("Invalid option");
+                    analizerMenuInitial(project);
+            }
+        }catch (Exception e){
+            System.out.println("Invalid option");
+            subMenu2( project,  scanner);
         }
     }
 
@@ -200,7 +240,6 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
           System.out.println("Invalid option");
           subMenu2( project,  scanner);
       }
-
     }
 
     public void subMenu1Txt(){
@@ -293,12 +332,12 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
                 "1. Class Report",
                 "2. Generate Protect Report",
                 "4. Generate Interface Relations",
-                "5. Generate list of class are used by",
-                "6. Generate list of dependencies",
-                "7. Return to the previous menu"
+                "5. Generate All Interface Relations",
+                "6. Generate list of class are used by",
+                "7. Generate list of dependencies",
+                "8. Return to the previous menu"
         );
     }
-
 
 
     public void generateFileMenu(Project project, Scanner scanner) {
@@ -318,14 +357,18 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
                 subMenu2( project,  scanner);
                 break;
             case 5:
-                this.generateListUsedBy(project);
+                this.allInterfaceRelations( project, scanner,false);
                 subMenu2( project,  scanner);
                 break;
             case 6:
-                this.pdfGenerator.projectDependencies(project);
+                this.generateListUsedBy(project);
                 subMenu2( project,  scanner);
                 break;
             case 7:
+                this.pdfGenerator.projectDependencies(project);
+                subMenu2( project,  scanner);
+                break;
+            case 8:
                 this.analizerMenuInitial(project);
                 break;
             default:
@@ -399,7 +442,7 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
         }
     }
 
-// TODO IMPLEMENTAR EL MENU PARA QUE HAGE ESTO DIRIA QUE UN SUB MENU SOBRE LA OCCIONES EXISTENTES EN LOS OTROS MENUES
+
     private void allInterfaceRelations(Project project, Scanner scanner, Boolean printText){
         if(project != null){
             try {
