@@ -44,7 +44,6 @@ public class AnalizerMenu implements IAnalizerProjectServiceManager, IBaseModel,
     }
 
 
-
     public void analizerMenu(){
         this.printColummStringY("Analyze project Module",
                 "Choose an option:",

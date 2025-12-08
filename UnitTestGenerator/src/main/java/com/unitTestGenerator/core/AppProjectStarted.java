@@ -47,6 +47,7 @@ public class AppProjectStarted implements MainMenue, IAnalizerProjectServiceMana
         }
     }
 
+
     public void start() {
         ICleanConsole.clearConsoleOs();
         Scanner scanner = new Scanner(System.in);
@@ -54,6 +55,13 @@ public class AppProjectStarted implements MainMenue, IAnalizerProjectServiceMana
         this.checkProyect();
         while (continuar) {
             this.welcomeMenu();
+
+            while (!scanner.hasNextInt()) {
+                System.err.println("❌ Error: Invalid response. Please enter a valid option");
+                scanner.next();
+                this.welcomeMenuError();
+            }
+
             int opcion = scanner.nextInt();
 
             switch (opcion) {
