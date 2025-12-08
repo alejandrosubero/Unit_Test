@@ -13,10 +13,12 @@ import com.unitTestGenerator.analyzers.dependency.parser.GradleParser;
 import com.unitTestGenerator.analyzers.dependency.parser.PomParser;
 import com.unitTestGenerator.analyzers.dependency.pojos.ProjectInfo;
 import com.unitTestGenerator.ioc.ContextIOC;
+import com.unitTestGenerator.pojos.Clase;
 import com.unitTestGenerator.pojos.Project;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public interface IDependencyAnalyzer {
@@ -78,6 +80,26 @@ public interface IDependencyAnalyzer {
         ClassNode tree = analyzer.buildTree(targetClassName);
         String treeAsString = analyzer.buildTreeString(tree);
         return treeAsString;
+    }
+
+
+    default List<String>  allInterfaceRelations(List<String> classSources, Project project) {
+
+//        interface
+        ClassRelationAnalyzer analyzer = ContextIOC.getInstance().getClassInstance(ClassRelationAnalyzer.class);
+        analyzer.analyzeClasses(classSources);
+        List<Clase> interfacesList = project.getMapClassInterfae().get("interface");
+        List<String> treeAsStringlist = new ArrayList<>();
+
+        if(interfacesList.size() > 0){
+            for(Clase classs : interfacesList){
+//                ClassNode tree = analyzer.buildTree(classs.getNombre());
+//                String treeAsString = analyzer.buildTreeString(tree);
+//                treeAsStringlist.add(treeAsString);
+                treeAsStringlist.add(analyzer.buildTreeString(analyzer.buildTree(classs.getNombre())));
+            }
+        }
+        return treeAsStringlist;
     }
 
 

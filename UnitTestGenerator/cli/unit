@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-VERSION="2.0.0"
+VERSION="2.5.0"
 APP_NAME="unit"
 INSTALL_DIR="${HOME}/.${APP_NAME}"
-JAR_NAME="unit-2.0.0-jar-with-dependencies.jar"
+JAR_NAME="unit-2.5.0-jar-with-dependencies.jar"
 
 main() {
     case "$1" in
@@ -49,11 +49,12 @@ Usage:
   ${APP_NAME} [command] [options]
 
 Commands:
-  install       Install the application
-  uninstall     Remove the application
-  --version, -v Show version
-  --help, -h    Show this help
-
+  install               Install the application
+  uninstall             Remove the application
+  --version, -v         Show version
+  --help, -h            Show this help
+  unit log list         List all log files
+  unit log view <file>  Show the log file in command line
 Application Options:
   [names...]   List of names to greet
 EOF

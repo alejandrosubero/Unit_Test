@@ -11,12 +11,14 @@ import com.unitTestGenerator.ioc.anotations.Singleton;
 import com.unitTestGenerator.pojos.Project;
 import com.unitTestGenerator.printers.interfaces.IPrintAnalizeImports;
 import com.unitTestGenerator.printers.interfaces.IPrintService;
+import com.unitTestGenerator.util.PathValidator;
+import com.unitTestGenerator.util.interfaces.validPath;
 
 import java.util.Scanner;
 
 @Component
 @Singleton
-public class AnalizerProjectService implements IPrintService, IPorjectName,IPrintAnalizeImports, IExtendsInInterfacesService, IProjectAnalizeService, IClassDetailBuilder {
+public class AnalizerProjectService implements IPrintService, IPorjectName,IPrintAnalizeImports, IExtendsInInterfacesService, IProjectAnalizeService, IClassDetailBuilder, validPath {
 
     
     public AnalizerProjectService() {
@@ -40,8 +42,35 @@ public class AnalizerProjectService implements IPrintService, IPorjectName,IPrin
            return null;
        }
 
-        return projectAnalize(pathProject, isAnalisis, project);
+        if ( this.isValidPathAndExists(pathProject)){
+           return projectAnalize(pathProject, isAnalisis, project);
+       }else {
+           String newPath = this.pathError( scanner, pathProject);
+           if ( newPath != null && !newPath.equals("")){
+               return projectAnalize(newPath, isAnalisis, project);
+           }else {
+               return null;
+           }
+       }
     }
+
+    private void goToMainMenu(){
+        ContextIOC.getInstance().getClassInstance(AppProjectStarted.class).start();
+    }
+
+    private String pathError(Scanner scanner,  String pathProject ){
+        this.service().print_RED("!!!!! ERROR: The project path is Invalid !!!!! ");
+        this.service().print_DARKGREEN("Enter the project path:");
+        pathProject = scanner.next();
+
+        if ( this.isValidPathAndExists(pathProject)){
+            return pathProject;
+        } else {
+            this.goToMainMenu();
+        }
+      return "";
+    }
+
 
     public Project analizerProjectSaveProject( boolean isAnalisis, Project project) {
         System.out.println("Enter the project path:");

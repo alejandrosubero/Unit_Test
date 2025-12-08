@@ -2,7 +2,7 @@
 setlocal enabledelayedexpansion
 
 set APP_NAME=unit
-set VERSION=2.0.0
+set VERSION=2.5.0
 set INSTALL_DIR=%APPDATA%\%APP_NAME%
 set JAR_NAME= unit-%VERSION%-jar-with-dependencies.jar
 
@@ -47,10 +47,12 @@ echo %APP_NAME% v%VERSION%
 echo Uso:
 echo   %APP_NAME% [comando]
 echo Comandos:
-echo   install    Install the application
-echo   uninstall  Remove the application
-echo   --version  Show version
-echo   --help     Show this help
+echo   install                   Install the application
+echo   uninstall                 Remove the application
+echo   --version                 Show version
+echo   --help                    Show this help
+echo   unit log list             List all log files
+echo   unit log view + namefile  Show the log file in command line
 goto end
 
 :end

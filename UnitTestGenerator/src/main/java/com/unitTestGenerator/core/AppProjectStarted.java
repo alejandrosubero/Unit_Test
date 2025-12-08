@@ -11,7 +11,10 @@ import com.unitTestGenerator.menus.AnalizerMenu;
 import com.unitTestGenerator.menus.interfaces.MainMenue;
 import com.unitTestGenerator.pojos.Clase;
 import com.unitTestGenerator.pojos.Project;
+import com.unitTestGenerator.printers.interfaces.IPrintService;
+import com.unitTestGenerator.util.MavenVersionExtractor;
 import com.unitTestGenerator.util.interfaces.ICleanConsole;
+import com.unitTestGenerator.util.interfaces.IConstantModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +22,7 @@ import java.util.Scanner;
 
 @Component
 @Singleton
-public class AppProjectStarted implements MainMenue, IAnalizerProjectServiceManager {
+public class AppProjectStarted implements MainMenue, IAnalizerProjectServiceManager, IPrintService {
 
     private AnalizerProjectService analizerProjectService;
     private GeneradorPruebasUnitarias generadorPruebasUnitarias;
@@ -44,6 +47,7 @@ public class AppProjectStarted implements MainMenue, IAnalizerProjectServiceMana
         }
     }
 
+
     public void start() {
         ICleanConsole.clearConsoleOs();
         Scanner scanner = new Scanner(System.in);
@@ -51,6 +55,13 @@ public class AppProjectStarted implements MainMenue, IAnalizerProjectServiceMana
         this.checkProyect();
         while (continuar) {
             this.welcomeMenu();
+
+            while (!scanner.hasNextInt()) {
+                System.err.println("❌ Error: Invalid response. Please enter a valid option");
+                scanner.next();
+                this.welcomeMenuError();
+            }
+
             int opcion = scanner.nextInt();
 
             switch (opcion) {
@@ -66,11 +77,24 @@ public class AppProjectStarted implements MainMenue, IAnalizerProjectServiceMana
                     System.out.println("Good bye");
                     continuar = false;
                     break;
+                case 4:
+                    this.version();
+                    this.start();
+                    continuar = false;
+                    break;
                 default:
                     System.out.println("Invalid option");
                     continuar = this.askContinue(scanner);
             }
         }
+    }
+
+
+    private void version(){
+        String version = MavenVersionExtractor.getVersion();
+        String text = "Maven Version: "+ version;
+        this.service().print_BLUE(text);
+        System.out.println(IConstantModel.DOUBLEBREAK_LINE);
     }
 
     private void projectHolderLogic(Scanner scanner, Boolean isAnalisis){

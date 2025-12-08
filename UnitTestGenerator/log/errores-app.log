@@ -1,0 +1,83 @@
+═══════════════════════════════════════════════════════
+Timestamp: 2025-12-07T11:06:35.237
+Error Code: UNEXPECTED_ERROR
+Message: null
+Thread: main
+Stack Trace:
+java.util.InputMismatchException
+	at java.util.Scanner.throwFor(Scanner.java:864)
+	at java.util.Scanner.next(Scanner.java:1485)
+	at java.util.Scanner.nextInt(Scanner.java:2117)
+	at java.util.Scanner.nextInt(Scanner.java:2076)
+	at com.unitTestGenerator.core.AppProjectStarted.start(AppProjectStarted.java:65)
+	at com.unitTestGenerator.App.run(App.java:33)
+	at com.unitTestGenerator.App.main(App.java:24)
+
+═══════════════════════════════════════════════════════
+═══════════════════════════════════════════════════════
+Timestamp: 2025-12-07T11:07:16.618
+Error Code: UNEXPECTED_ERROR
+Message: null
+Thread: main
+Stack Trace:
+java.util.InputMismatchException
+	at java.util.Scanner.throwFor(Scanner.java:864)
+	at java.util.Scanner.next(Scanner.java:1485)
+	at java.util.Scanner.nextInt(Scanner.java:2117)
+	at java.util.Scanner.nextInt(Scanner.java:2076)
+	at com.unitTestGenerator.core.AppProjectStarted.start(AppProjectStarted.java:65)
+	at com.unitTestGenerator.App.run(App.java:33)
+	at com.unitTestGenerator.App.main(App.java:24)
+
+═══════════════════════════════════════════════════════
+═══════════════════════════════════════════════════════
+Timestamp: 2025-12-07T16:48:12.785
+Error Code: UNEXPECTED_ERROR
+Message: null
+Thread: main
+Stack Trace:
+java.util.NoSuchElementException
+	at java.util.Scanner.throwFor(Scanner.java:862)
+	at java.util.Scanner.next(Scanner.java:1485)
+	at java.util.Scanner.nextInt(Scanner.java:2117)
+	at java.util.Scanner.nextInt(Scanner.java:2076)
+	at com.unitTestGenerator.core.AppProjectStarted.start(AppProjectStarted.java:65)
+	at com.unitTestGenerator.app.AppConfiguration.run(AppConfiguration.java:48)
+	at com.unitTestGenerator.app.AppConfiguration.setStarted(AppConfiguration.java:39)
+	at com.unitTestGenerator.App.main(App.java:20)
+
+═══════════════════════════════════════════════════════
+═══════════════════════════════════════════════════════
+Timestamp: 2025-12-07T18:23:34.977
+Error Code: UNEXPECTED_ERROR
+Message: null
+Thread: main
+Stack Trace:
+java.util.InputMismatchException
+	at java.util.Scanner.throwFor(Scanner.java:864)
+	at java.util.Scanner.next(Scanner.java:1485)
+	at java.util.Scanner.nextInt(Scanner.java:2117)
+	at java.util.Scanner.nextInt(Scanner.java:2076)
+	at com.unitTestGenerator.menus.AnalizerMenu.analizerMenuStarted(AnalizerMenu.java:59)
+	at com.unitTestGenerator.core.AppProjectStarted.projectHolderLogic(AppProjectStarted.java:105)
+	at com.unitTestGenerator.core.AppProjectStarted.start(AppProjectStarted.java:69)
+	at com.unitTestGenerator.app.AppConfiguration.run(AppConfiguration.java:35)
+	at com.unitTestGenerator.app.AppConfiguration.setStarted(AppConfiguration.java:26)
+	at com.unitTestGenerator.App.main(App.java:16)
+
+═══════════════════════════════════════════════════════
+═══════════════════════════════════════════════════════
+Timestamp: 2025-12-07T18:50:24.927
+Error Code: UNEXPECTED_ERROR
+Message: null
+Thread: main
+Stack Trace:
+java.util.NoSuchElementException
+	at java.util.Scanner.throwFor(Scanner.java:862)
+	at java.util.Scanner.next(Scanner.java:1371)
+	at com.unitTestGenerator.core.AppProjectStarted.start(AppProjectStarted.java:61)
+	at com.unitTestGenerator.app.AppConfiguration.run(AppConfiguration.java:34)
+	at com.unitTestGenerator.app.AppConfiguration.setStarted(AppConfiguration.java:25)
+	at com.unitTestGenerator.App.main(App.java:14)
+
+═══════════════════════════════════════════════════════
