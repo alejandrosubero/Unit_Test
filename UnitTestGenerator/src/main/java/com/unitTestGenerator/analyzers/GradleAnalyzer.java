@@ -78,8 +78,10 @@ public class GradleAnalyzer implements IGradleAnalyzer, IFileManager {
             List<String> dependencesList1 =  this.addDependences(contenidoList, contenido,1, Dependencies.JUNIT_DEPENDENCY);
             List<String> dependencesList3  =  this.addDependences(dependencesList1,  contenido,1, Dependencies.MOCK_DEPENDENCY);
             List<String> dependencesList4  =  this.addDependences(dependencesList3,contenido,1, Dependencies.MOCK_DEPENDENCY_core);
+            List<String> dependencesList5  =  this.addDependences(dependencesList4,contenido,1, Dependencies.ASSERTJ_DEPENDENCY);
+
             this.analizarEstructura();
-            String newContenido =  this.listStringStructureToColummString(dependencesList4);
+            String newContenido =  this.listStringStructureToColummString(dependencesList5);
             this.writefilesI( archivoGradle,  newContenido);
         } catch (IOException e) {
             throw new RuntimeException(e);

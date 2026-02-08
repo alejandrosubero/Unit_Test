@@ -35,6 +35,7 @@ public class PomAnalyzer implements IConstantModel {
         try {
             if (!existeDependencia(documento, this.JUNIT_DEPENDENCY)) {
                 agregarDependencia(documento, Dependencies.JUNIT_DEPENDENCY);
+                agregarDependencia(documento, Dependencies.ASSERTJ_DEPENDENCY);
                 existDependency = true;
             }
             if (!existeDependencia(documento, this.MOCK_DEPENDENCY)) {

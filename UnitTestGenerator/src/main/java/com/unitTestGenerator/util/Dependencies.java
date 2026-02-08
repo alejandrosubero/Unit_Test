@@ -10,7 +10,7 @@ public class Dependencies {
     public static Dependency MOCK_DEPENDENCY_core = Dependency.builder().groupId("org.mockito").artifactId("mockito-core").version("3.12.4").scope("test").build();
     public static Dependency H2_DEPENDENCY_TEST = Dependency.builder().groupId("com.h2database").artifactId("h2").version("2.1.210").scope("test").build();
     public static Dependency LOMBOK_DEPENDENCY = Dependency.builder().groupId("org.projectlombok").artifactId("lombok").version("1.18.34").scope("provided").build();
-
+    public static Dependency ASSERTJ_DEPENDENCY = Dependency.builder().groupId("org.assertj").artifactId("assertj-core").version("3.22.0").scope("test").build();
 
 
 }
