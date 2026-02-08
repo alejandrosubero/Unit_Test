@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-VERSION="2.5.0"
+VERSION="2.5.1"
 APP_NAME="unit"
 INSTALL_DIR="${HOME}/.${APP_NAME}"
-JAR_NAME="unit-2.5.0-jar-with-dependencies.jar"
+JAR_NAME="unit-2.5.1-jar-with-dependencies.jar"
 
 main() {
     case "$1" in

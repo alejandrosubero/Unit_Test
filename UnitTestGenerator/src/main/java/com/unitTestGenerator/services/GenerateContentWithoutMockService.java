@@ -77,7 +77,16 @@ public class GenerateContentWithoutMockService implements IReturnType, IMethodSe
             System.out.println("Choose an option:");
             System.out.println("1. yes");
             System.out.println("2. no");
-            int opcion = scanner.nextInt();
+
+            int opcion = 0;
+
+        if (scanner.hasNextInt()) {
+             opcion = scanner.nextInt();
+        } else {
+            System.out.println("option no valid insert a number from the list");
+            scanner.next(); // Limpiar el buffer para evitar un bucle infinito
+        }
+
             switch (opcion) {
                 case 1:
                      this.buildObjectTypeBuild(clase1);
