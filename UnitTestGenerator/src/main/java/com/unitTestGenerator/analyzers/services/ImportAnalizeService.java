@@ -12,13 +12,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Component
-public class ImportAnalizeService implements IBaseModel {
+public class ImportAnalizeService  {
 
     public ImportAnalizeService() {
     }
 
     public ImportAnalizePojo importAnalize(Clase clase) {
-
 
         ImportAnalizePojo importAnalizePojo = null;
         String[] parts = clase.getPaquete().split("\\.");
@@ -45,9 +44,9 @@ public class ImportAnalizeService implements IBaseModel {
                 while (matcher.find()) {
                     String importStatement = matcher.group(1);
                     if (importStatement.contains(packageBaseName)) {
-                        projectImportsList.add(IBaseModel.stringEnsamble2("import ", importStatement));
+                        projectImportsList.add(this.stringEnsambleInternal("import ", importStatement));
                     } else {
-                        externalImportsList.add(IBaseModel.stringEnsamble2("import ", importStatement));
+                        externalImportsList.add(this.stringEnsambleInternal("import ", importStatement));
                     }
                 }
                 importAnalizePojo = ImportAnalizePojo.builder().externalImports(externalImportsList).projectImports(projectImportsList).build();
@@ -62,7 +61,17 @@ public class ImportAnalizeService implements IBaseModel {
     }
 
 
+    private String stringEnsambleInternal(String... stringPaths) {
+        StringBuffer newString = new StringBuffer();
+        String[] var3 = stringPaths;
+        int var4 = stringPaths.length;
 
+        for(int var5 = 0; var5 < var4; ++var5) {
+            String path = var3[var5];
+            newString.append(path);
+        }
+        return newString.toString();
+    }
 
 
     private static String extractBasePackage(String filePath, String projectName) {

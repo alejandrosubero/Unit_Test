@@ -33,7 +33,6 @@ public interface IBaseModel extends IStringEnsambleService{
 	}
 
 
-
 	public static String stringEnsamble2(String... stringPaths) {
 		StringBuffer newString = new StringBuffer();
 		String[] var3 = stringPaths;
