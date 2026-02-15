@@ -112,3 +112,41 @@ Stack Trace   :
     	at com.unitTestGenerator.App.main(App.java:14)
 ────────────────────────────────────────────────────────
 
+━━━━━━━━━━━━━━━━━━ ERROR ━━━━━━━━━━━━━━━━━━
+Timestamp     : 2026-02-15 08:57:55
+Error Code    : UNEXPECTED_ERROR
+Message       : (no message)
+Thread        : main
+Exception     : java.lang.NullPointerException
+Stack Trace   :
+    java.lang.NullPointerException
+    	at com.unitTestGenerator.services.GenerateContentWithoutMockService.lambda$null$1(GenerateContentWithoutMockService.java:160)
+    	at java.util.stream.ReferencePipeline$2$1.accept(ReferencePipeline.java:174)
+    	at java.util.ArrayList$ArrayListSpliterator.tryAdvance(ArrayList.java:1361)
+    	at java.util.stream.ReferencePipeline.forEachWithCancel(ReferencePipeline.java:126)
+    	at java.util.stream.AbstractPipeline.copyIntoWithCancel(AbstractPipeline.java:499)
+    	at java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:486)
+    	at java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:472)
+    	at java.util.stream.FindOps$FindOp.evaluateSequential(FindOps.java:152)
+    	at java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+    	at java.util.stream.ReferencePipeline.findFirst(ReferencePipeline.java:464)
+    	at com.unitTestGenerator.services.GenerateContentWithoutMockService.lambda$generateParameterObjects$2(GenerateContentWithoutMockService.java:160)
+    	at java.util.ArrayList.forEach(ArrayList.java:1259)
+    	at com.unitTestGenerator.services.GenerateContentWithoutMockService.generateParameterObjects(GenerateContentWithoutMockService.java:159)
+    	at com.unitTestGenerator.services.GenerateContentWithoutMockService.generarContenidoSinMock(GenerateContentWithoutMockService.java:54)
+    	at com.unitTestGenerator.services.GenerateMethodServiceI.generarContenidoMetodoPrueba(GenerateMethodServiceI.java:105)
+    	at com.unitTestGenerator.services.GenerateMethodServiceI.obtenerContenidoMetodo(GenerateMethodServiceI.java:98)
+    	at com.unitTestGenerator.services.GenerateMethodServiceI.setContent(GenerateMethodServiceI.java:92)
+    	at com.unitTestGenerator.services.GenerateMethodServiceI.lambda$generateMethods$0(GenerateMethodServiceI.java:56)
+    	at java.util.ArrayList.forEach(ArrayList.java:1259)
+    	at com.unitTestGenerator.services.GenerateMethodServiceI.generateMethods(GenerateMethodServiceI.java:55)
+    	at com.unitTestGenerator.core.GeneradorPruebasUnitarias.generateTestFileBody(GeneradorPruebasUnitarias.java:56)
+    	at com.unitTestGenerator.core.GeneradorPruebasUnitarias.generateTest(GeneradorPruebasUnitarias.java:40)
+    	at com.unitTestGenerator.core.AppProjectStarted.generateUnitTest(AppProjectStarted.java:148)
+    	at com.unitTestGenerator.core.AppProjectStarted.generateUnitsTest(AppProjectStarted.java:128)
+    	at com.unitTestGenerator.core.AppProjectStarted.start(AppProjectStarted.java:73)
+    	at com.unitTestGenerator.app.AppConfiguration.run(AppConfiguration.java:34)
+    	at com.unitTestGenerator.app.AppConfiguration.setStarted(AppConfiguration.java:25)
+    	at com.unitTestGenerator.App.main(App.java:16)
+────────────────────────────────────────────────────────
+

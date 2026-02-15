@@ -50,6 +50,8 @@ public interface IBaseModel extends IStringEnsambleService{
 		return stringList;
 	}
 
+
+
 	default String stringPaths(Boolean starSeparator, Boolean endSeparator,String... paths) {
 		StringBuffer newString = new StringBuffer();
 		List<String> stringPaths = toList(paths);

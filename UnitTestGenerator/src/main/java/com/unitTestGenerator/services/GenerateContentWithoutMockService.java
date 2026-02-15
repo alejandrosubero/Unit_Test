@@ -1,6 +1,7 @@
 package com.unitTestGenerator.services;
 
 import com.unitTestGenerator.builders.AddPatterBuilder;
+import com.unitTestGenerator.builders.ManagerBuilderPattern;
 import com.unitTestGenerator.interfaces.IClassObject;
 import com.unitTestGenerator.interfaces.IManageMavenGadleAppProperties;
 import com.unitTestGenerator.interfaces.IMethodServiceTools;
@@ -25,11 +26,17 @@ public class GenerateContentWithoutMockService implements IReturnType, IMethodSe
     @Inyect
     private AddPatterBuilder addPatterBuilder;
 
+    @Inyect
+    private ManagerBuilderPattern managerBuilderPattern;
+
     public GenerateContentWithoutMockService() {
     }
 
     public void setProject(Project project){
         this.project = project;
+        if(managerBuilderPattern != null){
+            managerBuilderPattern.setProject(this.project);
+        }
     }
 
     
@@ -110,19 +117,20 @@ public class GenerateContentWithoutMockService implements IReturnType, IMethodSe
                     clase1.setApplyBuildMethod(false);
                     break;
                 case 2:
-                    String filePath =  stringPaths(false, false,
-                            this.project.getPathProject(),
-                            "src","main","java",
-                            packageToPaths(clase1.getPaquete()),
-                            stringEnsamble( clase1.getNombre(),".java")
-                    );
-                    try {
-                        addPatterBuilder.generateBuilderPatterFromClassFile(filePath);
-                        clase1.setApplyBuildMethod(true);
-                        clase1.setUseLomboxBuild(false);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
+                    managerBuilderPattern.generateFromPathProject(clase1.getNombre());
+//                    String filePath =  stringPaths(false, false,
+//                            this.project.getPathProject(),
+//                            "src","main","java",
+//                            packageToPaths(clase1.getPaquete()),
+//                            stringEnsamble( clase1.getNombre(),".java")
+//                    );
+//                    try {
+//                        addPatterBuilder.generateBuilderPatterFromClassFile(filePath);
+//                        clase1.setApplyBuildMethod(true);
+//                        clase1.setUseLomboxBuild(false);
+//                    } catch (IOException e) {
+//                        throw new RuntimeException(e);
+//                    }
                     break;
                 default:
                     System.out.println("Invalid option");
@@ -145,24 +153,24 @@ public class GenerateContentWithoutMockService implements IReturnType, IMethodSe
         return contenido.toString();
     }
 
-    private String generateParameterObjects(Metodo metodo, List<Clase> parametersClassList){
+    private String generateParameterObjects(Metodo metodo, List<Clase> parametersClassList) {
         StringBuilder content = new StringBuilder();
+        if (metodo != null) {
+            parametersClassList.forEach(clase1 -> {
+                Optional<ParametroMetodo> parameter = metodo.getParametros().stream().filter(parametroMetodo -> parametroMetodo.getTipo().equals(clase1.getNombre())).findFirst();
+                String parameterNameType = stringEnsamble(parameter.get().getTipo(), " ", parameter.get().getNombre());
 
-        parametersClassList.forEach(clase1 -> {
-            Optional<ParametroMetodo> parameter = metodo.getParametros().stream().filter(parametroMetodo -> parametroMetodo.getTipo().equals(clase1.getNombre())).findFirst();
-            String parameterNameType = stringEnsamble(parameter.get().getTipo(), " ", parameter.get().getNombre());
-
-            if (!clase1.getUseLomboxBuild() && !clase1.getApplyBuildMethod()) {
-                askForAddBuildPatterInClass(clase1);
-            }
-            if (clase1.getUseLomboxBuild() || clase1.getApplyBuildMethod()) {
-                String newParameterObjectClass = stringEnsamble("\t",parameterNameType, " = ", this.buildObject(clase1,this.project));
-                content.append(newParameterObjectClass).append("\n");
-            } else {
-                content.append(generateNewObject(parameterNameType, parameter.get().getNombre(), clase1) );
-            }
-        });
-
+                if (!clase1.getUseLomboxBuild() && !clase1.getApplyBuildMethod()) {
+                    askForAddBuildPatterInClass(clase1);
+                }
+                if (clase1.getUseLomboxBuild() || clase1.getApplyBuildMethod()) {
+                    String newParameterObjectClass = stringEnsamble("\t", parameterNameType, " = ", this.buildObject(clase1, this.project));
+                    content.append(newParameterObjectClass).append("\n");
+                } else {
+                    content.append(generateNewObject(parameterNameType, parameter.get().getNombre(), clase1));
+                }
+            });
+        }
         return content.toString();
     }
 
